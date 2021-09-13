@@ -62,7 +62,7 @@ namespace CoreERP.Data.Repositories
         public async Task<IEnumerable<BudgetDetails>> GetBudgetPDFDetails(int id)
         {
             var db = dbConnection();
-            var sql = @"SELECT id_presupuesto, nro_presupuesto, fecha, estado, forma_pago, plazo_entrega, observaciones, codigo, producto, cantidad, precio, total, descuento, imagen, cliente, direccion, telefono, moneda, vendedor, porcentaje, cotizacion, ruc, contacto, direccion_entrega, condicion, monto_total, obra, motivo, precio_unitario
+            var sql = @"SELECT id_presupuesto, nro_presupuesto, fecha, estado, forma_pago, plazo_entrega, observaciones, codigo, producto, cantidad, precio, total, descuento, imagen, cliente, direccion, telefono, moneda, vendedor, porcentaje, cotizacion, ruc, contacto, direccion_entrega, condicion, monto_total, obra, motivo, precio_unitario, cliente_exento
                         FROM public.v_impresion_presupuestos
                         where id_presupuesto = @Id";
 
