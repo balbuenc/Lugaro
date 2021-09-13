@@ -169,6 +169,11 @@
                                         <p class="m-0"><b>Condición:</b>@Condicion</p>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        <p class="m-0"><b>Exento:</b>@Exento</p>
+                                    </td>
+                                </tr>
                             </tbody>
 
                         </table>
@@ -474,6 +479,7 @@
     public string Estado = "";
     public string Vendedor = "";
     public string Condicion = "";
+    public string Exento = "";
 
 
     public IEnumerable<BudgetDetails> GridData { get; set; }
@@ -749,6 +755,7 @@
             Estado = header.estado;
             Vendedor = header.vendedor;
             Condicion = header.condicion;
+            Exento = header.cliente_exento;
 
             //Verify if prinatable layout
             if (IsPrintable)

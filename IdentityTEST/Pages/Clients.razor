@@ -31,7 +31,7 @@
 
     <div class="col-lg-12" style="padding:1px; height:50px">
         <div class="content-wrapper">
-            <div class="alert alert-primary" role="banner"><b>Clientes</b></div>
+            <div class="alert alert-title" role="banner"><b>Clientes</b></div>
         </div>
     </div>
 
@@ -45,118 +45,124 @@
                 }
                 else
                 {
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems"  DataSource="@GridData" Locale="es-ES">
+            <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES" AllowFiltering="true" AllowExcelExport="true" ShowColumnChooser="true">
 
-                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="Client"></GridEvents>
-                        <GridPageSettings PageSize="20"></GridPageSettings>
+                <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="Client" OnToolbarClick="ToolbarClickHandler"></GridEvents>
+                <GridPageSettings PageSize="20"></GridPageSettings>
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
+                    <HeaderTemplate>
+                        @{
+                            var cli = (context as Client);
+                        }
+                        <span>Detalle de Cliente: @(cli.razon_social)</span>
+                    </HeaderTemplate>
+                    <Template>
+                        @{
+                            var cli = (context as Client);
+                        }
+                        <div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
 
-                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
-                            <HeaderTemplate>
-                                @{
-                                    var cli = (context as Client);
-                                }
-                                <span>Detalle de Cliente: @(cli.razon_social)</span>
-                            </HeaderTemplate>
-                            <Template>
-                                @{
-                                    var cli = (context as Client);
-                                }
-                                <div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-
-                                            <SfNumericTextBox @bind-Value="@(cli.id_funcionario)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                        </div>
-                                        <div class="form-group col-md-6">
-
-                                            <SfTextBox @bind-Value="@(cli.razon_social)" Enabled="true" Placeholder="Razón social" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-
-                                            <SfTextBox @bind-Value="@(cli.nombres)" Enabled="true" Placeholder="Nombres" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
-                                        <div class="form-group col-md-6">
-
-                                            <SfTextBox @bind-Value="@(cli.apellidos)" Enabled="true" Placeholder="Apellidos" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(cli.ci)" Enabled="true" Placeholder="Nro. Documento" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(cli.ruc)" Enabled="true" Placeholder="R.U.C." FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <SfTextBox @bind-Value="@(cli.direccion)" Enabled="true" Placeholder="Dirección" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-
-                                            <SfDropDownList DataSource="@LocalSexo"
-                                                            TItem="Sexo"
-                                                            TValue="string"
-                                                            @bind-Value="@(cli.sexo)"
-                                                            Placeholder="Sexo"
-                                                            FloatLabelType="FloatLabelType.Always">
-                                                <DropDownListFieldSettings Value="ID" Text="Text"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                        <div class="form-group col-md-3">
-
-                                            <SfDatePicker @bind-Value="@(cli.fecha_nacimiento)"
-                                                          Placeholder="Fec. nacimiento"
-                                                          FloatLabelType="FloatLabelType.Always"></SfDatePicker>
-                                        </div>
-                                        <div class="form-group col-md-3">
-
-                                            <SfDropDownList DataSource="@nationalitys"
-                                                            TItem="Nationality"
-                                                            TValue="Int32?"
-                                                            @bind-Value="@(cli.id_nacionalidad)"
-                                                            Placeholder="Nacionalidad"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                <DropDownListFieldSettings Text="nacionalidad" Value="id_nacionalidad"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfDropDownList TValue="Int32?" TItem="ClientType" @bind-Value="@(cli.id_tipo_cliente)" Placeholder="Tipo cliente" FloatLabelType="FloatLabelType.Always" DataSource="@clientTypes">
-                                                <DropDownListFieldSettings Text="tipo" Value="id_tipo_cliente"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            <SfDropDownList TValue="Int32?" TItem="Neighborhood" @bind-Value="@(cli.id_barrio)" Placeholder="Barrio" DataSource="@neighborhoods" FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                <DropDownListFieldSettings Text="barrio" Value="id_barrio"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfDropDownList TValue="Int32?" TItem="CivilStatus" @bind-Value="@(cli.id_estado_civil)" Placeholder="Estado civil" DataSource="@civilStatus" FloatLabelType="FloatLabelType.Always">
-                                                <DropDownListFieldSettings Text="estado_civil" Value="id_estado_civil"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                    </div>
+                                    <SfNumericTextBox @bind-Value="@(cli.id_funcionario)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                 </div>
-                            </Template>
-                        </GridEditSettings>
-                        <GridColumns>
-                            <GridColumn Field=@nameof(Client.id_cliente) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+                                <div class="form-group col-md-6">
 
-                            <GridColumn Field=@nameof(Client.nombres) HeaderText="Nombres" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Client.apellidos) HeaderText="Apellidos" Width="20"></GridColumn>
+                                    <SfTextBox @bind-Value="@(cli.razon_social)" Enabled="true" Placeholder="Razón social" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
 
-                            <GridColumn Field=@nameof(Client.razon_social) HeaderText="Razón social" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Client.ci) HeaderText="Nro. doc." Width="10"></GridColumn>
-                            <GridColumn Field=@nameof(Client.ruc) HeaderText="R.U.C." Width="10"></GridColumn>
-                            <GridColumn Field="@nameof(Client.telefono)" HeaderText="Telefono" Width="20"></GridColumn>
-                            <GridColumn Field="@nameof(Client.vendedor)" HeaderText="Vendedor" Width="20"></GridColumn>
+                                    <SfTextBox @bind-Value="@(cli.nombres)" Enabled="true" Placeholder="Nombres" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                </div>
+                                <div class="form-group col-md-6">
 
-                        </GridColumns>
-                    </SfGrid>
+                                    <SfTextBox @bind-Value="@(cli.apellidos)" Enabled="true" Placeholder="Apellidos" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <SfTextBox @bind-Value="@(cli.ci)" Enabled="true" Placeholder="Nro. Documento" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <SfTextBox @bind-Value="@(cli.ruc)" Enabled="true" Placeholder="R.U.C." FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <SfTextBox @bind-Value="@(cli.direccion)" Enabled="true" Placeholder="Dirección" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+
+                                    <SfDropDownList DataSource="@LocalSexo"
+                                                    TItem="Sexo"
+                                                    TValue="string"
+                                                    @bind-Value="@(cli.sexo)"
+                                                    Placeholder="Sexo"
+                                                    FloatLabelType="FloatLabelType.Always">
+                                        <DropDownListFieldSettings Value="ID" Text="Text"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                                <div class="form-group col-md-3">
+
+                                    <SfDatePicker @bind-Value="@(cli.fecha_nacimiento)"
+                                                  Placeholder="Fec. nacimiento"
+                                                  FloatLabelType="FloatLabelType.Always"></SfDatePicker>
+                                </div>
+                                <div class="form-group col-md-3">
+
+                                    <SfDropDownList DataSource="@nationalitys"
+                                                    TItem="Nationality"
+                                                    TValue="Int32?"
+                                                    @bind-Value="@(cli.id_nacionalidad)"
+                                                    Placeholder="Nacionalidad"
+                                                    FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                        <DropDownListFieldSettings Text="nacionalidad" Value="id_nacionalidad"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <SfDropDownList TValue="Int32?" TItem="ClientType" @bind-Value="@(cli.id_tipo_cliente)" Placeholder="Tipo cliente" FloatLabelType="FloatLabelType.Always" DataSource="@clientTypes">
+                                        <DropDownListFieldSettings Text="tipo" Value="id_tipo_cliente"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <SfDropDownList TValue="Int32?" TItem="Neighborhood" @bind-Value="@(cli.id_barrio)" Placeholder="Barrio" DataSource="@neighborhoods" FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                        <DropDownListFieldSettings Text="barrio" Value="id_barrio"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <SfDropDownList TValue="Int32?" TItem="CivilStatus" @bind-Value="@(cli.id_estado_civil)" Placeholder="Estado civil" DataSource="@civilStatus" FloatLabelType="FloatLabelType.Always">
+                                        <DropDownListFieldSettings Text="estado_civil" Value="id_estado_civil"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <SfDropDownList TValue="String" TItem="Exento" @bind-Value="@(cli.cliente_exento)" Placeholder="Exento" DataSource="@LocalExento" FloatLabelType="FloatLabelType.Always">
+                                        <DropDownListFieldSettings Text="Text" Value="Text"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                            </div>
+                        </div>
+                    </Template>
+                </GridEditSettings>
+                <GridColumns>
+                    <GridColumn Field=@nameof(Client.id_cliente) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+
+                    <GridColumn Field=@nameof(Client.nombres) HeaderText="Nombres" Width="20"></GridColumn>
+                    <GridColumn Field=@nameof(Client.apellidos) HeaderText="Apellidos" Width="20"></GridColumn>
+
+                    <GridColumn Field=@nameof(Client.razon_social) HeaderText="Razón social" Width="30"></GridColumn>
+                    <GridColumn Field=@nameof(Client.ci) HeaderText="Nro. doc." Width="10"></GridColumn>
+                    <GridColumn Field=@nameof(Client.ruc) HeaderText="R.U.C." Width="15"></GridColumn>
+                    <GridColumn Field=@nameof(Client.cliente_exento) HeaderText="Exento" Width="15"></GridColumn>
+                    <GridColumn Field="@nameof(Client.telefono)" HeaderText="Telefono" Width="20"></GridColumn>
+                    <GridColumn Field="@nameof(Client.vendedor)" HeaderText="Vendedor" Width="20"></GridColumn>
+
+                </GridColumns>
+            </SfGrid>
                 }
 
             </div>
@@ -205,7 +211,7 @@
 @code {
     //public IEnumerable<Client> clients { get; set; }
     public string Message { get; set; }
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search" };
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search" };
     public string ErrorDetails = "";
 
     public IEnumerable<Client> GridData { get; set; }
@@ -258,6 +264,16 @@
     new Sexo() { ID= "F", Text= "Femenino" },
   };
 
+    public class Exento
+    {
+        public string Text { get; set; }
+    }
+
+    List<Exento> LocalExento = new List<Exento>
+    {
+        new Exento() { Text = "SI"},
+        new Exento() { Text = "NO"},
+    };
 
     public IEditorSettings CivilStatusEditParams = new DropDownEditCellParams
     {
@@ -372,6 +388,17 @@
     {
 
         await this.ToastObj.Hide("All");
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.FileName = "Clientes.xlsx";
+            await this.Grid.ExcelExport(ExcelProperties);
+        }
+
     }
 }
 

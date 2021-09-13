@@ -54,6 +54,7 @@ namespace CoreERP.Model
 
         public string vendedor { get; set; }
 
+        public string cliente_exento { get; set; }
 
         //public virtual Neighborhood Neighborhood { get; set; }
         //public virtual CivilStatus CivilStatus { get; set; }
