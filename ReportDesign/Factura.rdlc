@@ -358,7 +358,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=FormatNumber(Fields!total.Value,0)</Value>
+                                      <Value>=IIf(First(Fields!cliente_exento.Value, "VentasDS") = "NO",FormatNumber(Fields!total.Value,0),0)</Value>
                                       <Style>
                                         <FontSize>8pt</FontSize>
                                       </Style>
@@ -515,6 +515,41 @@
             <Height>0.58208cm</Height>
             <Width>2.5cm</Width>
             <ZIndex>3</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="IVATextBox">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=IIf(First(Fields!cliente_exento.Value, "VentasDS") = "NO",Sum(Fields!total.Value, "VentasDS")/11,0)</Value>
+                    <Style>
+                      <FontFamily>Times New Roman</FontFamily>
+                      <FontSize>9pt</FontSize>
+                      <Format>#,0;(#,0)</Format>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Right</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <Top>19.3175cm</Top>
+            <Left>14.5cm</Left>
+            <Height>0.53975cm</Height>
+            <Width>2.5cm</Width>
+            <ZIndex>4</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -831,41 +866,6 @@
               <Height>0.6cm</Height>
               <Width>2.53471cm</Width>
               <ZIndex>8</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="Textbox9">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=First(Fields!cliente_exento.Value, "VentasDS")</Value>
-                      <Style>
-                        <FontFamily>Times New Roman</FontFamily>
-                        <FontSize>9pt</FontSize>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style>
-                    <TextAlign>Center</TextAlign>
-                  </Style>
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox7</rd:DefaultName>
-              <Top>3.58969cm</Top>
-              <Left>9.91281cm</Left>
-              <Height>0.52062cm</Height>
-              <Width>0.67438cm</Width>
-              <ZIndex>9</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
