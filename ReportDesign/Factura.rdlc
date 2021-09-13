@@ -661,7 +661,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>XX</Value>
+                      <Value>=IIf(First(Fields!condicion.Value, "VentasDS") = "Contado","","XX")</Value>
                       <Style>
                         <FontFamily>Times New Roman</FontFamily>
                         <FontSize>9pt</FontSize>
@@ -696,7 +696,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>XX</Value>
+                      <Value>=IIf(First(Fields!condicion.Value, "VentasDS") = "Contado","XX","")</Value>
                       <Style>
                         <FontFamily>Times New Roman</FontFamily>
                         <FontSize>9pt</FontSize>
