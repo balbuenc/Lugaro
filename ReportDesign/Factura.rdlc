@@ -23,7 +23,7 @@
         </Field>
         <Field Name="nro_presupuesto">
           <DataField>nro_presupuesto</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="fecha">
           <DataField>fecha</DataField>
@@ -125,14 +125,30 @@
           <DataField>monto_total</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="obra">
+          <DataField>obra</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="motivo">
+          <DataField>motivo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="precio_unitario">
+          <DataField>precio_unitario</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="cliente_exento">
+          <DataField>cliente_exento</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>PresupuestosDataSet</rd:DataSetName>
         <rd:SchemaPath>C:\Users\cbalbuena\source\repos\Lugaro\ReportDesign\PresupuestosDataSet.xsd</rd:SchemaPath>
-        <rd:TableName>PresupuestosDataSet</rd:TableName>
+        <rd:TableName>DataTable1</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>PresupuestosDataSetTableAdapter</rd:TableAdapterName>
+        <rd:TableAdapterName>DataTable1TableAdapter</rd:TableAdapterName>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
@@ -237,13 +253,13 @@
                         </TablixCell>
                         <TablixCell>
                           <CellContents>
-                            <Textbox Name="Importe">
+                            <Textbox Name="precio_unitario">
                               <KeepTogether>true</KeepTogether>
                               <Paragraphs>
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value />
+                                      <Value>=FormatNumber(Fields!precio_unitario.Value,0)</Value>
                                       <Style>
                                         <FontSize>8pt</FontSize>
                                       </Style>
@@ -254,7 +270,7 @@
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <rd:DefaultName>Importe</rd:DefaultName>
+                              <rd:DefaultName>precio_unitario</rd:DefaultName>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -276,7 +292,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value />
+                                      <Value>==IIf(First(Fields!cliente_exento.Value, "VentasDS") = "SI",FormatNumber(Fields!total.Value,0),0)</Value>
                                       <Style>
                                         <FontSize>8pt</FontSize>
                                       </Style>
@@ -298,6 +314,7 @@
                                 <PaddingBottom>1pt</PaddingBottom>
                               </Style>
                             </Textbox>
+                            <rd:Selected>true</rd:Selected>
                           </CellContents>
                         </TablixCell>
                         <TablixCell>

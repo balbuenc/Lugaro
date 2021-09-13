@@ -7,7 +7,7 @@
           <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="ConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="ConnectionString (Settings)" PropertyReference="ApplicationSettings.ReportDesign.Properties.Settings.GlobalReference.Default.ConnectionString" Provider="System.Data.Odbc" />
         </Connections>
         <Tables>
-          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="PresupuestosDataSetTableAdapter" GeneratorDataComponentClassName="PresupuestosDataSetTableAdapter" Name="PresupuestosDataSet" UserDataComponentName="PresupuestosDataSetTableAdapter">
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="DataTable1TableAdapter" GeneratorDataComponentClassName="DataTable1TableAdapter" Name="DataTable1" UserDataComponentName="DataTable1TableAdapter">
             <MainSource>
               <DbSource ConnectionRef="ConnectionString (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <SelectCommand>
@@ -49,7 +49,8 @@ FROM        "public".v_impresion_presupuestos</CommandText>
               <Mapping SourceColumn="monto_total" DataSetColumn="monto_total" />
               <Mapping SourceColumn="obra" DataSetColumn="obra" />
               <Mapping SourceColumn="motivo" DataSetColumn="motivo" />
-              <Mapping SourceColumn="precio_venta" DataSetColumn="precio_venta" />
+              <Mapping SourceColumn="precio_unitario" DataSetColumn="precio_unitario" />
+              <Mapping SourceColumn="cliente_exento" DataSetColumn="cliente_exento" />
             </Mappings>
             <Sources />
           </TableAdapter>
@@ -61,7 +62,7 @@ FROM        "public".v_impresion_presupuestos</CommandText>
   <xs:element name="PresupuestosDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="PresupuestosDataSet" msprop:Generator_UserDSName="PresupuestosDataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="PresupuestosDataSet" msprop:Generator_TableClassName="PresupuestosDataSetDataTable" msprop:Generator_TableVarName="tablePresupuestosDataSet" msprop:Generator_TablePropName="_PresupuestosDataSet" msprop:Generator_RowDeletingName="PresupuestosDataSetRowDeleting" msprop:Generator_RowChangingName="PresupuestosDataSetRowChanging" msprop:Generator_RowEvHandlerName="PresupuestosDataSetRowChangeEventHandler" msprop:Generator_RowDeletedName="PresupuestosDataSetRowDeleted" msprop:Generator_UserTableName="PresupuestosDataSet" msprop:Generator_RowChangedName="PresupuestosDataSetRowChanged" msprop:Generator_RowEvArgName="PresupuestosDataSetRowChangeEvent" msprop:Generator_RowClassName="PresupuestosDataSetRow">
+        <xs:element name="DataTable1" msprop:Generator_TableClassName="DataTable1DataTable" msprop:Generator_TableVarName="tableDataTable1" msprop:Generator_TablePropName="DataTable1" msprop:Generator_RowDeletingName="DataTable1RowDeleting" msprop:Generator_RowChangingName="DataTable1RowChanging" msprop:Generator_RowEvHandlerName="DataTable1RowChangeEventHandler" msprop:Generator_RowDeletedName="DataTable1RowDeleted" msprop:Generator_UserTableName="DataTable1" msprop:Generator_RowChangedName="DataTable1RowChanged" msprop:Generator_RowEvArgName="DataTable1RowChangeEvent" msprop:Generator_RowClassName="DataTable1Row">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="id_presupuesto" msprop:Generator_ColumnVarNameInTable="columnid_presupuesto" msprop:Generator_ColumnPropNameInRow="id_presupuesto" msprop:Generator_ColumnPropNameInTable="id_presupuestoColumn" msprop:Generator_UserColumnName="id_presupuesto" type="xs:int" minOccurs="0" />
@@ -220,6 +221,13 @@ FROM        "public".v_impresion_presupuestos</CommandText>
                 </xs:simpleType>
               </xs:element>
               <xs:element name="precio_unitario" msprop:Generator_ColumnVarNameInTable="columnprecio_unitario" msprop:Generator_ColumnPropNameInRow="precio_unitario" msprop:Generator_ColumnPropNameInTable="precio_unitarioColumn" msprop:Generator_UserColumnName="precio_unitario" type="xs:decimal" minOccurs="0" />
+              <xs:element name="cliente_exento" msprop:Generator_ColumnVarNameInTable="columncliente_exento" msprop:Generator_ColumnPropNameInRow="cliente_exento" msprop:Generator_ColumnPropNameInTable="cliente_exentoColumn" msprop:Generator_UserColumnName="cliente_exento" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="4" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
