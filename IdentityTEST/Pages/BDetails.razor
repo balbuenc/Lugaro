@@ -165,6 +165,9 @@
                                     <td>
                                         <p class="m-0"><b>Cotizacion:</b>@Cotizacion</p>
                                     </td>
+                                    <td>
+                                        <p class="m-0"><b>Condición:</b>@Condicion</p>
+                                    </td>
                                 </tr>
                             </tbody>
 
@@ -470,6 +473,7 @@
     public string Cotizacion = "";
     public string Estado = "";
     public string Vendedor = "";
+    public string Condicion = "";
 
 
     public IEnumerable<BudgetDetails> GridData { get; set; }
@@ -744,6 +748,7 @@
             Cotizacion = header.cotizacion.ToString();
             Estado = header.estado;
             Vendedor = header.vendedor;
+            Condicion = header.condicion;
 
             //Verify if prinatable layout
             if (IsPrintable)
