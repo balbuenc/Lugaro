@@ -25,7 +25,36 @@
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Navigations
 
+<style>
+    .e-list-settings:before {
+        content: "\e679";
+    }
 
+    .e-list-print:before {
+        content: "\e743";
+    }
+
+    .e-list-save:before {
+        content: "\e74d";
+    }
+
+    .e-list-saveas:before {
+        content: "\e72b";
+    }
+
+    .e-list-delete:before {
+        content: "\e773";
+    }
+
+    .e-list-undo:before {
+        content: "\e752";
+    }
+    .e-list-edit:before {
+        content: "\e7a3";
+    }
+
+    
+</style>
 
 <div class="container-fluid">
     <p>@Message</p>
@@ -52,6 +81,7 @@
                 <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                 <GridPageSettings PageSize="30"></GridPageSettings>
                 <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                <GridEvents OnRecordDoubleClick="RecordDoubleClickHandler" TValue="Budget"></GridEvents>
                 <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
                     <HeaderTemplate>
                         @{
@@ -150,19 +180,16 @@
                     </Template>
                 </GridEditSettings>
                 <GridColumns>
-                    <GridColumn HeaderText="Det." TextAlign="TextAlign.Center" Width="10">
-                        <Template>
-                            @{
-                                var Bud = (context as Budget);
-                                <div><a href="#" @onclick="@(() => Navigate(Bud))">Ver</a></div>
-                            }
-                        </Template>
+                    <GridColumn HeaderText="*" Width="8">
+                        <GridCommandColumns>
+                            <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
+                        </GridCommandColumns>
                     </GridColumn>
                     <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
-                    <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="20"></GridColumn>
-                    <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="15"></GridColumn>
+                    <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="15"></GridColumn>
+                    <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="15" Visible="false"></GridColumn>
                     <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
-                    <GridColumn Field=@nameof(Budget.moneda) HeaderText="Moneda" Width="10"></GridColumn>
+                    <GridColumn Field=@nameof(Budget.moneda) HeaderText="Mon." Width="15"></GridColumn>
                     <GridColumn Field=@nameof(Budget.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="15"></GridColumn>
                     <GridColumn Field=@nameof(Budget.estado) HeaderText="Estado" Width="15"></GridColumn>
                     <GridColumn Field=@nameof(Budget.direccion_entrega) HeaderText="Entregar en" Visible="false" Width="10"></GridColumn>
@@ -317,6 +344,11 @@
             Message = "Error al obtener ID de usuario : " + ex.Message;
             return 1;
         }
+    }
+
+    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<Budget> args)
+    {
+        Navigate(((Budget)args.RowData));
     }
 
     private void Navigate(Budget budget)
