@@ -119,7 +119,7 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"UPDATE public.presupuestos
-                        SET id_cliente=@id_cliente, id_funcionario=@id_funcionario, fecha=@fecha, estado=@estado, nro_presupuesto=@nro_presupuesto, id_moneda=@id_moneda,plazo_entrega=@plazo_entrega,forma_pago=@forma_pago,observaciones=@observaciones,contacto=@contacto,direccion_entrega=@direccion_entrega,id_condicion_venta=@id_condicion_venta,obra=@obra,motivo=@motivo
+                        SET id_cliente=@id_cliente,  fecha=@fecha, estado=@estado, nro_presupuesto=@nro_presupuesto, id_moneda=@id_moneda,plazo_entrega=@plazo_entrega,forma_pago=@forma_pago,observaciones=@observaciones,contacto=@contacto,direccion_entrega=@direccion_entrega,id_condicion_venta=@id_condicion_venta,obra=@obra,motivo=@motivo
                         WHERE id_presupuesto=@id_presupuesto;
                         ";
 
@@ -127,7 +127,6 @@ namespace CoreERP.Data.Repositories
                 {
                     budget.id_presupuesto,
                     budget.id_cliente,
-                    budget.id_funcionario,
                     budget.fecha,
                     budget.estado,
                     budget.nro_presupuesto,
