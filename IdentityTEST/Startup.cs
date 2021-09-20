@@ -182,6 +182,9 @@ namespace CoreERP.UI
             dicsountLimitService => { dicsountLimitService.BaseAddress = new Uri(apiurl); }
             );
 
+            services.AddHttpClient<ILittleBoxService, LittleBoxService>(
+           littleBoxService => { littleBoxService.BaseAddress = new Uri(apiurl); }
+           );
 
         }
 
