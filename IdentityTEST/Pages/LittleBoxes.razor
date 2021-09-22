@@ -83,7 +83,7 @@
                                 @{
                                     var little = (context as LittleBox);
                                 }
-                                <span>Detalle de presupuesto: @(little.id_caja_chica)</span>
+                                <span>Detalle de caja chica: @(little.id_caja_chica)</span>
                             </HeaderTemplate>
                             <Template>
                                 @{
@@ -142,7 +142,7 @@
                             <GridColumn Field=@nameof(LittleBox.id_caja_chica) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.fecha_apertura) HeaderText="Apertura" Visible="true" Width="15" Format="dd/MM/yyyy"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.fecha_cierre) HeaderText="Cierre" Width="15" Visible="true"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.usuario) HeaderText="#Comprobante" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.nro_comprobante) HeaderText="#Comprobante" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.monto_apertura) HeaderText="Monto apert." Width="20" Format="N0"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.usuario) HeaderText="Responsable" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.estado) HeaderText="Estado" Format="dd/MM/yyyy" Width="15"></GridColumn>
@@ -290,7 +290,7 @@
 
     private void Navigate(LittleBox littleBox)
     {
-        NavigationManager.NavigateTo($"/LittleBoxDetails/{littleBox.id_caja_chica}");
+        NavigationManager.NavigateTo($"/BoxDetails/{littleBox.id_caja_chica}");
     }
 
 

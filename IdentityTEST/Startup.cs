@@ -186,6 +186,10 @@ namespace CoreERP.UI
            littleBoxService => { littleBoxService.BaseAddress = new Uri(apiurl); }
            );
 
+            services.AddHttpClient<ILittleBoxDetailsService, LittleBoxDetailsService>(
+     littleBoxDetailsService => { littleBoxDetailsService.BaseAddress = new Uri(apiurl); }
+     );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

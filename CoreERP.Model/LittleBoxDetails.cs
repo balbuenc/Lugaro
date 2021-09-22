@@ -16,8 +16,10 @@ namespace CoreERP.Model
 
         public string beneficiario { get; set; }
         public string concepto { get; set; }
-       
-        
 
-	}
+        public decimal monto { get; set; }
+
+        public decimal total_gasto { get; set; }
+        public decimal saldo { get; set; }
+    }
 }
