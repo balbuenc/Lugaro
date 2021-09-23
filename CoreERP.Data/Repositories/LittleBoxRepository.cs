@@ -46,10 +46,11 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = @"SELECT cc.id_caja_chica, cc.fecha_apertura, cc.fecha_cierre, cc.id_funcionario, cc.monto_apertura, cc.estado, f.usuario 
+                var sql = @"SELECT cc.id_caja_chica, cc.fecha_apertura, cc.fecha_cierre, cc.id_funcionario, cc.monto_apertura, cc.estado, f.usuario, saldo_inicial, cc.nro_comprobante,
+		                    cc.monto_apertura  - (select coalesce(sum(ccd.monto),0) from public.caja_chica_detalle ccd where ccd.id_caja_chica = cc.id_caja_chica) + cc.saldo_inicial as saldo
                             FROM public.caja_chica cc
                             left outer join funcionarios f on f.id_funcionario  = cc.id_funcionario 
-                                order by cc.id_caja_chica desc  ";
+                                order by cc.id_caja_chica desc   ";
 
                 var result = await db.QueryAsync<LittleBox>(sql, new { });
 
@@ -88,9 +89,8 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"INSERT INTO public.caja_chica
-                            (fecha_apertura, fecha_cierre, id_funcionario, monto_apertura, estado)
-                            VALUES(@fecha_apertura, null, @id_funcionario, @monto_apertura, 'ABIERTO');
-                            ";
+                            (fecha_apertura, fecha_cierre, id_funcionario, monto_apertura, estado, saldo_inicial, nro_comprobante)
+                            VALUES(@fecha_apertura, null, @id_funcionario, @monto_apertura, 'ABIERTO', @saldo_inicial,@nro_comprobante);";
 
                 var result = await db.ExecuteAsync(sql, new
                 {
@@ -98,7 +98,9 @@ namespace CoreERP.Data.Repositories
                     littleBox.fecha_cierre,
                     littleBox.id_funcionario,
                     littleBox.monto_apertura,
-                    littleBox.estado
+                    littleBox.estado,
+                    littleBox.saldo_inicial,
+                    littleBox.nro_comprobante
                 }
                 );
 
@@ -117,8 +119,8 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"UPDATE public.caja_chica
-                                SET fecha_apertura=@fecha_apertura, fecha_cierre=@fecha_cierre, id_funcionario=@id_funcionario, monto_apertura=@monto_apertura, estado=@estado
-                                WHERE id_caja_chica=id_caja_chica;
+                                SET fecha_apertura=@fecha_apertura, fecha_cierre=@fecha_cierre, monto_apertura=@monto_apertura, estado=@estado, nro_comprobante=@nro_comprobante
+                                WHERE id_caja_chica=@id_caja_chica;
                                 ";
 
                 var result = await db.ExecuteAsync(sql, new
@@ -128,7 +130,8 @@ namespace CoreERP.Data.Repositories
                     littleBox.id_funcionario,
                     littleBox.monto_apertura,
                     littleBox.estado,
-                    littleBox.id_caja_chica
+                    littleBox.id_caja_chica,
+                    littleBox.nro_comprobante
                 }
                 );
 

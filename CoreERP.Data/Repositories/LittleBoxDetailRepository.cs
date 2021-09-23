@@ -119,7 +119,7 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"UPDATE public.caja_chica_detalle
-                            SET id_caja_chica=@id_caja_chica, nro_comprobante=@nro_comprobante, fecha=@fecha, beneficiario=@beneficiario, concepto=@concepto
+                            SET id_caja_chica=@id_caja_chica, nro_comprobante=@nro_comprobante, fecha=@fecha, beneficiario=@beneficiario, concepto=@concepto, monto=@monto
                             WHERE id_caja_chica_detalle=@id_caja_chica_detalle;";
 
                 var result = await db.ExecuteAsync(sql, new

@@ -19,6 +19,8 @@ namespace CoreERP.Model
 
         public string nro_comprobante { get; set; }
 
+        public decimal saldo { get; set; }
 
+        public decimal saldo_inicial { get; set; }
     }
 }

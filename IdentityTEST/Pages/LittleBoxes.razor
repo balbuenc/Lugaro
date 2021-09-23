@@ -44,7 +44,7 @@
     }
 
     .e-list-undo:before {
-        content: "\e752";
+        content: "\e197";
     }
 
     .e-list-edit:before {
@@ -74,7 +74,14 @@
                 {
                     @*<SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>*@
                     <SfGrid TValue="LittleBox" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
-                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="LittleBox" OnToolbarClick="ToolbarClickHandler" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler" 
+                                    OnActionComplete="ActionCompletedHandler" 
+                                    TValue="LittleBox" 
+                                    OnToolbarClick="ToolbarClickHandler" 
+                                    OnRecordDoubleClick="RecordDoubleClickHandler" 
+                                    CommandClicked="OnCommandClicked">
+
+                        </GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
@@ -102,10 +109,10 @@
                                         <div class="form-group col-md-3">
                                             <SfDatePicker @bind-Value="@(little.fecha_cierre)" Enabled="false" Placeholder="Fecha cierre" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
                                         </div>
-                                       
+
                                     </div>
-                                    <div class="form-row">
-                                        
+                                    @*<div class="form-row">
+
                                         <div class="form-group col-md-9">
                                             <SfDropDownList DataSource="@employees"
                                                             TItem="Employee"
@@ -116,7 +123,7 @@
                                                 <DropDownListFieldSettings Value="id_funcionario" Text="usuario"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
-                                    </div>
+                                    </div>*@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <SfTextBox @bind-Value="@(little.nro_comprobante)" Enabled="true" Placeholder="Comprobante" FloatLabelType="FloatLabelType.Always"></SfTextBox>
@@ -126,27 +133,29 @@
                                         </div>
 
                                     </div>
-                                    
-                                   
-                                   
+
+
+
 
                                 </div>
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn HeaderText="*" Width="8">
+                            <GridColumn HeaderText="*" Width="5">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                    @*<GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-undo", CssClass="e-flat" })" Title="Cerrar caja"></GridCommandColumn>*@
                                 </GridCommandColumns>
                             </GridColumn>
                             <GridColumn Field=@nameof(LittleBox.id_caja_chica) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.fecha_apertura) HeaderText="Apertura" Visible="true" Width="15" Format="dd/MM/yyyy"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.fecha_cierre) HeaderText="Cierre" Width="15" Visible="true"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.nro_comprobante) HeaderText="#Comprobante" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.fecha_cierre) HeaderText="Cierre" Width="15" Visible="false" Format="dd/MM/yyyy" ></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.nro_comprobante) HeaderText="#Comp." Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.saldo_inicial) HeaderText="Saldo inic." Width="20" Format="N0"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.monto_apertura) HeaderText="Monto apert." Width="20" Format="N0"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.usuario) HeaderText="Responsable" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.estado) HeaderText="Estado" Format="dd/MM/yyyy" Width="15"></GridColumn>
-
+                            <GridColumn Field=@nameof(LittleBox.estado) HeaderText="Estado" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.saldo) HeaderText="Saldo" Width="15" Format="N0"></GridColumn>
 
                         </GridColumns>
                     </SfGrid>
@@ -167,9 +176,9 @@
     public string ErrorDetails = "";
 
     public IEnumerable<LittleBox> GridData { get; set; }
-  
+
     public IEnumerable<Employee> employees { get; set; }
-  
+
 
     public DateTime hoy = DateTime.Today;
     public DateTime t;
@@ -179,6 +188,7 @@
     private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
 
     public string UserName;
+    public string Estado;
 
 
     protected override async Task OnInitializedAsync()
@@ -186,9 +196,9 @@
         try
         {
             GridData = await LittleBoxService.GetAllLittleBoxs();
-          
+
             employees = await EmployeeService.GetAllEmployees();
-          
+
 
 
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -227,22 +237,49 @@
         }
     }
 
+
+
     private async Task ActionCompletedHandler(ActionEventArgs<LittleBox> Args)
     {
         if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
         {
-            GridData = await LittleBoxService.GetAllLittleBoxs();
-            Grid.Refresh();
+            RefreshGrid();
         }
 
     }
 
+    protected async void RefreshGrid()
+    {
+        GridData = await LittleBoxService.GetAllLittleBoxs();
+        Grid.Refresh();
+    }
+
+    public async void OnCommandClicked(CommandClickEventArgs<LittleBox> args)
+    {
+        var item = args.RowData;
+        var command = args.CommandColumn;
+
+        if (command.Title == "Cerrar caja")
+        {
+            item.estado = "CERRADO";
+            await LittleBoxService.SaveLittleBox(item);
+            RefreshGrid();
+        }
+
+    }
 
     protected async Task SaveLittleBox(LittleBox littleBox)
     {
         try
         {
             littleBox.id_funcionario = GetEmployeeID(UserName);
+            if (littleBox.id_caja_chica == 0)
+            {
+                littleBox.saldo_inicial = GetRestAmmount();
+                CloseUserOpenLittleBoxes();
+                littleBox.estado = "ABIERTO";
+            }
+
             await LittleBoxService.SaveLittleBox(littleBox);
         }
         catch (Exception ex)
@@ -250,6 +287,37 @@
             Message = "Error al registrar caja chica: " + ex.Message;
             throw ex;
         }
+    }
+
+    protected async void CloseUserOpenLittleBoxes()
+    {
+        int IdFuncionario = GetEmployeeID(UserName);
+        foreach (LittleBox l in GridData)
+        {
+            if (l.id_funcionario == IdFuncionario && l.estado == "ABIERTO")
+            {
+                l.estado = "CERRADO";
+                await LittleBoxService.SaveLittleBox(l);
+            }
+        }
+    }
+
+    protected  decimal GetRestAmmount()
+    {
+        decimal RestAmmount = 0;
+        int IdFuncionario = GetEmployeeID(UserName);
+
+        foreach (LittleBox l in GridData)
+        {
+
+            if (l.id_funcionario == IdFuncionario && l.estado == "ABIERTO")
+            {
+                RestAmmount += l.saldo;
+            }
+
+        }
+
+        return RestAmmount;
     }
 
     protected async Task DeleteLittleBox(int id)
