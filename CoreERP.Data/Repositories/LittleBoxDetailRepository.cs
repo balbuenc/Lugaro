@@ -48,7 +48,7 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
                 var sql = @"SELECT ccd.id_caja_chica, ccd.nro_comprobante, ccd.fecha, ccd.beneficiario, ccd.concepto, ccd.id_caja_chica_detalle, ccd.monto, 
                             (select sum(monto) from public.caja_chica_detalle ccd1 where ccd1.id_caja_chica = @Id) as total_gasto,
-                            cc.monto_apertura  - (select sum(monto) from public.caja_chica_detalle ccd2 where ccd2.id_caja_chica = @Id) as saldo
+                            (cc.monto_apertura + cc.saldo_inicial)   - (select sum(monto) from public.caja_chica_detalle ccd2 where ccd2.id_caja_chica = @Id) as saldo
                             FROM public.caja_chica_detalle ccd
                             inner join public.caja_chica cc on cc.id_caja_chica = ccd.id_caja_chica 
                             where ccd.id_caja_chica = @Id
