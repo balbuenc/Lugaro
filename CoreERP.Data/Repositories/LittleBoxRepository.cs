@@ -67,10 +67,10 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = @"SELECT cc.id_caja_chica, cc.fecha_apertura, cc.fecha_cierre, cc.id_funcionario, cc.monto_apertura, cc.estado, f.usuario 
+                var sql = @"SELECT cc.id_caja_chica, cc.fecha_apertura, cc.fecha_cierre, cc.id_funcionario, cc.monto_apertura, cc.estado, f.usuario, saldo_inicial, cc.nro_comprobante,
+		                    cc.monto_apertura  - (select coalesce(sum(ccd.monto),0) from public.caja_chica_detalle ccd where ccd.id_caja_chica = cc.id_caja_chica) + cc.saldo_inicial as saldo
                             FROM public.caja_chica cc
-                            left outer join funcionarios f on f.id_funcionario  = cc.id_funcionario 
-                            order by cc.id_caja_chica desc 
+                            left outer join funcionarios f on f.id_funcionario  = cc.id_funcionario  
                             where cc.id_caja_chica = @Id";
 
 

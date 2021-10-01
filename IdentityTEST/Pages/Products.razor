@@ -6,6 +6,9 @@
 @inject IOriginService OriginService
 @inject IVendorService VendorService
 @inject ICurrencyService CurrencyService
+@inject IStockService StockService
+@inject IStoreService StoreService
+
 
 @attribute [Authorize]
 @using Syncfusion.Blazor
@@ -18,7 +21,35 @@
 @using Syncfusion.Blazor.Calendars;
 @using Syncfusion.Blazor.Buttons
 
+<style>
+    .e-list-settings:before {
+        content: "\e679";
+    }
 
+    .e-list-print:before {
+        content: "\e743";
+    }
+
+    .e-list-save:before {
+        content: "\e74d";
+    }
+
+    .e-list-saveas:before {
+        content: "\e72b";
+    }
+
+    .e-list-delete:before {
+        content: "\e773";
+    }
+
+    .e-list-undo:before {
+        content: "\e197";
+    }
+
+    .e-list-edit:before {
+        content: "\e7a3";
+    }
+</style>
 
 <div class="container-fluid">
     <p>@Message</p>
@@ -49,6 +80,7 @@
                             <HeaderTemplate>
                                 @{
                                     var prod = (context as Product);
+                                    getProductStock(prod.id_producto);
                                 }
                                 <span>Detalle de Producto: @(prod.producto)</span>
                             </HeaderTemplate>
@@ -56,7 +88,7 @@
                                 @{
                                     var prod = (context as Product);
                                 }
-                                <div>
+                                <div class="container-fluid">
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
                                             <SfNumericTextBox @bind-Value="@(prod.id_producto)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
@@ -122,8 +154,47 @@
                                                 <DropDownListFieldSettings Text="origen" Value="id_origen"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
-                                        <div cla>
 
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h5><b>Existencia del producto por depósito</b></h5>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <SfGrid ID="StockGrid" @ref="StockGrid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarStock" DataSource="@stock">
+                                                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal">
+
+                                                </GridEditSettings>
+                                                <GridEvents OnActionBegin="OnStockBeginHandler" TValue="Stock"></GridEvents>
+                                                <GridColumns>
+
+                                                    <GridColumn Field=@nameof(Stock.id_stock) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+
+                                                    <GridColumn Field=@nameof(Stock.deposito) HeaderText="Depósito" Width="30">
+                                                        <EditTemplate Context="con">
+                                                            <SfDropDownList TValue="Int32" TItem="Store" @bind-Value="@((con as Stock).id_deposito)" Placeholder="Depósito" DataSource="@stores">
+                                                                <DropDownListFieldSettings Text="deposito" Value="id_deposito"></DropDownListFieldSettings>
+                                                            </SfDropDownList>
+                                                        </EditTemplate>
+                                                    </GridColumn>
+                                                    <GridColumn Field=@nameof(Stock.cantidad) HeaderText="Cantidad" Width="15"></GridColumn>
+                                                    <GridColumn HeaderText="*" Width="5">
+                                                        <GridCommandColumns>
+
+                                                            <GridCommandColumn Type="CommandButtonType.Edit"></GridCommandColumn>
+                                                            <GridCommandColumn Type="CommandButtonType.Save"></GridCommandColumn>
+                                                            <GridCommandColumn Type="CommandButtonType.Cancel"></GridCommandColumn>
+                                                            <GridCommandColumn Type="CommandButtonType.Delete"></GridCommandColumn>
+                                                            
+                                                            
+                                                        </GridCommandColumns>
+                                                    </GridColumn>
+                                                </GridColumns>
+                                            </SfGrid>
                                         </div>
                                     </div>
                                 </div>
@@ -157,6 +228,8 @@
     //public IEnumerable<Product> clients { get; set; }
     public string Message { get; set; }
     public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
+    public string[] ToolbarStock = new string[] { "Add",  };
+
     public string ErrorDetails = "";
 
     public IEnumerable<Product> GridData { get; set; }
@@ -164,13 +237,23 @@
     public IEnumerable<Origin> origins { get; set; }
     public IEnumerable<Vendor> vendors { get; set; }
     public IEnumerable<Currency> currencies { get; set; }
+    public IEnumerable<Stock> stock { get; set; }
+    public IEnumerable<Store> stores { get; set; }
 
 
 
     SfGrid<Product> Grid { get; set; }
+    SfGrid<Stock> StockGrid { get; set; }
 
     private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
+    protected int IdProducto;
 
+
+    public void getProductStock(int id)
+    {
+        var task = Task.Run<IEnumerable<Stock>>(async () => await StockService.GetProductStock(id));
+        stock = task.Result;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -181,6 +264,7 @@
             origins = await OriginService.GetAllOrigins();
             vendors = await VendorService.GetAllVendors();
             currencies = await CurrencyService.GetAllCurrencies();
+            stores = await StoreService.GetAllStores();
         }
         catch (Exception ex)
         {
@@ -192,6 +276,13 @@
 
     private async Task OnBeginHandler(ActionEventArgs<Product> Args)
     {
+        try
+        {
+            IdProducto = ((Product)Args.Data).id_producto;
+        }
+        catch (Exception ex)
+        { }
+
         if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
         {
             await SaveProduct((Product)Args.Data);
@@ -205,6 +296,35 @@
         return;
     }
 
+    private async Task OnStockBeginHandler(ActionEventArgs<Stock> Args)
+    {
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+        {
+            await SaveStock((Stock)Args.Data);
+        }
+        else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+        {
+            await DeleteStock(((Stock)Args.Data).id_stock);
+        }
+
+        return;
+    }
+
+    protected async Task SaveStock(Stock stock)
+    {
+        stock.id_producto = IdProducto;
+        await StockService.SaveStock(stock);
+        Grid.Refresh();
+
+    }
+
+    protected async Task DeleteStock(int id)
+    {
+        await StockService.DeleteStock(id);
+        Grid.Refresh();
+
+    }
+
     protected async Task SaveProduct(Product product)
     {
         await ProductService.SaveProduct(product);
@@ -215,7 +335,7 @@
         await ProductService.DeleteProduct(id);
     }
 
-  
+
 
     public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
     {

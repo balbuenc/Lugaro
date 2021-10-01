@@ -3,6 +3,7 @@
 @using Interfaces
 
 @inject ILittleBoxDetailsService LittleBoxDetailsService
+@inject ILittleBoxService LittleBoxService
 
 
 @inject NavigationManager NavigationManager
@@ -167,6 +168,8 @@
 
     public IEnumerable<LittleBoxDetails> GridData { get; set; }
     public IEnumerable<Employee> employees { get; set; }
+    public LittleBox box;
+
     public Account account;
 
     public bool EditDialogVisibility { get; set; } = false;
@@ -215,7 +218,7 @@
         {
             int id = Int32.Parse(LittleBoxID);
             GridData = await LittleBoxDetailsService.GetAllLittleBoxDetail(id);
-
+            box = await LittleBoxService.GetLittleBoxDetails(id);
 
             UpdateLittleBoxStatus();
 

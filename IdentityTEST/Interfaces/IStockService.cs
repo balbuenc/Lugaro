@@ -10,6 +10,8 @@ namespace CoreERP.UI.Interfaces
     {
         Task<IEnumerable<Stock>> GetAllStocks();
 
+        Task<IEnumerable<Stock>> GetProductStock(int id);
+
         Task<Stock> GetStockDetails(int id);
 
         Task SaveStock(Stock stock);
