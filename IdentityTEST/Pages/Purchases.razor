@@ -65,7 +65,7 @@
 
     <div class="col-lg-12" style="padding:1px; height:50px">
         <div class="content-wrapper">
-            <div class="alert alert-primary" role="banner"><b>Compras</b></div>
+            <div class="alert alert-title" role="banner"><b>Pedidos</b></div>
         </div>
     </div>
 
@@ -80,122 +80,123 @@
                 else
                 {
                     @*<SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>*@
-                    <SfGrid TValue="Purchase" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true">
-                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Purchase"></GridEvents>
-                        <GridPageSettings PageSize="30"></GridPageSettings>
-                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
-                            <HeaderTemplate>
-                                @{
-                                    var purch = (context as Purchase);
-                                }
-                                <span>Detalle de compra: @(purch.id_compra)</span>
-                            </HeaderTemplate>
-                            <Template>
-                                @{
-                                    var purch = (context as Purchase);
-                                    if (purch.fecha == t)
-                                        purch.fecha = hoy;
-                                }
-                                <div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            <SfNumericTextBox @bind-Value="@(purch.id_compra)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(purch.nro_orden_compra)" Enabled="true" Placeholder="Nro. orden" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfDropDownList DataSource="@currencies"
-                                                            TItem="Currency"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(purch.id_moneda)"
-                                                            Placeholder="Moneda"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            <SfDatePicker TValue="DateTime" @bind-Value="@(purch.fecha)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
-                                        </div>
-                                        <div class="form-group col-md-9">
-                                            <SfDropDownList DataSource="@vendors"
-                                                            TItem="Vendor"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(purch.id_proveedor)"
-                                                            Placeholder="Proveedor"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                <DropDownListFieldSettings Value="id_proveedor" Text="proveedor"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(purch.factura)" Enabled="true" Placeholder="Nro. factura" FloatLabelType="FloatLabelType.Always"></SfTextBox>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(purch.estado)" Enabled="false" Placeholder="Estado" FloatLabelType="FloatLabelType.Always"></SfTextBox>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfDropDownList DataSource="@invoiceTypes"
-                                                            TItem="InvoiceType"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(purch.id_condicion_venta)"
-                                                            Placeholder="Tipo factura"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                <DropDownListFieldSettings Value="id_condicion_venta" Text="condicion"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-
-                                        <div class="form-group col-md-6">
-                                            <SfDropDownList DataSource="@stores"
-                                                            TItem="Store"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(purch.id_deposito)"
-                                                            Placeholder="Depósito"
-                                                            FloatLabelType="FloatLabelType.Always">
-                                                <DropDownListFieldSettings Value="id_deposito" Text="deposito"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            @if (purch.estado == "Pendiente")
-                                            {
-                                                <SfButton CssClass="e-require" IconPosition="IconPosition.Right" >Autorizar</SfButton>
-                                            }
-                                        </div>
-                                    </div>
-
-
+            <SfGrid TValue="Purchase" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
+                <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Purchase"    OnToolbarClick="ToolbarClickHandler"></GridEvents>
+                <GridPageSettings PageSize="30"></GridPageSettings>
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
+                    <HeaderTemplate>
+                        @{
+                            var purch = (context as Purchase);
+                        }
+                        <span>Detalle de compra: @(purch.id_compra)</span>
+                    </HeaderTemplate>
+                    <Template>
+                        @{
+                            var purch = (context as Purchase);
+                            if (purch.fecha == t)
+                                purch.fecha = hoy;
+                        }
+                        <div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <SfNumericTextBox @bind-Value="@(purch.id_compra)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                 </div>
-                            </Template>
-                        </GridEditSettings>
-                        <GridColumns>
-                            <GridColumn HeaderText="Det." TextAlign="TextAlign.Center" Width="10">
-                                <Template>
-                                    @{
-                                        var Bud = (context as Purchase);
-                                        <div><a href="#" @onclick="@(() => Navigate(Bud))">Ver</a></div>
+                                <div class="form-group col-md-3">
+                                    <SfTextBox @bind-Value="@(purch.nro_orden_compra)" Enabled="true" Placeholder="Nro. orden" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <SfDropDownList DataSource="@currencies"
+                                                    TItem="Currency"
+                                                    TValue="Int32"
+                                                    @bind-Value="@(purch.id_moneda)"
+                                                    Placeholder="Moneda"
+                                                    FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                        <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <SfDatePicker TValue="DateTime" @bind-Value="@(purch.fecha)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <SfDropDownList DataSource="@vendors"
+                                                    TItem="Vendor"
+                                                    TValue="Int32"
+                                                    @bind-Value="@(purch.id_proveedor)"
+                                                    Placeholder="Proveedor"
+                                                    FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                        <DropDownListFieldSettings Value="id_proveedor" Text="proveedor"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <SfTextBox @bind-Value="@(purch.factura)" Enabled="true" Placeholder="Nro. factura" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <SfTextBox @bind-Value="@(purch.estado)" Enabled="false" Placeholder="Estado" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <SfDropDownList DataSource="@invoiceTypes"
+                                                    TItem="InvoiceType"
+                                                    TValue="Int32"
+                                                    @bind-Value="@(purch.id_condicion_venta)"
+                                                    Placeholder="Tipo factura"
+                                                    FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                        <DropDownListFieldSettings Value="id_condicion_venta" Text="condicion"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+
+                                <div class="form-group col-md-6">
+                                    <SfDropDownList DataSource="@stores"
+                                                    TItem="Store"
+                                                    TValue="Int32"
+                                                    @bind-Value="@(purch.id_deposito)"
+                                                    Placeholder="Depósito"
+                                                    FloatLabelType="FloatLabelType.Always">
+                                        <DropDownListFieldSettings Value="id_deposito" Text="deposito"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    @if (purch.estado == "Pendiente")
+                                    {
+                                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right">Autorizar</SfButton>
                                     }
-                                </Template>
-                            </GridColumn>
-                            <GridColumn Field=@nameof(Purchase.id_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(Purchase.nro_orden_compra) HeaderText="Nro. OC" Visible="false" Width="10"></GridColumn>
-                            <GridColumn Field=@nameof(Purchase.proveedor) HeaderText="Proveedor" Width="20"></GridColumn>
+                                </div>
+                            </div>
 
-                            <GridColumn Field=@nameof(Purchase.moneda) HeaderText="Moneda" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Purchase.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Purchase.estado) HeaderText="Estado" Width="10"></GridColumn>
 
-                            <GridColumn Field=@nameof(Purchase.condicion) HeaderText="Tipo factura" Visible="false" Width="10"></GridColumn>
+                        </div>
+                    </Template>
+                </GridEditSettings>
+                <GridColumns>
+                    <GridColumn HeaderText="Det." TextAlign="TextAlign.Center" Width="10">
+                        <Template>
+                            @{
+                                var Bud = (context as Purchase);
+                                <div><a href="#" @onclick="@(() => Navigate(Bud))">Ver</a></div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(Purchase.id_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
+                    <GridColumn Field=@nameof(Purchase.nro_orden_compra) HeaderText="Nro. OC" Visible="false" Width="10"></GridColumn>
+                    <GridColumn Field=@nameof(Purchase.proveedor) HeaderText="Proveedor" Width="20"></GridColumn>
 
-                        </GridColumns>
-                    </SfGrid>
+                    <GridColumn Field=@nameof(Purchase.moneda) HeaderText="Moneda" Width="15"></GridColumn>
+                    <GridColumn Field=@nameof(Purchase.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="20"></GridColumn>
+                    <GridColumn Field=@nameof(Purchase.estado) HeaderText="Estado" Width="10"></GridColumn>
+
+                    <GridColumn Field=@nameof(Purchase.condicion) HeaderText="Tipo factura" Visible="false" Width="10"></GridColumn>
+
+                </GridColumns>
+            </SfGrid>
                 }
 
             </div>
@@ -209,7 +210,7 @@
 @code {
     //public IEnumerable<Purchase> clients { get; set; }
     public string Message { get; set; }
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search", "ColumnChooser" };
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
     public string ErrorDetails = "";
 
     public IEnumerable<Purchase> GridData { get; set; }
@@ -288,6 +289,18 @@
         {
             GridData = await PurchaseService.GetAllPurchases();
             Grid.Refresh();
+        }
+
+    }
+
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.FileName = "Pedidos.xlsx";
+            await this.Grid.ExcelExport(ExcelProperties);
         }
 
     }

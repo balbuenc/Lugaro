@@ -187,8 +187,13 @@ namespace CoreERP.UI
            );
 
             services.AddHttpClient<ILittleBoxDetailsService, LittleBoxDetailsService>(
-     littleBoxDetailsService => { littleBoxDetailsService.BaseAddress = new Uri(apiurl); }
-     );
+            littleBoxDetailsService => { littleBoxDetailsService.BaseAddress = new Uri(apiurl); }
+            );
+
+            services.AddHttpClient<IPurchaseOrderService, PurchaseOrderService>(
+            purchaseOrderBoxDetailsService => { purchaseOrderBoxDetailsService.BaseAddress = new Uri(apiurl); }
+            );
+
 
         }
 

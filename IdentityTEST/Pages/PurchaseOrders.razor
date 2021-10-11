@@ -1,7 +1,7 @@
-﻿@page "/LittleBoxes"
+﻿@page "/PurchaseOrders"
 @using Model
 @using Interfaces
-@inject ILittleBoxService LittleBoxService
+@inject IPurchaseOrderService PurchaseOrderService
 
 @inject IEmployeeService EmployeeService
 
@@ -59,7 +59,7 @@
 
     <div class="col-lg-12" style="padding:1px; height:50px">
         <div class="content-wrapper">
-            <div class="alert alert-title" role="banner"><b>Cajas Chicas</b></div>
+            <div class="alert alert-title" role="banner"><b>Ordenes de Compra</b></div>
         </div>
     </div>
 
@@ -73,10 +73,10 @@
                 }
                 else
                 {
-                    <SfGrid TValue="LittleBox" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
+                    <SfGrid TValue="PurchaseOrder" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
                         <GridEvents OnActionBegin="OnBeginHandler"
                                     OnActionComplete="ActionCompletedHandler"
-                                    TValue="LittleBox"
+                                    TValue="PurchaseOrder"
                                     OnToolbarClick="ToolbarClickHandler"
                                     OnRecordDoubleClick="RecordDoubleClickHandler"
                                     CommandClicked="OnCommandClicked">
@@ -88,48 +88,36 @@
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
                             <HeaderTemplate>
                                 @{
-                                    var little = (context as LittleBox);
+                                    var oc = (context as PurchaseOrder);
                                 }
-                                <span>Detalle de caja chica: @(little.id_caja_chica)</span>
+                                <span>Detalle de caja chica: @(oc.id_orden_compra)</span>
                             </HeaderTemplate>
                             <Template>
                                 @{
-                                    var little = (context as LittleBox);
-                                    if (little.fecha_apertura == t)
-                                        little.fecha_apertura = hoy;
+                                    var oc = (context as PurchaseOrder);
+                                    if (oc.fecha == t)
+                                        oc.fecha = hoy;
                                 }
                                 <div>
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <SfNumericTextBox @bind-Value="@(little.id_caja_chica)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                            <SfNumericTextBox @bind-Value="@(oc.id_orden_compra)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <SfDatePicker @bind-Value="@(little.fecha_apertura)" Enabled="true" Placeholder="Fecha apertura" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                            <SfDatePicker @bind-Value="@(oc.fecha)" Enabled="true" Placeholder="Fecha OC" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <SfDatePicker @bind-Value="@(little.fecha_cierre)" Enabled="false" Placeholder="Fecha cierre" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                            <SfDatePicker @bind-Value="@(oc.fecha_aprobacion)" Enabled="false" Placeholder="Fecha aprobación" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
                                         </div>
 
                                     </div>
-                                    @*<div class="form-row">
-
-                                            <div class="form-group col-md-9">
-                                                <SfDropDownList DataSource="@employees"
-                                                                TItem="Employee"
-                                                                TValue="Int32"
-                                                                @bind-Value="@(little.id_funcionario)"
-                                                                Placeholder="Responsable"
-                                                                FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                    <DropDownListFieldSettings Value="id_funcionario" Text="usuario"></DropDownListFieldSettings>
-                                                </SfDropDownList>
-                                            </div>
-                                        </div>*@
+                                   
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
-                                            <SfTextBox @bind-Value="@(little.nro_comprobante)" Enabled="true" Placeholder="Comprobante" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                            <SfNumericTextBox @bind-Value="@(oc.id_compra)" Enabled="true" Placeholder="#Pedido" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <SfNumericTextBox @bind-Value="@(little.monto_apertura)" Enabled="true" Placeholder="Monto apertura" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                            <SfNumericTextBox @bind-Value="@(oc.id_compra_general)" Enabled="true" Placeholder="#Compra" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
 
                                     </div>
@@ -147,15 +135,15 @@
                                     <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-undo", CssClass="e-flat" })" Title="Cerrar caja"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.id_caja_chica) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.fecha_apertura) HeaderText="Apertura" Visible="true" Width="15" Format="dd/MM/yyyy"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.fecha_cierre) HeaderText="Cierre" Width="15" Visible="false" Format="dd/MM/yyyy"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.nro_comprobante) HeaderText="#Comp." Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.saldo_inicial) HeaderText="Saldo inic." Width="20" Format="N0"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.monto_apertura) HeaderText="Monto apert." Width="20" Format="N0"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.usuario) HeaderText="Responsable" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.estado) HeaderText="Estado" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.saldo) HeaderText="Saldo" Width="15" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.id_orden_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.fecha) HeaderText="Fecha" Visible="true" Width="15" Format="dd/MM/yyyy"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.fecha_aprobacion) HeaderText="Aprobación" Width="15" Visible="false" Format="dd/MM/yyyy"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.id_compra) HeaderText="#Peido" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.id_compra_general) HeaderText="#Compra" Width="20" ></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.propietario) HeaderText="Propietario" Width="20" ></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.aprobador) HeaderText="Aprobador" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.estado) HeaderText="Estado" Width="15"></GridColumn>
+                            
 
                         </GridColumns>
                     </SfGrid>
@@ -187,7 +175,7 @@
 
 
 @code {
-    //public IEnumerable<LittleBox> clients { get; set; }
+    //public IEnumerable<PurchaseOrder> clients { get; set; }
     public string Message { get; set; }
     public string SystemMessage { get; set; }
 
@@ -196,7 +184,7 @@
 
     private bool IsMessageVisible { get; set; } = false;
 
-    public IEnumerable<LittleBox> GridData { get; set; }
+    public IEnumerable<PurchaseOrder> GridData { get; set; }
 
     public IEnumerable<Employee> employees { get; set; }
 
@@ -204,7 +192,7 @@
     public DateTime hoy = DateTime.Today;
     public DateTime t;
 
-    SfGrid<LittleBox> Grid { get; set; }
+    SfGrid<PurchaseOrder> Grid { get; set; }
 
     private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
 
@@ -220,7 +208,7 @@
     {
         try
         {
-            GridData = await LittleBoxService.GetAllLittleBoxs();
+            GridData = await PurchaseOrderService.GetAllPurchaseOrders();
 
             employees = await EmployeeService.GetAllEmployees();
 
@@ -240,17 +228,17 @@
 
 
 
-    private async Task OnBeginHandler(ActionEventArgs<LittleBox> Args)
+    private async Task OnBeginHandler(ActionEventArgs<PurchaseOrder> Args)
     {
         try
         {
             if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
-                await SaveLittleBox((LittleBox)Args.Data);
+                await SavePurchaseOrder((PurchaseOrder)Args.Data);
             }
             else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
-                await DeleteLittleBox(((LittleBox)Args.Data).id_caja_chica);
+                await DeletePurchaseOrder(((PurchaseOrder)Args.Data).id_orden_compra);
             }
 
             return;
@@ -264,7 +252,7 @@
 
 
 
-    private async Task ActionCompletedHandler(ActionEventArgs<LittleBox> Args)
+    private async Task ActionCompletedHandler(ActionEventArgs<PurchaseOrder> Args)
     {
         if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
         {
@@ -275,11 +263,11 @@
 
     protected async Task RefreshGrid()
     {
-        GridData = await LittleBoxService.GetAllLittleBoxs();
+        GridData = await PurchaseOrderService.GetAllPurchaseOrders();
         Grid.Refresh();
     }
 
-    public async void OnCommandClicked(CommandClickEventArgs<LittleBox> args)
+    public async void OnCommandClicked(CommandClickEventArgs<PurchaseOrder> args)
     {
         var item = args.RowData;
         var command = args.CommandColumn;
@@ -287,90 +275,40 @@
         if (command.Title == "Cerrar caja")
         {
             item.estado = "CERRADO";
-            await LittleBoxService.SaveLittleBox(item);
+            await PurchaseOrderService.SavePurchaseOrder(item);
             await RefreshGrid();
         }
 
     }
 
-    protected async Task SaveLittleBox(LittleBox littleBox)
+    protected async Task SavePurchaseOrder(PurchaseOrder purchaseOrder)
     {
         try
         {
-            littleBox.id_funcionario = GetEmployeeID(UserName);
-            if (littleBox.id_caja_chica == 0)
+            purchaseOrder.id_funcionario = GetEmployeeID(UserName);
+            if (purchaseOrder.id_orden_compra == 0)
             {
-                //Check if there any Opened LittleBox
-                foreach (LittleBox l in GridData)
-                {
-                    if (l.id_funcionario == littleBox.id_funcionario && l.estado == "ABIERTO")
-                    {
-                        SystemMessage = "Favor cerrar las cajas abiertas.";
-                        IsMessageVisible = true;
-                        return;
-                    }
-                }
-
-                littleBox.saldo_inicial = GetRestAmmount();
-                //CloseUserOpenLittleBoxes();
-                littleBox.estado = "ABIERTO";
+                purchaseOrder.estado = "GENERADO";
             }
 
-            //Create the new LittleBox
-            await LittleBoxService.SaveLittleBox(littleBox);
-
-            //Transfer Saldos
-            foreach (LittleBox l in GridData)
-            {
-                if (l.id_funcionario == littleBox.id_funcionario && l.estado == "CERRADO")
-                {
-                    l.estado = "TRANSFERIDO";
-                    await LittleBoxService.SaveLittleBox(l);
-                }
-            }
+            //Create the new PurchaseOrder
+            await PurchaseOrderService.SavePurchaseOrder(purchaseOrder);
 
         }
         catch (Exception ex)
         {
-            Message = "Error al registrar caja chica: " + ex.Message;
+            Message = "Error al registrar order de compra: " + ex.Message;
             throw ex;
         }
     }
 
-    protected async void CloseUserOpenLittleBoxes()
+
+
+
+
+    protected async Task DeletePurchaseOrder(int id)
     {
-        int IdFuncionario = GetEmployeeID(UserName);
-        foreach (LittleBox l in GridData)
-        {
-            if (l.id_funcionario == IdFuncionario && l.estado == "ABIERTO")
-            {
-                l.estado = "CERRADO";
-                await LittleBoxService.SaveLittleBox(l);
-            }
-        }
-    }
-
-    protected decimal GetRestAmmount()
-    {
-        decimal RestAmmount = 0;
-        int IdFuncionario = GetEmployeeID(UserName);
-
-        foreach (LittleBox l in GridData)
-        {
-
-            if (l.id_funcionario == IdFuncionario && l.estado == "CERRADO")
-            {
-                RestAmmount += l.saldo;
-            }
-
-        }
-
-        return RestAmmount;
-    }
-
-    protected async Task DeleteLittleBox(int id)
-    {
-        await LittleBoxService.DeleteLittleBox(id);
+        await PurchaseOrderService.DeletePurchaseOrder(id);
     }
 
     public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
@@ -378,7 +316,7 @@
         if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
         {
             ExcelExportProperties ExcelProperties = new ExcelExportProperties();
-            ExcelProperties.FileName = "CajasChicas.xlsx";
+            ExcelProperties.FileName = "OrdenesCompra.xlsx";
             await this.Grid.ExcelExport(ExcelProperties);
         }
 
@@ -399,14 +337,14 @@
         }
     }
 
-    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<LittleBox> args)
+    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<PurchaseOrder> args)
     {
-        Navigate(((LittleBox)args.RowData));
+        Navigate(((PurchaseOrder)args.RowData));
     }
 
-    private void Navigate(LittleBox littleBox)
+    private void Navigate(PurchaseOrder purchaseOrder)
     {
-        NavigationManager.NavigateTo($"/BoxDetails/{littleBox.id_caja_chica}");
+        NavigationManager.NavigateTo($"/purchaseOrderDetails/{purchaseOrder.id_orden_compra}");
     }
 
 

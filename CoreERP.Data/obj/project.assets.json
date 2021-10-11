@@ -632,23 +632,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\cbalbuena\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\HP\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
+      "projectUniqueName": "C:\\Users\\HP\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
       "projectName": "CoreERP.Data",
-      "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
-      "packagesPath": "C:\\Users\\cbalbuena\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\obj\\",
+      "projectPath": "C:\\Users\\HP\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
+      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\HP\\source\\repos\\Lugaro\\CoreERP.Data\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\cbalbuena\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -660,9 +656,10 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
-              "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj"
+            "C:\\Users\\HP\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
+              "projectPath": "C:\\Users\\HP\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj"
             }
           }
         }
@@ -675,6 +672,7 @@
     },
     "frameworks": {
       "netcoreapp3.1": {
+        "targetAlias": "netcoreapp3.1",
         "dependencies": {
           "Dapper": {
             "target": "Package",
@@ -704,7 +702,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }
