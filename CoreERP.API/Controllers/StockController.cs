@@ -37,6 +37,14 @@ namespace CoreERP.API.Controllers
             return Ok(await _StockRepository.GetProductStock(id));
         }
 
+        [HttpGet]
+        [Route("GetTransferDestinations/{id}")]
+        public async Task<IActionResult> GetTransferDestinations(int id)
+        {
+            return Ok(await _StockRepository.GetTransferDestinations(id));
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> CreateStock([FromBody] Stock stock)
         {

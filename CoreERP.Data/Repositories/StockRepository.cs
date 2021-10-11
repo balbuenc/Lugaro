@@ -59,6 +59,20 @@ namespace CoreERP.Data.Repositories
             return await db.QueryAsync<Stock>(sql, new { Id = id });
         }
 
+        public async Task<IEnumerable<Stock>> GetTransferDestinations(int id)
+        {
+            var db = dbConnection();
+            var sql = @"select s.id_stock, s.id_deposito, s.id_producto, p.codigo, p.producto, d.deposito, s.cantidad 
+                        from public.productos p 
+                        left outer join public.stock s on p.id_producto = s.id_producto 
+                        left outer join public.depositos d on d.id_deposito = s.id_deposito
+                        where p.id_producto =  (select id_producto from stock s2 where s2.id_stock = @Id)
+                        and s.id_deposito <> (select id_deposito from stock s3 where s3.id_stock = @Id);";
+
+
+            return await db.QueryAsync<Stock>(sql, new { Id = id });
+        }
+
         public async Task<Stock> GetStockDetails(int id)
         {
             var db = dbConnection();

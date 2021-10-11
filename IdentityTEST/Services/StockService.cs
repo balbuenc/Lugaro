@@ -48,6 +48,23 @@ namespace CoreERP.UI.Services
             }
         }
 
+        public async Task<IEnumerable<Stock>> GetTransferDestinations(int id)
+        {
+            try
+            {
+                var result = await JsonSerializer.DeserializeAsync<IEnumerable<Stock>>(
+                      await _httpClient.GetStreamAsync($"api/Stock/GetTransferDestinations/{id}"),
+                      new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                      );
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<Stock> GetStockDetails(int id)
         {
             return await JsonSerializer.DeserializeAsync<Stock>(

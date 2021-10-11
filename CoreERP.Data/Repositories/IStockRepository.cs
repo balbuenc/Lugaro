@@ -19,5 +19,7 @@ namespace CoreERP.Data.Repositories
         Task<bool> DeleteStock(int id);
 
         Task<IEnumerable<Stock>> GetProductStock(int id);
+
+        Task<IEnumerable<Stock>> GetTransferDestinations(int id);
     }
 }

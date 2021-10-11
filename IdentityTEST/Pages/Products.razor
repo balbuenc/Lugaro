@@ -19,35 +19,18 @@
 @using Syncfusion.Blazor.DropDowns
 @using Syncfusion.Blazor.Inputs;
 @using Syncfusion.Blazor.Calendars;
+@using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Buttons
 
+
 <style>
-    .e-list-settings:before {
-        content: "\e679";
+    .e-icons {
+        color: #ff0000;
+        font-size: 18px !important;
     }
 
-    .e-list-print:before {
-        content: "\e743";
-    }
-
-    .e-list-save:before {
-        content: "\e74d";
-    }
-
-    .e-list-saveas:before {
-        content: "\e72b";
-    }
-
-    .e-list-delete:before {
-        content: "\e773";
-    }
-
-    .e-list-undo:before {
-        content: "\e197";
-    }
-
-    .e-list-edit:before {
-        content: "\e7a3";
+    .e-search::before {
+        content: '\e5a3';
     }
 </style>
 
@@ -169,7 +152,7 @@
                                                 <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal">
 
                                                 </GridEditSettings>
-                                                <GridEvents OnActionBegin="OnStockBeginHandler" TValue="Stock"></GridEvents>
+                                                <GridEvents OnActionBegin="OnStockBeginHandler" TValue="Stock" CommandClicked="OnCommandClicked"></GridEvents>
                                                 <GridColumns>
 
                                                     <GridColumn Field=@nameof(Stock.id_stock) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
@@ -182,16 +165,15 @@
                                                         </EditTemplate>
                                                     </GridColumn>
                                                     <GridColumn Field=@nameof(Stock.cantidad) HeaderText="Cantidad" Width="15"></GridColumn>
-                                                    <GridColumn HeaderText="*" Width="5">
+                                                    <GridColumn HeaderText="Adm." Width="15">
                                                         <GridCommandColumns>
-
-                                                            <GridCommandColumn Type="CommandButtonType.Edit"></GridCommandColumn>
-                                                            <GridCommandColumn Type="CommandButtonType.Save"></GridCommandColumn>
-                                                            <GridCommandColumn Type="CommandButtonType.Cancel"></GridCommandColumn>
-                                                            <GridCommandColumn Type="CommandButtonType.Delete"></GridCommandColumn>
-                                                            
-                                                            
+                                                            <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-search", CssClass="e-flat" })" Title="Transferir"></GridCommandColumn>
+                                                            <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                                            <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
+                                                            <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-save", CssClass="e-flat" })"></GridCommandColumn>
+                                                            <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-cancel-icon", CssClass="e-flat" })"></GridCommandColumn>
                                                         </GridCommandColumns>
+
                                                     </GridColumn>
                                                 </GridColumns>
                                             </SfGrid>
@@ -219,6 +201,48 @@
             </div>
         </div>
 
+        <SfDialog ID="dialog" Width="600px" Height="200px" ShowCloseIcon="true" @bind-Visible="@isVisibleTransferDialog">
+            <DialogTemplates>
+                <Header>Transferencia entre bodegas</Header>
+                <Content>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="text-left"><b>Cantidad:</b> </div>
+                            </div>
+                            <div class="col-6">
+                                <SfNumericTextBox TValue="int" @bind-Value=@cantidad Placeholder="Cantidad"></SfNumericTextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <SfGrid ID="DestinationGrid" @ref="DestinationGrid" DataSource="@destinations">
+                                <GridEditSettings AllowAdding="true" AllowEditing="true" Mode="EditMode.Normal">
+                                </GridEditSettings>
+                                <GridEvents OnActionBegin="OnStockBeginHandler" TValue="Stock" CommandClicked="OnDestinationCommandClicked"></GridEvents>
+                                <GridColumns>
+                                    <GridColumn Field=@nameof(Stock.id_stock) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+                                    <GridColumn Field=@nameof(Stock.deposito) HeaderText="Depósito" Width="30">
+                                        <EditTemplate Context="con">
+                                            <SfDropDownList TValue="Int32" TItem="Store" @bind-Value="@((con as Stock).id_deposito)" Placeholder="Depósito" DataSource="@stores">
+                                                <DropDownListFieldSettings Text="deposito" Value="id_deposito"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </EditTemplate>
+                                    </GridColumn>
+                                    <GridColumn Field=@nameof(Stock.cantidad) HeaderText="Cantidad" Width="15"></GridColumn>
+                                    <GridColumn HeaderText="Adm." Width="10">
+                                        <GridCommandColumns>
+                                            <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-search", CssClass="e-flat" })" Title="Transferir"></GridCommandColumn>
+                                        </GridCommandColumns>
+                                    </GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        </div>
+                    </div>
+                </Content>
+            </DialogTemplates>
+
+        </SfDialog>
+
     </div>
 
 </div>
@@ -228,7 +252,7 @@
     //public IEnumerable<Product> clients { get; set; }
     public string Message { get; set; }
     public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
-    public string[] ToolbarStock = new string[] { "Add",  };
+    public string[] ToolbarStock = new string[] { "Add", };
 
     public string ErrorDetails = "";
 
@@ -239,20 +263,70 @@
     public IEnumerable<Currency> currencies { get; set; }
     public IEnumerable<Stock> stock { get; set; }
     public IEnumerable<Store> stores { get; set; }
+    public IEnumerable<Stock> destinations { get; set; }
 
 
 
     SfGrid<Product> Grid { get; set; }
     SfGrid<Stock> StockGrid { get; set; }
+    SfGrid<Stock> DestinationGrid { get; set; }
+
+    protected Stock originStock { get; set; }
+    protected Stock destinationStock { get; set; }
 
     private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
     protected int IdProducto;
+    public int cantidad;
 
+    protected bool isVisibleTransferDialog = false;
 
     public void getProductStock(int id)
     {
         var task = Task.Run<IEnumerable<Stock>>(async () => await StockService.GetProductStock(id));
         stock = task.Result;
+    }
+
+    private void  OpenTransferDialog()
+    {
+        isVisibleTransferDialog = true;
+
+    }
+
+    public  void OnCommandClicked(CommandClickEventArgs<Stock> args)
+    {
+        var item = args.RowData;
+        originStock = item;
+        var command = args.CommandColumn;
+
+        if (command.Title == "Transferir")
+        {
+            cantidad = (int)item.cantidad;
+
+            var task = Task.Run<IEnumerable<Stock>>(async () => await StockService.GetTransferDestinations(item.id_stock));
+            destinations = task.Result;
+            OpenTransferDialog();
+        }
+
+    }
+
+    public  void OnDestinationCommandClicked(CommandClickEventArgs<Stock> args)
+    {
+        var item = args.RowData;
+        destinationStock = item;
+        var command = args.CommandColumn;
+
+        if (command.Title == "Transferir")
+        {
+            originStock.cantidad = originStock.cantidad - cantidad;
+            destinationStock.cantidad = destinationStock.cantidad + cantidad;
+
+            Task.Run(async () => await StockService.SaveStock(originStock));
+            Task.Run(async () => await StockService.SaveStock(destinationStock));
+
+
+            isVisibleTransferDialog = false;
+        }
+
     }
 
     protected override async Task OnInitializedAsync()
