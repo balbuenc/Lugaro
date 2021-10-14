@@ -52,7 +52,7 @@ namespace CoreERP.API.Controllers
             if (purchaseOrder == null)
                 return BadRequest();
 
-            if (purchaseOrder.id_compra_general == 0)
+            if (purchaseOrder.id_orden_compra == 0)
             {
                 ModelState.AddModelError("PurchaseOrder", "PurchaseOrder name shouldn't be empty");
             }

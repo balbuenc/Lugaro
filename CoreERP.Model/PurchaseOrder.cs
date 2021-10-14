@@ -16,7 +16,7 @@ namespace CoreERP.Model
 
         public string tipo_compra { get; set; }
 
-        public string aprobado_por { get; set; }
+        public int aprobado_por { get; set; }
 
         public DateTime fecha_aprobacion { get; set; }
 

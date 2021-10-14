@@ -9,6 +9,7 @@
 @inject IPurchaseService PurchaseService
 @inject IPrintService PrintService
 @inject IStockService StockService
+@inject IPurchaseOrderService PurchaseOrderService 
 
 
 @using Microsoft.AspNetCore.Http
@@ -116,9 +117,9 @@
                     </table>
 
                     <small class="mb-0">@Titulo</small>
-                    @if (!this.IsPrintable)
+                    @if (Estado == "Generado")
                     {
-                        <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="Print">Imprimir OC</SfButton>
+                        <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="GeneratePurchaseOrder">Generar OC</SfButton>
                     }
                     @if (Estado == "Pendiente")
                     {
@@ -128,23 +129,8 @@
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="Autorization">Aprobar OC</SfButton>
                     }
-                    @*@if (Estado == "Aprobado")
-                    {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="Invoice">Facturar</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Remisión especial</SfButton>
-                    }*@
-                    @*@if (Estado == "Facturado")
-                    {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Remisión especial</SfButton>
-                    }
-                    @if (Estado == "Remitido")
-                    {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Remisión especial</SfButton>
-                    }*@
+                   
+                   
                 </div>
             </div>
             <div class="row">
@@ -270,55 +256,27 @@
 
     SfGrid<PurchaseDetails> Grid { get; set; }
 
-    protected async Task Print()
+
+
+    protected async Task GeneratePurchaseOrder()
     {
+        PurchaseOrder oc;
+
         try
         {
-            byte[] r;
-            r = await PurchaseDetailsService.GetPurchasePDF(Convert.ToInt32(PurchaseID));
+            oc = new PurchaseOrder();
+            oc.fecha = DateTime.Now;
+            oc.id_funcionario = header.id_funcionario;
+            oc.id_compra = Convert.ToInt32(PurchaseID);
+            oc.tipo_compra = "PEDIDO";
+            oc.estado = "GENERADO";
 
-            String filename;
-            filename = String.Concat("OrdenCompra", PurchaseID, ".pdf");
+            
 
-            await Js.SaveAs(filename, r.ToArray());
+            await PurchaseOrderService.SavePurchaseOrder(oc);
 
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
 
-    protected async Task PrintInvoice()
-    {
-        try
-        {
-            byte[] r;
-            r = await PrintService.GetInvoicePDF(Convert.ToInt32(PurchaseID));
-
-            String filename;
-            filename = String.Concat("Factura", PurchaseID, ".pdf");
-
-            await Js.SaveAs(filename, r.ToArray());
-
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
-
-    protected async Task PrintRemission()
-    {
-        try
-        {
-            byte[] r;
-            r = await PrintService.GetRemissionPDF(Convert.ToInt32(PurchaseID));
-
-            String filename;
-            filename = String.Concat("Remision", PurchaseID, ".pdf");
-
-            await Js.SaveAs(filename, r.ToArray());
+            await RequireAutorization();
 
         }
         catch (Exception ex)
@@ -328,24 +286,8 @@
     }
 
 
-    protected async Task PrintSpecialRemission()
-    {
-        try
-        {
-            byte[] r;
-            r = await PrintService.GetSpecialRemissionPDF(Convert.ToInt32(PurchaseID));
 
-            String filename;
-            filename = String.Concat("RemisionEspecial", PurchaseID, ".pdf");
 
-            await Js.SaveAs(filename, r.ToArray());
-
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
     protected async Task RequireAutorization()
     {
         header.estado = "Pendiente";
@@ -361,16 +303,7 @@
         Navigate();
     }
 
-    protected async Task Invoice()
-    {
-        header.estado = "Facturado";
-        await PurchaseService.SavePurchase(header);
-        //await PrintInvoice();
 
-        await ModifyStock();
-
-        Navigate();
-    }
 
     protected async Task ModifyStock()
     {
@@ -411,7 +344,7 @@
             Fecha = header.fecha.ToShortDateString();
             NroOrden = header.nro_orden_compra;
             Moneda = header.moneda;
-            
+
             Estado = header.estado;
             Usuario = header.funcionario;
 
@@ -462,7 +395,7 @@
         else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Add || Args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
         {
             products = await ProductService.GetProductsDefinitions();
-            
+
         }
 
         return;

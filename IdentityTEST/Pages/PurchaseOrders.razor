@@ -85,7 +85,7 @@
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
-                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
+                        <GridEditSettings AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
                             <HeaderTemplate>
                                 @{
                                     var oc = (context as PurchaseOrder);
@@ -114,10 +114,10 @@
                                    
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
-                                            <SfNumericTextBox @bind-Value="@(oc.id_compra)" Enabled="true" Placeholder="#Pedido" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                            <SfNumericTextBox @bind-Value="@(oc.id_compra)" Enabled="false" Placeholder="#Pedido" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <SfNumericTextBox @bind-Value="@(oc.id_compra_general)" Enabled="true" Placeholder="#Compra" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                            <SfNumericTextBox @bind-Value="@(oc.id_compra_general)" Enabled="false" Placeholder="#Compra" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
 
                                     </div>
@@ -129,16 +129,16 @@
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn HeaderText="*" Width="5">
+                            <GridColumn HeaderText="*" Width="10">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
-                                    <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-undo", CssClass="e-flat" })" Title="Cerrar caja"></GridCommandColumn>
+                                   
                                 </GridCommandColumns>
                             </GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.id_orden_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.fecha) HeaderText="Fecha" Visible="true" Width="15" Format="dd/MM/yyyy"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.fecha_aprobacion) HeaderText="Aprobación" Width="15" Visible="false" Format="dd/MM/yyyy"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.id_compra) HeaderText="#Peido" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.id_compra) HeaderText="#Pedido" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.id_compra_general) HeaderText="#Compra" Width="20" ></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.propietario) HeaderText="Propietario" Width="20" ></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.aprobador) HeaderText="Aprobador" Width="15"></GridColumn>
@@ -179,7 +179,7 @@
     public string Message { get; set; }
     public string SystemMessage { get; set; }
 
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
+    public string[] ToolbarItems = new string[] {  "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
     public string ErrorDetails = "";
 
     private bool IsMessageVisible { get; set; } = false;

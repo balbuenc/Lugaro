@@ -124,7 +124,7 @@ namespace CoreERP.Data.Repositories
 
                 var sql = @"UPDATE public.ordenes_compra
                             SET fecha=@fecha, estado=@estado, id_compra_general=@id_compra_general, id_compra=@id_compra, tipo_compra=@tipo_compra, aprobado_por=@aprobado_por, fecha_aprobacion=@fecha_aprobacion
-                            WHERE id_orden_compra=@;id_orden_compra;";
+                            WHERE id_orden_compra=@id_orden_compra;";
 
                 var result = await db.ExecuteAsync(sql, new
                 {
