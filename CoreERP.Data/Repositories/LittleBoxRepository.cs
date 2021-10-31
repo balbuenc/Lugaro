@@ -47,10 +47,12 @@ namespace CoreERP.Data.Repositories
             {
                 var db = dbConnection();
                 var sql = @"SELECT cc.id_caja_chica, cc.fecha_apertura, cc.fecha_cierre, cc.id_funcionario, cc.monto_apertura, cc.estado, f.usuario, saldo_inicial, cc.nro_comprobante,
-		                    cc.monto_apertura  - (select coalesce(sum(ccd.monto),0) from public.caja_chica_detalle ccd where ccd.id_caja_chica = cc.id_caja_chica) + cc.saldo_inicial as saldo
-                            FROM public.caja_chica cc
-                            left outer join funcionarios f on f.id_funcionario  = cc.id_funcionario 
-                                order by cc.id_caja_chica desc   ";
+		                    cc.monto_apertura  - (select coalesce(sum(ccd.monto),0) from public.caja_chica_detalle ccd where ccd.id_caja_chica = cc.id_caja_chica) + cc.saldo_inicial as saldo,
+		                    cc.aprobado_por , aprob.usuario  as aprobador
+		                    FROM public.caja_chica cc
+		                    left outer join funcionarios f on f.id_funcionario  = cc.id_funcionario
+		                    left outer join funcionarios aprob on aprob.id_funcionario = cc.aprobado_por 
+		                    order by cc.id_caja_chica desc ";
 
                 var result = await db.QueryAsync<LittleBox>(sql, new { });
 
@@ -68,9 +70,11 @@ namespace CoreERP.Data.Repositories
             {
                 var db = dbConnection();
                 var sql = @"SELECT cc.id_caja_chica, cc.fecha_apertura, cc.fecha_cierre, cc.id_funcionario, cc.monto_apertura, cc.estado, f.usuario, saldo_inicial, cc.nro_comprobante,
-		                    cc.monto_apertura  - (select coalesce(sum(ccd.monto),0) from public.caja_chica_detalle ccd where ccd.id_caja_chica = cc.id_caja_chica) + cc.saldo_inicial as saldo
-                            FROM public.caja_chica cc
-                            left outer join funcionarios f on f.id_funcionario  = cc.id_funcionario  
+		                    cc.monto_apertura  - (select coalesce(sum(ccd.monto),0) from public.caja_chica_detalle ccd where ccd.id_caja_chica = cc.id_caja_chica) + cc.saldo_inicial as saldo,
+		                    cc.aprobado_por , aprob.usuario  as aprobador
+		                    FROM public.caja_chica cc
+		                    left outer join funcionarios f on f.id_funcionario  = cc.id_funcionario
+		                    left outer join funcionarios aprob on aprob.id_funcionario = cc.aprobado_por
                             where cc.id_caja_chica = @Id";
 
 
@@ -119,7 +123,7 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"UPDATE public.caja_chica
-                                SET fecha_apertura=@fecha_apertura, fecha_cierre=@fecha_cierre, monto_apertura=@monto_apertura, estado=@estado, nro_comprobante=@nro_comprobante
+                                SET fecha_apertura=@fecha_apertura, fecha_cierre=@fecha_cierre, monto_apertura=@monto_apertura, estado=@estado, nro_comprobante=@nro_comprobante, aprobado_por=@aprobado_por
                                 WHERE id_caja_chica=@id_caja_chica;
                                 ";
 
@@ -131,7 +135,8 @@ namespace CoreERP.Data.Repositories
                     littleBox.monto_apertura,
                     littleBox.estado,
                     littleBox.id_caja_chica,
-                    littleBox.nro_comprobante
+                    littleBox.nro_comprobante,
+                    littleBox.aprobado_por
                 }
                 );
 

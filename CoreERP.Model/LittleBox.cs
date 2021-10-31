@@ -22,5 +22,8 @@ namespace CoreERP.Model
         public decimal saldo { get; set; }
 
         public decimal saldo_inicial { get; set; }
+
+        public int aprobado_por { get; set; }
+        public string aprobador { get; set; }
     }
 }

@@ -125,13 +125,21 @@
                                             </div>
                                         </div>*@
                                     <div class="form-row">
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-4">
                                             <SfTextBox @bind-Value="@(little.nro_comprobante)" Enabled="true" Placeholder="Comprobante" FloatLabelType="FloatLabelType.Always"></SfTextBox>
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-4">
                                             <SfNumericTextBox @bind-Value="@(little.monto_apertura)" Enabled="true" Placeholder="Monto apertura" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
+                                        <div class="form-group col-md-4">
+                                            <SfNumericTextBox @bind-Value="@(little.saldo_inicial)" Enabled="false" Placeholder="Saldo inicial" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
 
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <SfTextBox @bind-Value="@(little.aprobador)" Enabled="false" Placeholder="Aprobador" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
                                     </div>
 
 
@@ -141,19 +149,20 @@
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn HeaderText="*" Width="5">
+                            <GridColumn HeaderText="*" Width="10">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
                                     <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-undo", CssClass="e-flat" })" Title="Cerrar caja"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
                             <GridColumn Field=@nameof(LittleBox.id_caja_chica) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.fecha_apertura) HeaderText="Apertura" Visible="true" Width="15" Format="dd/MM/yyyy"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.fecha_cierre) HeaderText="Cierre" Width="15" Visible="false" Format="dd/MM/yyyy"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.nro_comprobante) HeaderText="#Comp." Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.saldo_inicial) HeaderText="Saldo inic." Width="20" Format="N0"></GridColumn>
-                            <GridColumn Field=@nameof(LittleBox.monto_apertura) HeaderText="Monto apert." Width="20" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.fecha_apertura) HeaderText="Apertura" Visible="true" Width="10" Format="dd/MM/yyyy"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.fecha_cierre) HeaderText="Cierre" Width="10" Visible="false" Format="dd/MM/yyyy"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.nro_comprobante) HeaderText="#Comp." Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.saldo_inicial) HeaderText="Saldo inic." Width="15" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.monto_apertura) HeaderText="Monto apert." Width="15" Format="N0"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.usuario) HeaderText="Responsable" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBox.aprobador) HeaderText="Aprobador" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.estado) HeaderText="Estado" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(LittleBox.saldo) HeaderText="Saldo" Width="15" Format="N0"></GridColumn>
 
