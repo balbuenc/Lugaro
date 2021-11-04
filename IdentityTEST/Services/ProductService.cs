@@ -25,6 +25,12 @@ namespace CoreERP.UI.Services
             await _httpClient.DeleteAsync($"api/product/{id}");
         }
 
+        public async Task<HttpResponseMessage> SaveImage(MultipartFormDataContent content)
+        {
+
+            return await _httpClient.PostAsync($"api/product/image",content);
+        }
+
         public async Task<IEnumerable<Product>> GetAllProducts()
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<Product>>(

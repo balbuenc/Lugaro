@@ -31,9 +31,3 @@ C:\Users\HP\source\repos\CoreERP.API\obj\Debug\netcoreapp3.1\staticwebassets\Cor
 C:\Users\HP\source\repos\CoreERP.API\obj\Debug\netcoreapp3.1\CoreERP.API.dll
 C:\Users\HP\source\repos\CoreERP.API\obj\Debug\netcoreapp3.1\CoreERP.API.pdb
 C:\Users\HP\source\repos\CoreERP.API\obj\Debug\netcoreapp3.1\CoreERP.API.genruntimeconfig.cache
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.API\bin\Debug\netcoreapp3.1\CoreERP.API.exe
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.API\bin\Debug\netcoreapp3.1\CoreERP.API.dll
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.API\bin\Debug\netcoreapp3.1\Dapper.dll
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.API\bin\Debug\netcoreapp3.1\Npgsql.dll
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.API\bin\Debug\netcoreapp3.1\CoreERP.Data.dll
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.API\bin\Debug\netcoreapp3.1\CoreERP.Model.dll

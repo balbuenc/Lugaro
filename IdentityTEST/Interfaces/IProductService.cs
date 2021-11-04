@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace CoreERP.UI.Interfaces
@@ -18,5 +19,7 @@ namespace CoreERP.UI.Interfaces
 
 
         Task DeleteProduct(int id);
+
+        Task<HttpResponseMessage> SaveImage(MultipartFormDataContent content);
     }
 }

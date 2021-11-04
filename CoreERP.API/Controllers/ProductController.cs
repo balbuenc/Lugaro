@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using System.IO;
+
 namespace CoreERP.API.Controllers
 {
     [Route("api/[controller]")]
@@ -29,6 +31,27 @@ namespace CoreERP.API.Controllers
         public async Task<IActionResult> GetProductsDefinitions()
         {
             return Ok(await _ProductRepository.GetProductsDefinitions());
+        }
+
+        [HttpPost("[action]")]
+        [Route("image")]
+        public async Task<string> Save()
+        {
+            string path = string.Empty;
+            if (HttpContext.Request.Form.Files.Any())
+            {
+                foreach (var file in HttpContext.Request.Form.Files)
+                {
+                    path = Path.Combine("C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\IdentityTEST\\bin\\Release\\netcoreapp3.1\\publish\\wwwroot\\images", file.FileName);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+            }
+            byte[] ByteArray = System.IO.File.ReadAllBytes(path);
+
+            return Convert.ToBase64String(ByteArray);
         }
 
         [HttpGet("{id}")]

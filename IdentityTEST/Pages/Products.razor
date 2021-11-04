@@ -21,6 +21,9 @@
 @using Syncfusion.Blazor.Calendars;
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+
+@using System.IO
 
 
 <style>
@@ -31,6 +34,20 @@
 
     .e-search::before {
         content: '\e5a3';
+    }
+</style>
+
+<style>
+    .e-card-image {
+        
+        height:300px;
+        
+        
+    }
+
+    .e-card {
+        width: 300px;
+        margin: auto;
     }
 </style>
 
@@ -78,6 +95,43 @@
                                         </div>
                                         <div class="form-group col-md-9">
                                             <SfTextBox @bind-Value="@(prod.producto)" Enabled="true" Placeholder="Prodúcto" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                    </div>
+                                    <div class="from-row">
+                                        <div class="form-group col-md-12">
+                                            <SfCard ID="ProductCard">
+                                                
+                                                <Syncfusion.Blazor.Cards.CardImage Image=@prod.imagen  ></Syncfusion.Blazor.Cards.CardImage>
+                                                <Syncfusion.Blazor.Cards.CardHeader Title=@prod.codigo SubTitle=@prod.producto />
+                                            </SfCard>
+                                        </div>
+                                    </div>
+                                    <div class="from-row">
+                                        <div class="form-group col-md-12">
+                                            <label class="col-form-label">Upload Image:</label>
+                                            <SfUploader ID="UploadFiles" AllowedExtensions=".png,.jpeg,.jpg">
+                                                <UploaderEvents ValueChange="onChange" OnRemove="onRemove"></UploaderEvents>
+                                                <UploaderTemplates>
+                                                    <Template Context="HttpContext">
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    <img class="upload-image" alt="Preview Image @(HttpContext.Name)"
+                                                                         src="@(files.Count >0 ? files.Where(item=>item.Name == HttpContext.Name)?.FirstOrDefault()?.Path : string.Empty)">
+                                                                </td>
+                                                                <td>
+                                                                    <div style="padding: 7px;">
+                                                                        <h5 title="@(HttpContext.Name)">@(HttpContext.Name)</h5>
+                                                                        <i>@(HttpContext.Size) Bytes</i>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <span class="e-icons e-file-remove-btn remove" id="removeIcon" title="Remove"></span>
+                                                        <span class="e-upload-icon e-icons e-file-remove-btn" title="Upload" id="iconUpload" @onclick="@uploadFile"></span>
+                                                    </Template>
+                                                </UploaderTemplates>
+                                            </SfUploader>
                                         </div>
                                     </div>
                                     <div class="form-row">
@@ -266,6 +320,17 @@
     public IEnumerable<Stock> destinations { get; set; }
 
 
+    public class fileInfo
+    {
+        public string Path { get; set; }
+        public string Name { get; set; }
+        public double Size { get; set; }
+    }
+
+    public MultipartFormDataContent content;
+    List<fileInfo> files = new List<fileInfo>();
+    public HttpResponseMessage filepath { get; set; }
+    public string responseStr;
 
     SfGrid<Product> Grid { get; set; }
     SfGrid<Stock> StockGrid { get; set; }
@@ -274,11 +339,56 @@
     protected Stock originStock { get; set; }
     protected Stock destinationStock { get; set; }
 
-    private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
+    private DialogSettings DialogParams = new DialogSettings { Width = "940px", EnableResize = true, AllowDragging = true };
     protected int IdProducto;
+    protected string CodigoProducto;
     public int cantidad;
 
     protected bool isVisibleTransferDialog = false;
+
+    public void onChange(UploadChangeEventArgs args)
+    {
+        files = new List<fileInfo>();
+        foreach (var file in args.Files)
+        {
+            var pathToSave = Path.Combine("C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\IdentityTEST\\bin\\Release\\netcoreapp3.1\\publish\\wwwroot\\", "Images");
+            var fullPath = Path.Combine(pathToSave, CodigoProducto + ".jpg");
+            var tempPath = Path.Combine(pathToSave, file.FileInfo.Name);
+
+            //Cargo el objeto "content"
+            byte[] bytes = file.Stream.ToArray();
+            string base64 = Convert.ToBase64String(bytes);
+            files.Add(new fileInfo() { Path = @"data:image/" + file.FileInfo.Type + ";base64," + base64, Name = file.FileInfo.Name, Size = file.FileInfo.Size });
+            content = new MultipartFormDataContent {
+                    { new ByteArrayContent(file.Stream.GetBuffer()), "\"upload\"", file.FileInfo.Name }
+                };
+
+            //Escribo a disco las imagenes
+
+            FileStream filestream = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
+            file.Stream.WriteTo(filestream);
+            filestream.Close();
+            file.Stream.Close();
+
+        }
+    }
+
+    public async Task uploadFile(MouseEventArgs args)
+    {
+        filepath = await ProductService.SaveImage(content);
+        this.responseStr = await filepath.Content.ReadAsStringAsync();
+    }
+
+    public void onRemove(RemovingEventArgs args)
+    {
+        foreach (var removeFile in args.FilesData)
+        {
+            if (File.Exists(Path.Combine(@"\Images", removeFile.Name)))
+            {
+                File.Delete(Path.Combine(@"\Images\", removeFile.Name));
+            }
+        }
+    }
 
     public void getProductStock(int id)
     {
@@ -286,13 +396,13 @@
         stock = task.Result;
     }
 
-    private void  OpenTransferDialog()
+    private void OpenTransferDialog()
     {
         isVisibleTransferDialog = true;
 
     }
 
-    public  void OnCommandClicked(CommandClickEventArgs<Stock> args)
+    public void OnCommandClicked(CommandClickEventArgs<Stock> args)
     {
         var item = args.RowData;
         originStock = item;
@@ -309,7 +419,7 @@
 
     }
 
-    public  void OnDestinationCommandClicked(CommandClickEventArgs<Stock> args)
+    public void OnDestinationCommandClicked(CommandClickEventArgs<Stock> args)
     {
         var item = args.RowData;
         destinationStock = item;
@@ -353,6 +463,7 @@
         try
         {
             IdProducto = ((Product)Args.Data).id_producto;
+            CodigoProducto = ((Product)Args.Data).codigo;
         }
         catch (Exception ex)
         { }
