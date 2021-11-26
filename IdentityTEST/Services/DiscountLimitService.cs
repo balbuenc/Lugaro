@@ -32,6 +32,14 @@ namespace CoreERP.UI.Services
                 );
         }
 
+        public async Task<IEnumerable<DiscountLimit>> GetDiscountLimitsByBudgetID(int budgetId)
+        {
+            return await JsonSerializer.DeserializeAsync<IEnumerable<DiscountLimit>>(
+                await _httpClient.GetStreamAsync($"api/discountLimit/GetDiscountLimitsByBudgetID/{budgetId}"),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                );
+        }
+
         public async Task<DiscountLimit> GetDiscountLimitDetails(int id)
         {
             return await JsonSerializer.DeserializeAsync<DiscountLimit>(

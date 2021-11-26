@@ -31,6 +31,13 @@ namespace CoreERP.API.Controllers
             return Ok(await _DiscountLimitRepository.GetDiscountLimitDetails(id));
         }
 
+        [HttpGet]
+        [Route("GetDiscountLimitsByBudgetID/{BudgetId}")]
+        public async Task<IActionResult> GetDiscountLimitsByBudgetID(int BudgetId)
+        {
+            return Ok(await _DiscountLimitRepository.GetDiscountLimitsByBudgetID(BudgetId));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateDiscountLimit([FromBody] DiscountLimit discountLimit)
         {

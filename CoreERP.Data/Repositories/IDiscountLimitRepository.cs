@@ -17,5 +17,7 @@ namespace CoreERP.Data.Repositories
         Task<bool> UpdateDiscountLimit(DiscountLimit discountLimit);
 
         Task<bool> DeleteDiscountLimit(int id);
+
+        Task<IEnumerable<DiscountLimit>> GetDiscountLimitsByBudgetID(int budgetId);
     }
 }

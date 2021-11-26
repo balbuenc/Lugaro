@@ -60,6 +60,28 @@ namespace CoreERP.Data.Repositories
             }
         }
 
+        public async Task<IEnumerable<DiscountLimit>> GetDiscountLimitsByBudgetID(int budgetId)
+        {
+            try
+            {
+                var db = dbConnection();
+                var sql = @"select distinct ld.id_limite_descuento, ld.id_marca, ld.limite, m2.marca 
+                            from presupuesto_detalles pd 
+                            right join productos p2 on p2.id_producto  = pd.id_producto 
+                            right  join marcas m2 on m2.id_marca = p2.id_marca 
+                            right join limite_descuentos ld on ld.id_marca = m2.id_marca 
+                            where pd.id_presupuesto = @Id;";
+
+                var result = await db.QueryAsync<DiscountLimit>(sql, new { Id = budgetId});
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<DiscountLimit> GetDiscountLimitDetails(int id)
         {
             try

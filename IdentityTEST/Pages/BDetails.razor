@@ -185,7 +185,7 @@
                 <div class="col-md-4">
 
                     <div class="row">
-                        <SfGrid ID="discountLimits" AllowSorting="true" DataSource="@discountLimits">
+                        <SfGrid ID="discountLimits" @ref="GridDiscounts" AllowSorting="true" DataSource="@discountLimits">
                             <GridEditSettings AllowAdding="true" AllowEditing="true" Mode="EditMode.Normal"></GridEditSettings>
                             <GridEvents OnActionBegin="OnDiscountLimitsBeginHandler" TValue="DiscountLimit"></GridEvents>
                             <GridColumns>
@@ -491,6 +491,7 @@
     public Budget header { get; set; }
 
     SfGrid<BudgetDetails> Grid { get; set; }
+    SfGrid<DiscountLimit> GridDiscounts { get; set; }
 
     ItemSearchComponent itemSearch { get; set; }
 
@@ -543,6 +544,8 @@
 
         Grid.Refresh();
 
+        discountLimits = (await DiscountLimitService.GetDiscountLimitsByBudgetID(Int32.Parse(BudgetID))).ToList();
+        GridDiscounts.Refresh();
     }
 
     private async void OnConfirmation()
@@ -556,13 +559,22 @@
     {
         try
         {
-            byte[] r;
-            r = await BudgetDetailsService.GetBudgetPDF(Convert.ToInt32(BudgetID));
 
-            String filename;
-            filename = String.Concat("Prespuesto", BudgetID, ".pdf");
+            //Deprecated call Report API
+            //byte[] r;
+            //r = await BudgetDetailsService.GetBudgetPDF(Convert.ToInt32(BudgetID));
 
-            await Js.SaveAs(filename, r.ToArray());
+            //String filename;
+            //filename = String.Concat("Prespuesto", BudgetID, ".pdf");
+
+            //await Js.SaveAs(filename, r.ToArray());
+
+
+            //Call Reporting Service WSL
+            String route;
+            route = String.Concat("ReportViewer/", BudgetID);
+
+            await Js.InvokeAsync<object>("open", route, "_blank");
 
         }
         catch (Exception ex)
@@ -628,6 +640,8 @@
             filename = String.Concat("RemisionEspecial", BudgetID, ".pdf");
 
             await Js.SaveAs(filename, r.ToArray());
+
+
 
         }
         catch (Exception ex)
@@ -743,7 +757,7 @@
             GridData = await BudgetDetailsService.GetBudgetDetails(id);
             header = await BudgetService.GetBudgetDetails(id);
 
-            discountLimits = (await DiscountLimitService.GetAllDiscountLimits()).ToList();
+            discountLimits = (await DiscountLimitService.GetDiscountLimitsByBudgetID(id)).ToList();
 
             //Load header data
             Titulo = "Detalle de prespuesto ID. " + BudgetID;
@@ -855,6 +869,9 @@
         int id = Int32.Parse(BudgetID);
         GridData = await BudgetDetailsService.GetBudgetDetails(id);
         Grid.Refresh();
+
+        //reload discount limits based on budget's 
+        discountLimits = (await DiscountLimitService.GetDiscountLimitsByBudgetID(id)).ToList();
     }
 
 

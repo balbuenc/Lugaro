@@ -1,39 +1,225 @@
 ﻿@page "/ReportViewer/{BudgetID}"
 @layout BlankLayout
+@using Syncfusion.Blazor.PdfViewerServer
 
 @using Microsoft.AspNetCore.Http
+
+@using ServiceReference;
+@using System.ServiceModel;
 
 
 
 @attribute [Authorize]
 
+@using System.ServiceModel.Channels;
+@using System.ServiceModel.Description;
+@using System.ServiceModel.Dispatcher;
 
-<iframe src="@url" @ref="frame" style="width:100%; height:500px" sandbox="allow-scripts"  ></iframe>
+@using System.IO;
 
-<div ></div>
-
+<div class="control-section">
+    <SfPdfViewerServer DocumentPath="@DocumentPath" Height="640px" Width="100%" @ref="Viewer"></SfPdfViewerServer>
+</div>
 
 @code{
 
     [Parameter]
     public string BudgetID { get; set; }
+    public string filename { get; set; }
+    public string DocumentPath { get; set; }
 
-    HttpClientHandler sHandler = new HttpClientHandler();
+    SfPdfViewerServer Viewer;
 
-    public string url;
 
-    ElementReference frame;
+
+    const string ReportExecution2005EndPointUrl = "http://192.168.0.19/ReportServer/ReportExecution2005.asmx";
+    const string SsrsServiceAccountActiveDirectoryUserName = "cbalbuena";
+    const string SsrsServiceAccountActiveDirectoryPassword = "Paraguay1";
+    const string SsrsServiceAccountActiveDirectoryDomain = "itcs";
+    const string ReportPath = "/LugaroSSRS/Presupuesto";
+    const string ReportWidth = "8.5in";
+    const string ReportHeight = "11in";
+    const string ReportFormat = "PDF";  // Other options include WORDOPENXML and EXCELOPENXML
+    const string HistoryId = null;
+
+
+    internal class ReportingServicesEndpointBehavior : IEndpointBehavior
+    {
+        public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters) { }
+
+        public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
+        {
+            clientRuntime.ClientMessageInspectors.Add(new ReportingServicesExecutionInspector());
+        }
+
+        public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher) { }
+
+        public void Validate(ServiceEndpoint endpoint) { }
+    }
+
+    internal class ReportingServicesExecutionInspector : IClientMessageInspector
+    {
+        private MessageHeaders headers;
+
+        public void AfterReceiveReply(ref Message reply, object correlationState)
+        {
+            var index = reply.Headers.FindHeader("ExecutionHeader", "http://schemas.microsoft.com/sqlserver/2005/06/30/reporting/reportingservices");
+            if (index >= 0 && headers == null)
+            {
+                headers = new MessageHeaders(MessageVersion.Soap11);
+                headers.CopyHeaderFrom(reply, reply.Headers.FindHeader("ExecutionHeader", "http://schemas.microsoft.com/sqlserver/2005/06/30/reporting/reportingservices"));
+            }
+        }
+
+        public object BeforeSendRequest(ref Message request, IClientChannel channel)
+        {
+            if (headers != null)
+                request.Headers.CopyHeadersFrom(headers);
+
+            return Guid.NewGuid(); //https://msdn.microsoft.com/en-us/library/system.servicemodel.dispatcher.iclientmessageinspector.beforesendrequest(v=vs.110).aspx#Anchor_0
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        sHandler.Credentials = new System.Net.NetworkCredential("cbalbuena", "Paraguay1", "itcs");
-        HttpClient client = new HttpClient(sHandler);
 
-        url = @"http://192.168.0.19/ReportServer/Pages/ReportViewer.aspx?%2fLugaroSSRS%2fPrespuesto&id_presupuesto=" + @BudgetID + "&rs:Command=Render&rs:Embed=true";
+        //RunReport().Wait();
 
-        await client.GetAsync(url);
+        byte[] array;
 
-        
+        array = await RenderReport(ReportPath, null, null);
+
+        //filename = "Presupuesto" + BudgetID.ToString() + ".pdf";
+
+        //SaveResultToFile(array, filename);
+
+        DocumentPath = "data:application/pdf;base64," + Convert.ToBase64String(array);
+
     }
+
+    public async Task<byte[]> RenderReport(string report, IDictionary<string, object> parameters, string exportFormat = null)
+    {
+        //My binding setup, since ASP.NET Core apps don't use a web.config file
+        var binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportCredentialOnly);
+        binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Ntlm;
+        binding.MaxReceivedMessageSize = 10485760; //I wanted a 10MB size limit on response to allow for larger PDFs
+
+        //Create the execution service SOAP Client
+        var rsExec = new ReportExecutionServiceSoapClient(binding, new EndpointAddress(ReportExecution2005EndPointUrl));
+
+        //Setup access credentials. I use windows credentials, yours may differ
+        var clientCredentials = new System.Net.NetworkCredential(
+            SsrsServiceAccountActiveDirectoryUserName,
+            SsrsServiceAccountActiveDirectoryPassword,
+            SsrsServiceAccountActiveDirectoryDomain);
+        rsExec.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Impersonation;
+        rsExec.ClientCredentials.Windows.ClientCredential = clientCredentials;
+
+        //This handles the problem of "Missing session identifier"
+        rsExec.Endpoint.EndpointBehaviors.Add(new ReportingServicesEndpointBehavior());
+
+        //Load the report
+        TrustedUserHeader trustedHeader = null;
+        var taskLoadReport = await rsExec.LoadReportAsync(trustedHeader, ReportPath, HistoryId);
+
+        //Set the parameteres asked for by the report
+        ServiceReference.ParameterValue[] reportParam = new ServiceReference.ParameterValue[] {
+                new ServiceReference.ParameterValue { Name = "id_presupuesto", Value = BudgetID }
+        };
+
+        await rsExec.SetExecutionParametersAsync(null, null, reportParam, "en-us");
+
+
+        //run the report
+        const string deviceInfo = @"<DeviceInfo><Toolbar>False</Toolbar></DeviceInfo>";
+        var renderRequest = new RenderRequest(taskLoadReport.ExecutionHeader, trustedHeader, ReportFormat, deviceInfo);
+
+        var response = await rsExec.RenderAsync(renderRequest);
+
+        //spit out the result
+        return response.Result;
+    }
+
+    //private static async Task RunReport()
+    //{
+    //    ReportExecutionServiceSoapClient rs = CreateClient();
+    //    var trustedHeader = new TrustedUserHeader();
+
+    //    LoadReportResponse loadReponse = await LoadReport(rs, trustedHeader);
+
+    //    await AddParametersToTheReport(rs, loadReponse.ExecutionHeader, trustedHeader);
+
+    //    RenderResponse response = await RenderReportByteArrayAsync(loadReponse.ExecutionHeader, trustedHeader, rs, ReportFormat, ReportWidth, ReportHeight);
+
+    //    SaveResultToFile(response.Result, "SomeFileName.pdf");
+    //}
+
+    private static void SaveResultToFile(byte[] result, string fileName)
+    {
+        using (var fs = File.OpenWrite($"c:\\temp\\{fileName}"))
+        using (var sw = new StreamWriter(fs))
+        {
+            fs.Write(result);
+        }
+    }
+
+    //private static async Task<LoadReportResponse> LoadReport(ReportExecutionServiceSoapClient rs, TrustedUserHeader trustedHeader)
+    //{
+    //    LoadReportResponse loadReponse = await rs.LoadReportAsync(trustedHeader, ReportPath, HistoryId);
+
+
+    //    return loadReponse;
+    //}
+
+    //private static async Task<SetExecutionParametersResponse> AddParametersToTheReport(ReportExecutionServiceSoapClient rs, ExecutionHeader executionHeader, TrustedUserHeader trustedHeader)
+    //{
+    //    // Add parameters to the report
+    //    var reportParameters = new List<ServiceReference.ParameterValue>();
+    //    reportParameters.Add(new ServiceReference.ParameterValue() { Name = "id_presupuesto", Value = "1434" });
+
+
+    //    SetExecutionParametersResponse setParamsResponse = await rs.SetExecutionParametersAsync(executionHeader, trustedHeader, reportParameters.ToArray(), "en-US");
+
+    //    return setParamsResponse;
+    //}
+
+    //private static async Task<RenderResponse> RenderReportByteArrayAsync(ExecutionHeader execHeader, TrustedUserHeader trustedHeader,
+    //   ReportExecutionServiceSoapClient rs, string format, string width, string height)
+    //{
+    //    string deviceInfo = String.Format("<DeviceInfo><PageHeight>{0}</PageHeight><PageWidth>{1}</PageWidth><PrintDpiX>300</PrintDpiX><PrintDpiY>300</PrintDpiY></DeviceInfo>", height, width);
+
+    //    var renderRequest = new RenderRequest(execHeader, trustedHeader, format, deviceInfo);
+
+    //    //get report bytes
+    //    RenderResponse response = await rs.RenderAsync(renderRequest);
+    //    return response;
+    //}
+
+    //private static ReportExecutionServiceSoapClient CreateClient()
+    //{
+    //    var rsBinding = new BasicHttpBinding();
+    //    rsBinding.Security.Mode = BasicHttpSecurityMode.None;
+    //    rsBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
+
+    //    So we can download reports bigger than 64 KBytes
+    //    See https://stackoverflow.com/questions/884235/wcf-how-to-increase-message-size-quota
+    //    rsBinding.MaxBufferPoolSize = 20000000;
+    //    rsBinding.MaxBufferSize = 20000000;
+    //    rsBinding.MaxReceivedMessageSize = 20000000;
+
+    //    var rsEndpointAddress = new EndpointAddress(ReportExecution2005EndPointUrl);
+    //    var rsClient = new ReportExecutionServiceSoapClient(rsBinding, rsEndpointAddress);
+
+    //    Set user name and password
+    //        rsClient.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Impersonation;
+    //    rsClient.ClientCredentials.Windows.ClientCredential = new System.Net.NetworkCredential(
+    //        SsrsServiceAccountActiveDirectoryUserName,
+    //        SsrsServiceAccountActiveDirectoryPassword,
+    //        SsrsServiceAccountActiveDirectoryDomain);
+
+
+    //    return rsClient;
+    //}
+
 
 }

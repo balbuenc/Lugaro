@@ -10,6 +10,8 @@ namespace CoreERP.UI.Interfaces
     {
         Task<IEnumerable<DiscountLimit>> GetAllDiscountLimits();
 
+        Task<IEnumerable<DiscountLimit>>  GetDiscountLimitsByBudgetID(int budgetId);
+
         Task<DiscountLimit> GetDiscountLimitDetails(int id);
 
         Task SaveDiscountLimit(DiscountLimit discountLimit);
