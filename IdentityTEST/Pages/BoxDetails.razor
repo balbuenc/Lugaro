@@ -222,7 +222,7 @@
             GridData = await LittleBoxDetailsService.GetAllLittleBoxDetail(id);
             box = await LittleBoxService.GetLittleBoxDetails(id);
 
-            if (box.estado== "CERRADO")
+            if (box.estado== "CERRADO" || box.estado == "PENDIENTE")
             {
                 CanEdit = false;
             }

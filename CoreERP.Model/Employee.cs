@@ -18,5 +18,14 @@ namespace CoreERP.Model
         public string correo { get; set; }
 
         public string cargo { get; set; }
+
+        //ROL
+
+        public string rol { get; set; }
+        public bool can_edit { get; set; }
+        public bool can_insert { get; set; }
+        public bool can_update { get; set; }
+        public bool can_delete { get; set; }
+        public bool can_approve { get; set; }
     }
 }

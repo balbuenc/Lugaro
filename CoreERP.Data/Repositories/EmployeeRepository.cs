@@ -53,6 +53,19 @@ namespace CoreERP.Data.Repositories
             return await db.QueryFirstOrDefaultAsync<Employee>(sql, new { Id = id });
         }
 
+        public async Task<Employee> GetEmployeeDetailsByUsername(string username)
+        {
+            var db = dbConnection();
+            var sql = @"select f.*, c.cargo , r2.*
+                        from funcionarios f
+                        left outer join cargos c on f.id_cargo = c.id_cargo
+                        left outer join roles r2 on r2.id_rol = f.id_rol
+                        where usuario = @User";
+
+
+            return await db.QueryFirstOrDefaultAsync<Employee>(sql, new { User = username });
+        }
+
         public async Task<bool> InsertEmployee(Employee employee)
         {
             var db = dbConnection();

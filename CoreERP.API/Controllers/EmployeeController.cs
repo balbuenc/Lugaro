@@ -31,6 +31,13 @@ namespace CoreERP.API.Controllers
             return Ok(await _EmployeeRepository.GetEmployeeDetails(id));
         }
 
+        [HttpGet]
+        [Route("GetUserId/{username}")]
+        public async Task<IActionResult> GetEmployeeDetailsByUsername(string username)
+        {
+            return Ok(await _EmployeeRepository.GetEmployeeDetailsByUsername(username));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateEmployee([FromBody] Employee employee)
         {

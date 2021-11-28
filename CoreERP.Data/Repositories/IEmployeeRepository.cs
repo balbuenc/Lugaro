@@ -12,6 +12,8 @@ namespace CoreERP.Data.Repositories
 
         Task<Employee> GetEmployeeDetails(int id);
 
+        Task<Employee> GetEmployeeDetailsByUsername(string username);
+
         Task<bool> InsertEmployee(Employee employee);
 
         Task<bool> UpdateEmployee(Employee employee);

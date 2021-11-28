@@ -40,6 +40,21 @@ namespace CoreERP.UI.Services
               );
         }
 
+
+        public async Task<Employee> GetEmployeeDetailsByUsername(string usernane)
+        {
+            try
+            { 
+            return await JsonSerializer.DeserializeAsync<Employee>(
+              await _httpClient.GetStreamAsync($"api/employee/GetUserId/{usernane}"),
+              new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+              );
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task SaveEmployee(Employee employee)
         {
             var employeeJson = new StringContent(JsonSerializer.Serialize(employee),

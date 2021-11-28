@@ -10,6 +10,8 @@ namespace CoreERP.UI.Interfaces
     {
         Task<IEnumerable<Employee>> GetAllEmployees();
 
+        Task<Employee> GetEmployeeDetailsByUsername(string username);
+
         Task<Employee> GetEmployeeDetails(int id);
 
         Task SaveEmployee(Employee employee);

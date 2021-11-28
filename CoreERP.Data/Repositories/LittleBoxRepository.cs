@@ -94,7 +94,7 @@ namespace CoreERP.Data.Repositories
 
                 var sql = @"INSERT INTO public.caja_chica
                             (fecha_apertura, fecha_cierre, id_funcionario, monto_apertura, estado, saldo_inicial, nro_comprobante)
-                            VALUES(@fecha_apertura, null, @id_funcionario, @monto_apertura, 'ABIERTO', @saldo_inicial,@nro_comprobante);";
+                            VALUES(@fecha_apertura, null, @id_funcionario, @monto_apertura, @estado, @saldo_inicial,@nro_comprobante);";
 
                 var result = await db.ExecuteAsync(sql, new
                 {

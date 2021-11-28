@@ -10,6 +10,8 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 
+@inject IJSRuntime Js
+
 @attribute [Authorize]
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Data
@@ -50,6 +52,14 @@
 
     .e-list-edit:before {
         content: "\e7a3";
+    }
+
+    .e-list-approve:before {
+        content: "\eb6e"
+    }
+
+    .e-list-printpdf:before {
+        content: "\e240"
     }
 </style>
 
@@ -111,19 +121,6 @@
                                         </div>
 
                                     </div>
-                                    @*<div class="form-row">
-
-                                            <div class="form-group col-md-9">
-                                                <SfDropDownList DataSource="@employees"
-                                                                TItem="Employee"
-                                                                TValue="Int32"
-                                                                @bind-Value="@(little.id_funcionario)"
-                                                                Placeholder="Responsable"
-                                                                FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                    <DropDownListFieldSettings Value="id_funcionario" Text="usuario"></DropDownListFieldSettings>
-                                                </SfDropDownList>
-                                            </div>
-                                        </div>*@
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
                                             <SfTextBox @bind-Value="@(little.nro_comprobante)" Enabled="true" Placeholder="Comprobante" FloatLabelType="FloatLabelType.Always"></SfTextBox>
@@ -134,17 +131,12 @@
                                         <div class="form-group col-md-4">
                                             <SfNumericTextBox @bind-Value="@(little.saldo_inicial)" Enabled="false" Placeholder="Saldo inicial" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
-
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
                                             <SfTextBox @bind-Value="@(little.aprobador)" Enabled="false" Placeholder="Aprobador" FloatLabelType="FloatLabelType.Always"></SfTextBox>
                                         </div>
                                     </div>
-
-
-
-
                                 </div>
                             </Template>
                         </GridEditSettings>
@@ -152,7 +144,11 @@
                             <GridColumn HeaderText="*" Width="10">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
-                                    <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-undo", CssClass="e-flat" })" Title="Cerrar caja"></GridCommandColumn>
+                                    <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
+                                    @if (employee.can_approve)
+                                    {
+                                        <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-approve", CssClass="e-flat" })" Title="Aprobar"></GridCommandColumn>
+                                    }
                                 </GridCommandColumns>
                             </GridColumn>
                             <GridColumn Field=@nameof(LittleBox.id_caja_chica) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
@@ -208,6 +204,7 @@
     public IEnumerable<LittleBox> GridData { get; set; }
 
     public IEnumerable<Employee> employees { get; set; }
+    public Employee employee { get; set; }
 
 
     public DateTime hoy = DateTime.Today;
@@ -240,6 +237,8 @@
 
             string[] subs = user.Identity.Name.Split("@");
             UserName = subs[0];
+
+            employee = await EmployeeService.GetEmployeeDetailsByUsername(UserName);
         }
         catch (Exception ex)
         {
@@ -299,6 +298,17 @@
             await LittleBoxService.SaveLittleBox(item);
             await RefreshGrid();
         }
+        else if (command.Title == "Aprobar" && item.estado == "PENDIENTE")
+        {
+            item.estado = "ABIERTO";
+            item.aprobado_por = employee.id_funcionario;
+            await LittleBoxService.SaveLittleBox(item);
+            await RefreshGrid();
+        }
+        else if (command.Title == "Imprimir")
+        {
+            Print(item.id_caja_chica);
+        }
 
     }
 
@@ -307,28 +317,36 @@
         try
         {
             littleBox.id_funcionario = GetEmployeeID(UserName);
+
+            //Check if New Little Box (Creating)
             if (littleBox.id_caja_chica == 0)
             {
                 //Check if there any Opened LittleBox
-                foreach (LittleBox l in GridData)
-                {
-                    if (l.id_funcionario == littleBox.id_funcionario && l.estado == "ABIERTO")
-                    {
-                        SystemMessage = "Favor cerrar las cajas abiertas.";
-                        IsMessageVisible = true;
-                        return;
-                    }
-                }
+                //foreach (LittleBox l in GridData)
+                //{
+                //    if (l.id_funcionario == littleBox.id_funcionario && l.estado == "ABIERTO")
+                //    {
+                //        SystemMessage = "Favor cerrar las cajas abiertas.";
+                //        IsMessageVisible = true;
+                //        return;
+                //    }
+                //}
 
+
+                //Cierro las cajas abiertas del usuario
+                CloseUserOpenLittleBoxes();
+
+                //Trasfieron el saldo como inicial a la nueva caja
                 littleBox.saldo_inicial = GetRestAmmount();
-                //CloseUserOpenLittleBoxes();
-                littleBox.estado = "ABIERTO";
+
+                //Marco como solicitiado
+                littleBox.estado = "SOLICITADO";
             }
 
             //Create the new LittleBox
             await LittleBoxService.SaveLittleBox(littleBox);
 
-            //Transfer Saldos
+            //Marco como transferido las cajas cerradas del usuario
             foreach (LittleBox l in GridData)
             {
                 if (l.id_funcionario == littleBox.id_funcionario && l.estado == "CERRADO")
@@ -354,6 +372,7 @@
             if (l.id_funcionario == IdFuncionario && l.estado == "ABIERTO")
             {
                 l.estado = "CERRADO";
+                l.fecha_cierre = DateTime.Now;
                 await LittleBoxService.SaveLittleBox(l);
             }
         }
@@ -417,6 +436,15 @@
     {
         NavigationManager.NavigateTo($"/BoxDetails/{littleBox.id_caja_chica}");
     }
+
+    protected void Print(int LittleBoxID)
+    {
+        String route;
+        route = String.Concat("LittleBoxReport/", LittleBoxID);
+
+        Js.InvokeAsync<object>("open", route, "_blank");
+    }
+
 
 
 }
