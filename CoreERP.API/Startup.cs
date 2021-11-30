@@ -66,6 +66,7 @@ namespace CoreERP.API
             services.AddScoped<ILittleBoxRepository, LittleBoxRepository>();
             services.AddScoped<ILittleBoxDetailRepository, LittleBoxDetailRepository>();
             services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+            services.AddScoped<ITransferRepository, TransferRepository>();
 
             services.AddControllers();
 

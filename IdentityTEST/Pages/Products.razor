@@ -8,6 +8,10 @@
 @inject ICurrencyService CurrencyService
 @inject IStockService StockService
 @inject IStoreService StoreService
+@inject ITransferService TransferService
+@inject IEmployeeService EmployeeService
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 
 @attribute [Authorize]
@@ -32,21 +36,18 @@
         font-size: 18px !important;
     }
 
-    .e-search::before {
-        content: '\e5a3';
+    .e-transfer::before {
+        content: '\e890';
     }
 </style>
 
 <style>
     .e-card-image {
-        
-        height:300px;
-        
-        
+        height: 200px;
     }
 
     .e-card {
-        width: 300px;
+        width: 200px;
         margin: auto;
     }
 </style>
@@ -100,8 +101,8 @@
                                     <div class="from-row">
                                         <div class="form-group col-md-12">
                                             <SfCard ID="ProductCard">
-                                                
-                                                <Syncfusion.Blazor.Cards.CardImage Image=@prod.imagen  ></Syncfusion.Blazor.Cards.CardImage>
+
+                                                <Syncfusion.Blazor.Cards.CardImage Image=@prod.imagen></Syncfusion.Blazor.Cards.CardImage>
                                                 <Syncfusion.Blazor.Cards.CardHeader Title=@prod.codigo SubTitle=@prod.producto />
                                             </SfCard>
                                         </div>
@@ -221,7 +222,7 @@
                                                     <GridColumn Field=@nameof(Stock.cantidad) HeaderText="Cantidad" Width="15"></GridColumn>
                                                     <GridColumn HeaderText="Adm." Width="15">
                                                         <GridCommandColumns>
-                                                            <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-search", CssClass="e-flat" })" Title="Transferir"></GridCommandColumn>
+                                                            <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-transfer", CssClass="e-flat" })" Title="Transferir"></GridCommandColumn>
                                                             <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
                                                             <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
                                                             <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-save", CssClass="e-flat" })"></GridCommandColumn>
@@ -255,17 +256,41 @@
             </div>
         </div>
 
-        <SfDialog ID="dialog" Width="600px" Height="200px" ShowCloseIcon="true" @bind-Visible="@isVisibleTransferDialog">
+        <SfDialog ID="dialog" Width="600px" Height="400px" ShowCloseIcon="true" @bind-Visible="@isVisibleTransferDialog">
             <DialogTemplates>
                 <Header>Transferencia entre bodegas</Header>
                 <Content>
                     <div class="container">
                         <div class="row">
                             <div class="col-6">
+                                <div class="text-left"><b>#Traslado:</b> </div>
+                            </div>
+                            <div class="col-6">
+                                <SfNumericTextBox TValue="int" @bind-Value=@NroTransferencia Placeholder="Cantidad"></SfNumericTextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
                                 <div class="text-left"><b>Cantidad:</b> </div>
                             </div>
                             <div class="col-6">
                                 <SfNumericTextBox TValue="int" @bind-Value=@cantidad Placeholder="Cantidad"></SfNumericTextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="text-left"><b>Retirado por:</b> </div>
+                            </div>
+                            <div class="col-6">
+                                <SfTextBox TValue="String" @bind-Value=@RetiradoPor Placeholder="Retirado por"></SfTextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="text-left"><b>Observaciones:</b> </div>
+                            </div>
+                            <div class="col-6">
+                                <SfTextBox TValue="String" @bind-Value=@Observaciones Placeholder="Observaciones"></SfTextBox>
                             </div>
                         </div>
                         <div class="row">
@@ -285,7 +310,7 @@
                                     <GridColumn Field=@nameof(Stock.cantidad) HeaderText="Cantidad" Width="15"></GridColumn>
                                     <GridColumn HeaderText="Adm." Width="10">
                                         <GridCommandColumns>
-                                            <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-search", CssClass="e-flat" })" Title="Transferir"></GridCommandColumn>
+                                            <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-transfer", CssClass="e-flat" })" Title="Transferir"></GridCommandColumn>
                                         </GridCommandColumns>
                                     </GridColumn>
                                 </GridColumns>
@@ -319,6 +344,8 @@
     public IEnumerable<Store> stores { get; set; }
     public IEnumerable<Stock> destinations { get; set; }
 
+    public Employee employee { get; set; }
+
 
     public class fileInfo
     {
@@ -342,9 +369,17 @@
     private DialogSettings DialogParams = new DialogSettings { Width = "940px", EnableResize = true, AllowDragging = true };
     protected int IdProducto;
     protected string CodigoProducto;
+
+    public int NroTransferencia;
     public int cantidad;
+    public string RetiradoPor;
+    public string Observaciones;
+
+    public string UserName;
 
     protected bool isVisibleTransferDialog = false;
+
+
 
     public void onChange(UploadChangeEventArgs args)
     {
@@ -433,6 +468,19 @@
             Task.Run(async () => await StockService.SaveStock(originStock));
             Task.Run(async () => await StockService.SaveStock(destinationStock));
 
+            //Registro la transferencia
+            Transfer t = new Transfer();
+            t.id_producto = originStock.id_producto;
+            t.fecha = DateTime.Now;
+            t.id_deposito_origen = originStock.id_deposito;
+            t.id_deposito_destino = destinationStock.id_deposito;
+            t.id_funcionario = employee.id_funcionario;
+            t.cantidad = cantidad;
+            t.nro_transferencia = NroTransferencia;
+            t.retirado_por = RetiradoPor;
+            t.observaciones = Observaciones;
+
+            Task.Run(async () => await TransferService.SaveTransfer(t));
 
             isVisibleTransferDialog = false;
         }
@@ -449,6 +497,14 @@
             vendors = await VendorService.GetAllVendors();
             currencies = await CurrencyService.GetAllCurrencies();
             stores = await StoreService.GetAllStores();
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            string[] subs = user.Identity.Name.Split("@");
+            UserName = subs[0];
+
+            employee = await EmployeeService.GetEmployeeDetailsByUsername(UserName);
         }
         catch (Exception ex)
         {

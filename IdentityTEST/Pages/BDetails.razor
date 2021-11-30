@@ -572,7 +572,7 @@
 
             //Call Reporting Service WSL
             String route;
-            route = String.Concat("ReportViewer/", BudgetID);
+            route = String.Concat("BudgetReport/", BudgetID);
 
             await Js.InvokeAsync<object>("open", route, "_blank");
 
@@ -590,17 +590,23 @@
         IsSearchVisible = true;
     }
 
-    protected async Task PrintInvoice()
+    protected void PrintInvoice()
     {
         try
         {
-            byte[] r;
-            r = await PrintService.GetInvoicePDF(Convert.ToInt32(BudgetID));
+            //byte[] r;
+            //r = await PrintService.GetInvoicePDF(Convert.ToInt32(BudgetID));
 
-            String filename;
-            filename = String.Concat("Factura", BudgetID, ".pdf");
+            //String filename;
+            //filename = String.Concat("Factura", BudgetID, ".pdf");
 
-            await Js.SaveAs(filename, r.ToArray());
+            //await Js.SaveAs(filename, r.ToArray());
+
+            //Call Reporting Service WSL
+            String route;
+            route = String.Concat("InvoiceReport/", BudgetID);
+
+            Js.InvokeAsync<object>("open", route, "_blank");
 
         }
         catch (Exception ex)
@@ -609,17 +615,23 @@
         }
     }
 
-    protected async Task PrintRemission()
+    protected void PrintRemission()
     {
         try
         {
-            byte[] r;
-            r = await PrintService.GetRemissionPDF(Convert.ToInt32(BudgetID));
+            //byte[] r;
+            //r = await PrintService.GetRemissionPDF(Convert.ToInt32(BudgetID));
 
-            String filename;
-            filename = String.Concat("Remision", BudgetID, ".pdf");
+            //String filename;
+            //filename = String.Concat("Remision", BudgetID, ".pdf");
 
-            await Js.SaveAs(filename, r.ToArray());
+            //await Js.SaveAs(filename, r.ToArray());
+
+            //Call Reporting Service WSL
+            String route;
+            route = String.Concat("RemissionReport/", BudgetID);
+
+            Js.InvokeAsync<object>("open", route, "_blank");
 
         }
         catch (Exception ex)
@@ -629,19 +641,23 @@
     }
 
 
-    protected async Task PrintSpecialRemission()
+    protected void PrintSpecialRemission()
     {
         try
         {
-            byte[] r;
-            r = await PrintService.GetSpecialRemissionPDF(Convert.ToInt32(BudgetID));
+            //byte[] r;
+            //r = await PrintService.GetSpecialRemissionPDF(Convert.ToInt32(BudgetID));
 
-            String filename;
-            filename = String.Concat("RemisionEspecial", BudgetID, ".pdf");
+            //String filename;
+            //filename = String.Concat("RemisionEspecial", BudgetID, ".pdf");
 
-            await Js.SaveAs(filename, r.ToArray());
+            //await Js.SaveAs(filename, r.ToArray());
 
+            //Call Reporting Service WSL
+            String route;
+            route = String.Concat("SpecialRemissionReport/", BudgetID);
 
+            Js.InvokeAsync<object>("open", route, "_blank");
 
         }
         catch (Exception ex)

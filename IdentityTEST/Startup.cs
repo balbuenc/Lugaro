@@ -194,6 +194,10 @@ namespace CoreERP.UI
             purchaseOrderBoxDetailsService => { purchaseOrderBoxDetailsService.BaseAddress = new Uri(apiurl); }
             );
 
+            services.AddHttpClient<ITransferService, TransferService>(
+           transferService => { transferService.BaseAddress = new Uri(apiurl); }
+           );
+
 
         }
 

@@ -1,0 +1,371 @@
+﻿@page "/Transfer"
+@using Model
+@using Interfaces
+
+@inject ITransferService TransferService
+
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize]
+
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Grids
+@using System.Collections.ObjectModel
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs;
+@using Syncfusion.Blazor.Calendars;
+@using Syncfusion.Blazor.Popups;
+@using Syncfusion.Blazor.Notifications
+@using Syncfusion.Blazor.Buttons
+
+
+@inject IJSRuntime Js
+
+<style>
+    .e-list-settings:before {
+        content: "\e679";
+    }
+
+    .e-list-print:before {
+        content: "\e743";
+    }
+
+    .e-list-save:before {
+        content: "\e74d";
+    }
+
+    .e-list-saveas:before {
+        content: "\e72b";
+    }
+
+    .e-list-delete:before {
+        content: "\e773";
+    }
+
+    .e-list-undo:before {
+        content: "\e197";
+    }
+
+    .e-list-edit:before {
+        content: "\e7a3";
+    }
+
+    .e-list-approve:before {
+        content: "\eb6e"
+    }
+
+    .e-list-printpdf:before {
+        content: "\e240"
+    }
+</style>
+<div class="container-fluid">
+    <p>@Message</p>
+    <span class="error">@ErrorDetails</span>
+
+    <div class="col-lg-12" style="padding:1px; height:50px">
+        <div class="content-wrapper">
+            <div class="alert alert-title" role="banner"><b>Traslados</b></div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 control-section">
+        <div class="content-wrapper">
+            <div class="row">
+                @if (GridData == null)
+                {
+                <div class="alert alert-title" role="alert"><p><em>Cargando datos...</em></p></div>
+                }
+                else
+                {
+                <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES">
+
+                    <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="Transfer" CommandClicked="OnCommandClicked"></GridEvents>
+                    <GridPageSettings PageSize="20"></GridPageSettings>
+
+                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
+                        <HeaderTemplate>
+                            @{
+                                    var t = (context as Transfer);
+                            }
+                            <span>Detalle de la transferencia: @(t.id_transferencia)</span>
+                        </HeaderTemplate>
+                        <Template>
+                            @{
+                                    var t = (context as Transfer);
+                            }
+                            <div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <SfNumericTextBox @bind-Value="@(t.id_transferencia)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <SfNumericTextBox @bind-Value="@(t.nro_transferencia)" Enabled="true" Placeholder="#" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <SfTextBox @bind-Value="@(t.usuario)" Enabled="false" Placeholder="Responsable" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <SfTextBox @bind-Value="@(t.origen)" Enabled="false" Placeholder="Origen" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <SfTextBox @bind-Value="@(t.destino)" Enabled="false" Placeholder="Destino" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <SfNumericTextBox @bind-Value="@(t.cantidad)" Enabled="false" Placeholder="cantidad" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </Template>
+                    </GridEditSettings>
+                    <GridColumns>
+                        <GridColumn HeaderText="*" Width="15">
+                            <GridCommandColumns>
+                                <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
+                            </GridCommandColumns>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Transfer.id_transferencia) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+
+                        <GridColumn Field=@nameof(Transfer.usuario) HeaderText="Usuario" Width="30"></GridColumn>
+                        <GridColumn Field=@nameof(Transfer.fecha) HeaderText="Fecha" Width="20" Format="dd/MM/yyyy"></GridColumn>
+                        <GridColumn Field=@nameof(Transfer.nro_transferencia) HeaderText="Nro. traslado" Width="20"></GridColumn>
+                        <GridColumn Field=@nameof(Transfer.origen) HeaderText="Origen" Width="50"></GridColumn>
+                        <GridColumn Field=@nameof(Transfer.destino) HeaderText="Destino" Width="30"></GridColumn>
+                        <GridColumn Field=@nameof(Transfer.cantidad) HeaderText="Cantidad" Width="20"></GridColumn>
+
+                    </GridColumns>
+                </SfGrid>
+                }
+
+            </div>
+            <SfDialog Target="#target"
+                      Width="300px"
+                      Height="130px"
+                      IsModal="true"
+                      ShowCloseIcon="false"
+                      @bind-Visible="DeleteRecordConfirmVisibility">
+                <DialogTemplates>
+                    <Header> Eliminar el registro? </Header>
+                    <Content>
+                        <div class="button-container">
+                            <button type="submit"
+                                    class="e-btn e-normal e-primary"
+                                    @onclick="ConfirmDeleteYes">
+                                Yes
+                            </button>
+                            <button type="submit"
+                                    class="e-btn e-normal"
+                                    @onclick="ConfirmDeleteNo">
+                                No
+                            </button>
+                        </div>
+                    </Content>
+                </DialogTemplates>
+            </SfDialog>
+            <SfToast @ref="ToastObj" Title="@ToastTitle" Content="@ToastContent" CssClass="@ToastCssClass">
+                <ToastPosition X="Right" Y="Bottom"></ToastPosition>
+            </SfToast>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    #toast_default .e-meeting::before {
+        content: "\e705";
+        font-size: 17px;
+    }
+</style>
+
+@code {
+
+    public string Message { get; set; }
+    public string[] ToolbarItems = new string[] { "Update", "Cancel", "Search" };
+    public string ErrorDetails = "";
+
+    public IEnumerable<Transfer> GridData { get; set; }
+
+    public bool EditDialogVisibility { get; set; } = false;
+    public bool DeleteRecordConfirmVisibility { get; set; } = false;
+
+    public Int32 ID = 0;
+
+    public string UserName;
+
+    SfToast ToastObj;
+
+    private int ToastFlag = 0;
+    private string ToastTitle = "";
+    private string ToastContent = "";
+    private string ToastCssClass = "";
+
+
+    private class ToastOption
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public string CssClass { get; set; }
+    }
+
+    private ToastOption[] Toasts = new ToastOption[] {
+        new ToastOption { Title = "Warning !", Content = "El registro se eliminó con éxito.", CssClass = "e-toast-warning" },
+        new ToastOption { Title = "Success !", Content = "El registro se modificó con éxito.", CssClass = "e-toast-success" },
+        new ToastOption { Title = "Error !", Content = "A problem has been occurred while submitting your data.", CssClass = "e-toast-danger" },
+        new ToastOption { Title = "Information !", Content = "Please read the comments carefully.", CssClass = "e-toast-info" }
+    };
+
+
+    SfGrid<Transfer> Grid { get; set; }
+
+    private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            GridData = await TransferService.GetAllTransfers();
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener tipos de transferencia: " + ex.Message;
+        }
+    }
+
+
+    public async void OnCommandClicked(CommandClickEventArgs<Transfer> args)
+    {
+        var item = args.RowData;
+        var command = args.CommandColumn;
+
+        if (command.Title == "Imprimir")
+        {
+            Print(item.nro_transferencia);
+        }
+
+    }
+
+    protected void Print(int TransferID)
+    {
+        String route;
+        route = String.Concat("TransferReport/", TransferID);
+
+        Js.InvokeAsync<object>("open", route, "_blank");
+    }
+
+
+
+    private async Task OnBeginHandler(ActionEventArgs<Transfer> Args)
+    {
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+        {
+            await SaveTransfer((Transfer)Args.Data);
+
+        }
+        else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+        {
+            ID = ((Transfer)Args.Data).id_transferencia;
+
+            // Open Delete confirmation dialog
+            this.DeleteRecordConfirmVisibility = true;
+            StateHasChanged();
+        }
+
+        return;
+    }
+
+    private async Task OnCompleteHandler(ActionEventArgs<Transfer> Args)
+    {
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+        {
+            await ShowToast(1);
+            GridData = await TransferService.GetAllTransfers();
+            Grid.Refresh();
+
+        }
+        else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+        {
+
+            StateHasChanged();
+        }
+
+        return;
+    }
+
+    protected async Task SaveTransfer(Transfer accountType)
+    {
+        await TransferService.SaveTransfer(accountType);
+        Grid.Refresh();
+
+    }
+
+    protected async Task DeleteTransfer(int id)
+    {
+        await TransferService.DeleteTransfer(id);
+        await ShowToast(0);
+        Grid.Refresh();
+
+    }
+
+    protected void ReloadPage()
+    {
+        NavigationManager.NavigateTo("/Transfers", true);
+    }
+
+    public async void ConfirmDeleteYes()
+    {
+        // The user selected Yes to delete the
+        // seleted Help Desk Ticket
+        // Delete the record
+        await DeleteTransfer(ID);
+
+        // Close the dialog
+        this.DeleteRecordConfirmVisibility = false;
+
+        // Refresh the SfGrid
+        // so the deleted record will not show
+        Grid.Refresh();
+    }
+
+    public void ConfirmDeleteNo()
+    {
+        // Open the dialog
+        // to give the user a chance
+        // to confim they want to delete the record
+        this.DeleteRecordConfirmVisibility = false;
+    }
+
+    private async Task ShowToast(int ix)
+    {
+        this.ToastTitle = this.Toasts[ix].Title;
+        this.ToastContent = this.Toasts[ix].Content;
+        this.ToastCssClass = this.Toasts[ix].CssClass;
+        await Task.Delay(200);
+
+        await this.ToastObj.Show();
+
+    }
+
+
+
+    private async Task HideToast()
+    {
+
+        await this.ToastObj.Hide("All");
+    }
+
+
+}
+
+
