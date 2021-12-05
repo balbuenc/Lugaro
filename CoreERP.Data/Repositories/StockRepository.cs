@@ -86,6 +86,39 @@ namespace CoreERP.Data.Repositories
             return await db.QueryFirstOrDefaultAsync<Stock>(sql, new { Id = id });
         }
 
+        public async Task<Stock> GetStockDetailsByStore(int productId, int storeID)
+        {
+            Stock s;
+            
+            var db = dbConnection();
+            var sql = @"select s.id_stock, s.id_deposito, s.id_producto, p.codigo, p.producto, d.deposito, s.cantidad 
+                        from public.productos p 
+                        left outer join public.stock s on p.id_producto = s.id_producto 
+                        left outer join public.depositos d on d.id_deposito = s.id_deposito
+                        where s.id_producto = @ProductId
+                        and s.id_deposito = @StoreID
+                        order by s.id_deposito asc";
+
+            s = await db.QueryFirstOrDefaultAsync<Stock>(sql, new { ProductId = productId, StoreID = storeID });
+
+            if (s == null)
+            {
+                Stock createdStock = new Stock();
+                createdStock.id_deposito = storeID;
+                createdStock.id_producto = productId;
+
+                InsertStock(createdStock);
+
+                return await GetStockDetailsByStore(productId, storeID);
+            }
+            else
+            {
+                return s;
+            }
+
+        }
+
+
         public async Task<bool> InsertStock(Stock stock)
         {
             var db = dbConnection();

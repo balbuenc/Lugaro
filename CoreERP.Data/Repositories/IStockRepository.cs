@@ -11,6 +11,7 @@ namespace CoreERP.Data.Repositories
         Task<IEnumerable<Stock>> GetAllStocks();
 
         Task<Stock> GetStockDetails(int id);
+        Task<Stock> GetStockDetailsByStore(int ProductId, int StoreID);
 
         Task<bool> InsertStock(Stock store);
 

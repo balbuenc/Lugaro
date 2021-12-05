@@ -31,6 +31,13 @@ namespace CoreERP.API.Controllers
         }
 
         [HttpGet]
+        [Route("GetStockDetailsByStore/{ProductId}/{StoreID}")]
+        public async Task<IActionResult> GetStockDetailsByStore(int productID, int storeID )
+        {
+            return Ok(await _StockRepository.GetStockDetailsByStore(productID, storeID));
+        }
+
+        [HttpGet]
         [Route("ProductStock/{id}")]
         public async Task<IActionResult> GetProductStock(int id)
         {

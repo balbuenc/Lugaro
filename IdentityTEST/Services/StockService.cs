@@ -73,6 +73,14 @@ namespace CoreERP.UI.Services
             );
         }
 
+        public async Task<Stock> GetStockDetailsByStore(int productId, int storeID)
+        {
+            return await JsonSerializer.DeserializeAsync<Stock>(
+            await _httpClient.GetStreamAsync($"api/stock/GetStockDetailsByStore/{productId}/{storeID}"),
+            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+            );
+        }
+
         public async Task SaveStock(Stock stock)
         {
             var clientJson = new StringContent(JsonSerializer.Serialize(stock),

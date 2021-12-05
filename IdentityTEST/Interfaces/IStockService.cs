@@ -15,6 +15,7 @@ namespace CoreERP.UI.Interfaces
         Task<IEnumerable<Stock>> GetTransferDestinations(int id);
 
         Task<Stock> GetStockDetails(int id);
+        Task<Stock> GetStockDetailsByStore(int productId, int storeID);
 
         Task SaveStock(Stock stock);
 

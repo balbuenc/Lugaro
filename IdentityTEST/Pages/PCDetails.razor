@@ -112,6 +112,9 @@
                                 <td>
                                     <p class="m-0"><b>Moneda:</b> @Moneda</p>
                                 </td>
+                                <td>
+                                    <p class="m-0"><b>Depósito:</b> @Deposito</p>
+                                </td>
 
                             </tr>
                         </tbody>
@@ -124,12 +127,20 @@
                         <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="GeneratePurchaseOrder">Generar OC</SfButton>
                     }
                     @*@if (Estado == "Pendiente")
-                        {
-                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
-                        }*@
+        {
+            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
+        }*@
                     @if (Estado.ToUpper() == "PENDIENTE" && employee.can_approve)
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="AuthorizeOC">Aprobar OC</SfButton>
+                    }
+                    @if (Estado.ToUpper() == "APROBADO")
+                    {
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="ReceiptOC">Recepcionar OC</SfButton>
+                    }
+                    @if (Estado.ToUpper() == "RECIBIDO")
+                    {
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PayOC">Pagar OC</SfButton>
                     }
 
 
@@ -246,6 +257,7 @@
     public string Fecha = "";
     public string NroOrden = "";
     public string Moneda = "";
+    public string Deposito = "";
 
     public string Estado = "";
     public string Usuario = "";
@@ -275,6 +287,7 @@
             Fecha = header.fecha.ToShortDateString();
             NroOrden = header.nro_orden_compra;
             Moneda = header.moneda;
+            Deposito = header.deposito;
 
             Estado = header.estado;
             Usuario = header.funcionario;
@@ -378,6 +391,49 @@
     }
 
 
+    //Reception of Products
+    protected async Task ReceiptOC()
+    {
+        header.estado = "RECIBIDO";
+        await PurchaseService.SavePurchase(header);
+
+
+        //Get the purcharse Order
+        //Set Aprobation data
+        PurchaseOrder oc;
+        oc = await PurchaseOrderService.GetPurchaseOrderByPurchaseID(header.id_compra);
+
+        oc.estado = "RECIBIDO";
+
+        await PurchaseOrderService.SavePurchaseOrder(oc);
+
+        //Update stock products
+        await ModifyStock();
+
+        Navigate();
+    }
+
+    //OC Payment
+    protected async Task PayOC()
+    {
+        header.estado = "PAGADO";
+        await PurchaseService.SavePurchase(header);
+
+
+        //Get the purcharse Order
+        //Set Aprobation data
+        PurchaseOrder oc;
+        oc = await PurchaseOrderService.GetPurchaseOrderByPurchaseID(header.id_compra);
+
+        oc.estado = "PAGADO";
+
+        await PurchaseOrderService.SavePurchaseOrder(oc);
+
+        Navigate();
+    }
+
+
+
 
     protected async Task ModifyStock()
     {
@@ -385,9 +441,9 @@
         for (int i = 0; i < GridData.Count(); i++)
         {
             PurchaseDetails item = GridData.ElementAt(i);
-            s = await StockService.GetStockDetails(item.id_producto);
+            s = await StockService.GetStockDetailsByStore(item.id_producto, header.id_deposito);
 
-            s.cantidad = s.cantidad - 1;
+            s.cantidad = s.cantidad + item.cantidad;
             await StockService.SaveStock(s);
 
         }
