@@ -9,7 +9,7 @@ namespace CoreERP.Model
     {
         public int id_compra { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "El campo Factura debe tener un valor.")]
+      
         public String factura { get; set; }
         public int id_proveedor { get; set; }
 
@@ -22,6 +22,8 @@ namespace CoreERP.Model
 
         public int id_condicion_venta { get; set; }
 
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "El campo Nro. OC debe tener un valor.")]
         public string nro_orden_compra { get; set; }
 
         public DateTime fecha { get; set; }

@@ -12,6 +12,8 @@ namespace CoreERP.UI.Interfaces
 
         Task<PurchaseOrder> GetPurchaseOrderDetails(int id);
 
+        Task<PurchaseOrder> GetPurchaseOrderByPurchaseID(int id);
+
         Task SavePurchaseOrder(PurchaseOrder account);
 
 

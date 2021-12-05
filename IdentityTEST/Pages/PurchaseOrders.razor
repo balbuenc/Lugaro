@@ -80,7 +80,6 @@
                                     OnToolbarClick="ToolbarClickHandler"
                                     OnRecordDoubleClick="RecordDoubleClickHandler"
                                     CommandClicked="OnCommandClicked">
-
                         </GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
@@ -111,7 +110,6 @@
                                         </div>
 
                                     </div>
-                                   
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <SfNumericTextBox @bind-Value="@(oc.id_compra)" Enabled="false" Placeholder="#Pedido" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
@@ -121,30 +119,23 @@
                                         </div>
 
                                     </div>
-
-
-
-
                                 </div>
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn HeaderText="*" Width="10">
+                            @*<GridColumn HeaderText="*" Width="10">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
-                                   
                                 </GridCommandColumns>
-                            </GridColumn>
+                            </GridColumn>*@
                             <GridColumn Field=@nameof(PurchaseOrder.id_orden_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.fecha) HeaderText="Fecha" Visible="true" Width="15" Format="dd/MM/yyyy"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.fecha_aprobacion) HeaderText="Aprobación" Width="15" Visible="false" Format="dd/MM/yyyy"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.fecha_aprobacion) HeaderText="Aprobación" Width="15" Visible="true" Format="dd/MM/yyyy"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.id_compra) HeaderText="#Pedido" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.id_compra_general) HeaderText="#Compra" Width="20" ></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.propietario) HeaderText="Propietario" Width="20" ></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.id_compra_general) HeaderText="#Compra" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.propietario) HeaderText="Propietario" Width="20"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.aprobador) HeaderText="Aprobador" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.estado) HeaderText="Estado" Width="15"></GridColumn>
-                            
-
                         </GridColumns>
                     </SfGrid>
                 }
@@ -179,7 +170,7 @@
     public string Message { get; set; }
     public string SystemMessage { get; set; }
 
-    public string[] ToolbarItems = new string[] {  "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
+    public string[] ToolbarItems = new string[] { "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
     public string ErrorDetails = "";
 
     private bool IsMessageVisible { get; set; } = false;
@@ -344,7 +335,11 @@
 
     private void Navigate(PurchaseOrder purchaseOrder)
     {
-        NavigationManager.NavigateTo($"/purchaseOrderDetails/{purchaseOrder.id_orden_compra}");
+        if (purchaseOrder.tipo_compra == "PEDIDO")
+        {
+            NavigationManager.NavigateTo($"/PurchaseDetails/{purchaseOrder.id_compra}");
+        }
+
     }
 
 

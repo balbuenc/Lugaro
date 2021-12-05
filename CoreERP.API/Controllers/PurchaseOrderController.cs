@@ -31,6 +31,13 @@ namespace CoreERP.API.Controllers
             return Ok(await _PurchaseOrderRepository.GetPurchaseOrderDetails(id));
         }
 
+        [HttpGet]
+        [Route("GetPurchaseOrderByPurchaseID/{id}")]
+        public async Task<IActionResult> GetPurchaseOrderByPurchaseID(int id)
+        {
+            return Ok(await _PurchaseOrderRepository.GetPurchaseOrderByPurchaseID(id));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreatePurchaseOrder([FromBody] PurchaseOrder purchaseOrder)
         {

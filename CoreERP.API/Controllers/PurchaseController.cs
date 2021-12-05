@@ -52,10 +52,7 @@ namespace CoreERP.API.Controllers
             if (purchase == null)
                 return BadRequest();
 
-            if (purchase.factura.Trim() == string.Empty)
-            {
-                ModelState.AddModelError("Purchase", "Purchase Factura shouldn't be empty");
-            }
+           
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

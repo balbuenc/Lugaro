@@ -9,12 +9,14 @@
 @inject IPurchaseService PurchaseService
 @inject IPrintService PrintService
 @inject IStockService StockService
-@inject IPurchaseOrderService PurchaseOrderService 
+@inject IPurchaseOrderService PurchaseOrderService
+@inject IEmployeeService EmployeeService
 
 
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 
 @attribute [Authorize]
@@ -110,27 +112,27 @@
                                 <td>
                                     <p class="m-0"><b>Moneda:</b> @Moneda</p>
                                 </td>
-                                
+
                             </tr>
                         </tbody>
 
                     </table>
 
                     <small class="mb-0">@Titulo</small>
-                    @if (Estado == "Generado")
+                    @if (Estado.ToUpper() == "GENERADO")
                     {
                         <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="GeneratePurchaseOrder">Generar OC</SfButton>
                     }
-                    @if (Estado == "Pendiente")
+                    @*@if (Estado == "Pendiente")
+                        {
+                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
+                        }*@
+                    @if (Estado.ToUpper() == "PENDIENTE" && employee.can_approve)
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="AuthorizeOC">Aprobar OC</SfButton>
                     }
-                    @if (Estado == "Pendiente")
-                    {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="Autorization">Aprobar OC</SfButton>
-                    }
-                   
-                   
+
+
                 </div>
             </div>
             <div class="row">
@@ -247,6 +249,9 @@
 
     public string Estado = "";
     public string Usuario = "";
+    public string UserName;
+
+    public Employee employee { get; set; }
 
 
     public IEnumerable<PurchaseDetails> GridData { get; set; }
@@ -255,80 +260,6 @@
     public Purchase header { get; set; }
 
     SfGrid<PurchaseDetails> Grid { get; set; }
-
-
-
-    protected async Task GeneratePurchaseOrder()
-    {
-        PurchaseOrder oc;
-
-        try
-        {
-            oc = new PurchaseOrder();
-            oc.fecha = DateTime.Now;
-            oc.id_funcionario = header.id_funcionario;
-            oc.id_compra = Convert.ToInt32(PurchaseID);
-            oc.tipo_compra = "PEDIDO";
-            oc.estado = "GENERADO";
-
-            
-
-            await PurchaseOrderService.SavePurchaseOrder(oc);
-
-
-            await RequireAutorization();
-
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
-
-
-
-
-    protected async Task RequireAutorization()
-    {
-        header.estado = "Pendiente";
-        await PurchaseService.SavePurchase(header);
-        Navigate();
-
-    }
-
-    protected async Task Autorization()
-    {
-        header.estado = "Aprobado";
-        await PurchaseService.SavePurchase(header);
-        Navigate();
-    }
-
-
-
-    protected async Task ModifyStock()
-    {
-        Stock s;
-        for (int i = 0; i < GridData.Count(); i++)
-        {
-            PurchaseDetails item = GridData.ElementAt(i);
-            s = await StockService.GetStockDetails(item.id_producto);
-
-            s.cantidad = s.cantidad - 1;
-            await StockService.SaveStock(s);
-
-        }
-    }
-
-
-    protected async Task Remission()
-    {
-        header.estado = "Remitido";
-        await PurchaseService.SavePurchase(header);
-
-        Navigate();
-    }
-
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -372,6 +303,14 @@
 
             imagePath = mainURL + mainLogo;
 
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            string[] subs = user.Identity.Name.Split("@");
+            UserName = subs[0];
+
+            employee = await EmployeeService.GetEmployeeDetailsByUsername(UserName);
+
         }
         catch (Exception ex)
         {
@@ -379,6 +318,80 @@
         }
     }
 
+
+
+    protected async Task GeneratePurchaseOrder()
+    {
+        PurchaseOrder oc;
+
+        try
+        {
+            oc = new PurchaseOrder();
+            oc.fecha = DateTime.Now;
+            oc.id_funcionario = header.id_funcionario;
+            oc.id_compra = Convert.ToInt32(PurchaseID); //Asing the Purchase ID
+            oc.tipo_compra = "PEDIDO";
+            oc.estado = "PENDIENTE";
+
+
+            //Save the purchase Order
+            await PurchaseOrderService.SavePurchaseOrder(oc);
+
+
+            await RequireAutorization();
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+
+
+
+    protected async Task RequireAutorization()
+    {
+        header.estado = "PENDIENTE";
+        await PurchaseService.SavePurchase(header);
+        Navigate();
+
+    }
+
+    protected async Task AuthorizeOC()
+    {
+        header.estado = "APROBADO";
+        await PurchaseService.SavePurchase(header);
+
+
+        //Get the purcharse Order
+        //Set Aprobation data
+        PurchaseOrder oc;
+        oc = await PurchaseOrderService.GetPurchaseOrderByPurchaseID(header.id_compra);
+        oc.aprobado_por = employee.id_funcionario;
+        oc.fecha_aprobacion = DateTime.Now;
+        oc.estado = "APROBADO";
+
+        await PurchaseOrderService.SavePurchaseOrder(oc);
+
+        Navigate();
+    }
+
+
+
+    protected async Task ModifyStock()
+    {
+        Stock s;
+        for (int i = 0; i < GridData.Count(); i++)
+        {
+            PurchaseDetails item = GridData.ElementAt(i);
+            s = await StockService.GetStockDetails(item.id_producto);
+
+            s.cantidad = s.cantidad - 1;
+            await StockService.SaveStock(s);
+
+        }
+    }
 
 
     private async Task OnBeginHandler(ActionEventArgs<PurchaseDetails> Args)

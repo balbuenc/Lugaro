@@ -63,6 +63,27 @@ namespace CoreERP.Data.Repositories
             }
         }
 
+        public async Task<PurchaseOrder> GetPurchaseOrderByPurchaseID(int id)
+        {
+            try
+            {
+                var db = dbConnection();
+                var sql = @"SELECT oc.id_orden_compra, oc.fecha, oc.id_funcionario, oc.estado, oc.id_compra_general, oc.id_compra, oc.tipo_compra, oc.aprobado_por, oc.fecha_aprobacion,
+                            f.usuario as propietario, f2.usuario as aprobador
+                            FROM public.ordenes_compra oc
+                            left outer join public.funcionarios f on f.id_funcionario = oc.id_funcionario
+                            left outer join public.funcionarios f2 on f2.id_funcionario = oc.aprobado_por 
+                            where oc.id_compra = @Id";
+
+
+                return await db.QueryFirstOrDefaultAsync<PurchaseOrder>(sql, new { Id = id });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<PurchaseOrder> GetPurchaseOrderDetails(int id)
         {
             try
