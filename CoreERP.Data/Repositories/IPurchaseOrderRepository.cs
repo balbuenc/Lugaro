@@ -13,6 +13,7 @@ namespace CoreERP.Data.Repositories
         Task<PurchaseOrder> GetPurchaseOrderDetails(int id);
 
         Task<PurchaseOrder> GetPurchaseOrderByPurchaseID(int id);
+        Task<PurchaseOrder> GetPurchaseOrderBygeneralPurchaseID(int id);
 
         Task<bool> InsertPurchaseOrder(PurchaseOrder purchaseOrder);
 

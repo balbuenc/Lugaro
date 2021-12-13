@@ -10,6 +10,8 @@ namespace CoreERP.UI.Interfaces
     {
         Task<IEnumerable<Budget>> GetAllBudgets();
 
+        Task<IEnumerable<Budget>> GetAlGetAllBudgetsByUserName(string userName);
+
         Task<Budget> GetBudgetDetails(int id);
 
         Task SaveBudget(Budget budget);

@@ -1,0 +1,342 @@
+﻿@page "/Payments"
+@using Model
+@using Interfaces
+@inject IPaymentService PaymentService
+
+@inject IEmployeeService EmployeeService
+
+@inject ICurrencyService CurrencyService
+@inject IPaymentMethodService PaymentMethodService 
+
+
+@using Microsoft.AspNetCore.Http
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+@attribute [Authorize]
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Grids
+@using System.Collections.ObjectModel
+@inject NavigationManager NavigationManager
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs;
+@using Syncfusion.Blazor.Calendars;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Navigations
+
+<style>
+    .e-list-settings:before {
+        content: "\e679";
+    }
+
+    .e-list-print:before {
+        content: "\e743";
+    }
+
+    .e-list-save:before {
+        content: "\e74d";
+    }
+
+    .e-list-saveas:before {
+        content: "\e72b";
+    }
+
+    .e-list-delete:before {
+        content: "\e773";
+    }
+
+    .e-list-undo:before {
+        content: "\e752";
+    }
+
+    .e-list-edit:before {
+        content: "\e7a3";
+    }
+</style>
+
+<div class="container-fluid">
+    <p>@Message</p>
+    <span class="error">@ErrorDetails</span>
+
+    <div class="col-lg-12" style="padding:1px; height:50px">
+        <div class="content-wrapper">
+            <div class="alert alert-title" role="banner"><b>Pagos</b></div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 control-section">
+        <div class="content-wrapper">
+            <div class="row">
+                @if (GridData == null)
+                {
+                    <div class="alert alert-warning" role="alert"><p><em>Cargando datos...</em></p></div>
+                }
+                else
+                {
+                    @*<SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>*@
+                    <SfGrid TValue="Payment" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
+                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Payment" OnToolbarClick="ToolbarClickHandler" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
+                        <GridPageSettings PageSize="30"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+
+                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
+                            <HeaderTemplate>
+                                @{
+                                    var pay = (context as Payment);
+                                }
+                                <span>Detalle de pago: @(pay.id_pago)</span>
+                            </HeaderTemplate>
+                            <Template>
+                                @{
+                                    var pay = (context as Payment);
+                                    if (pay.fecha_orden == t)
+                                        pay.fecha_orden = hoy;
+                                }
+                                <div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(pay.id_pago)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(pay.nro_orden_pago)" Enabled="true" Placeholder="Nro. factura" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfDropDownList DataSource="@currencies"
+                                                            TItem="Currency"
+                                                            TValue="Int32"
+                                                            @bind-Value="@(pay.id_moneda)"
+                                                            Placeholder="Moneda"
+                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfDatePicker TValue="DateTime" @bind-Value="@(pay.fecha_orden)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Fecha orden" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfDatePicker TValue="DateTime" @bind-Value="@(pay.fecha_pago)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Fecha pago" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(pay.responsable)" Enabled="true" Placeholder="Responsable" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(pay.estado)" Enabled="false" Placeholder="Estado" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(pay.aprobador)" Enabled="false" Placeholder="Aprobador" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(pay.moneda)" Enabled="true" Placeholder="Moneda" FloatLabelType="FloatLabelType.Always" Multiline="true"></SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfDropDownList DataSource="@paymentmethods"
+                                                            TItem="PaymentMethod"
+                                                            TValue="Int32"
+                                                            @bind-Value="@(pay.id_medio_pago)"
+                                                            Placeholder="Moneda"
+                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                <DropDownListFieldSettings Value="id_medio_pago" Text="medio"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <SfNumericTextBox @bind-Value="@(pay.nro_orden_pago)" Enabled="true" Placeholder="#OP" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <SfTextBox @bind-Value="@(pay.nro_comprobante)" Enabled="true" Placeholder="#Comprobante" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <SfNumericTextBox @bind-Value="@(pay.monto_pagado)" Enabled="true" Placeholder="Monto" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </Template>
+                        </GridEditSettings>
+                        <GridColumns>
+                            <GridColumn HeaderText="*" Width="8">
+                                <GridCommandColumns>
+                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                </GridCommandColumns>
+                            </GridColumn>
+                            <GridColumn Field=@nameof(Payment.id_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.fecha_orden) HeaderText="Fecha OP" Visible="true" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.nro_orden_pago) HeaderText="#OP" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.responsable) HeaderText="Responsable" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.moneda) HeaderText="Mon." Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.fecha_pago) HeaderText="Fecha pago" Format="dd/MM/yyyy" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.estado) HeaderText="Estado" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.aprobador) HeaderText="Aprobador"  Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.monto_pagado) HeaderText="Monto" Format="N0" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.nro_comprobante) HeaderText="#Comprobante" Visible="true" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.medio_pago) HeaderText="Medio" Visible="false" Width="10"></GridColumn>
+                            
+
+                        </GridColumns>
+                    </SfGrid>
+                }
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+@code {
+    //public IEnumerable<Payment> clients { get; set; }
+    public string Message { get; set; }
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
+    public string ErrorDetails = "";
+
+    public IEnumerable<Payment> GridData { get; set; }
+
+    public IEnumerable<Employee> employees { get; set; }
+    public IEnumerable<Currency> currencies { get; set; }
+    public IEnumerable<PaymentMethod> paymentmethods { get; set; }
+
+    public DateTime hoy = DateTime.Today;
+    public DateTime t;
+
+    SfGrid<Payment> Grid { get; set; }
+
+    private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
+
+    public string UserName;
+
+   
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            string[] subs = user.Identity.Name.Split("@");
+            UserName = subs[0];
+
+
+            GridData = await PaymentService.GetAllPayments();
+            
+            employees = await EmployeeService.GetAllEmployees();
+            currencies = await CurrencyService.GetAllCurrencies();
+            paymentmethods = await PaymentMethodService.GetAllPaymentMethods();
+
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener pagos [OnInitializedAsync] : " + ex.Message;
+        }
+    }
+
+
+
+    private async Task OnBeginHandler(ActionEventArgs<Payment> Args)
+    {
+        try
+        {
+            if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+                await SavePayment((Payment)Args.Data);
+            }
+            else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+                await DeletePayment(((Payment)Args.Data).id_pago);
+            }
+
+            return;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener pagos [OnBeginHandler]: " + ex.Message + " Inner.: " + ex.InnerException;
+            throw ex;
+        }
+    }
+
+    private async Task ActionCompletedHandler(ActionEventArgs<Payment> Args)
+    {
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+        {
+            GridData = await PaymentService.GetAllPayments();
+            Grid.Refresh();
+        }
+
+    }
+
+
+    protected async Task SavePayment(Payment payment)
+    {
+        try
+        {
+            payment.id_funcionario = GetEmployeeID(UserName);
+            await PaymentService.SavePayment(payment);
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al registrar pago: " + ex.Message;
+            throw ex;
+        }
+    }
+
+    protected async Task DeletePayment(int id)
+    {
+        await PaymentService.DeletePayment(id);
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.FileName = "Pagos.xlsx";
+            await this.Grid.ExcelExport(ExcelProperties);
+        }
+
+    }
+
+    public Int32 GetEmployeeID(string username)
+    {
+        int id;
+        try
+        {
+            id = employees.First(c => c.usuario == username).id_funcionario;
+            return id;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener ID de usuario : " + ex.Message;
+            return 1;
+        }
+    }
+
+    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<Payment> args)
+    {
+        Navigate(((Payment)args.RowData));
+    }
+
+    private void Navigate(Payment payment)
+    {
+        NavigationManager.NavigateTo($"/PaymentDetails/{payment.id_pago}");
+    }
+
+
+}
+
+

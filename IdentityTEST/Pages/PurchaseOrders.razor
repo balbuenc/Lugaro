@@ -9,6 +9,7 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
+@inject IJSRuntime Js
 
 @attribute [Authorize]
 @using Syncfusion.Blazor
@@ -50,6 +51,10 @@
 
     .e-list-edit:before {
         content: "\e7a3";
+    }
+
+    .e-list-printpdf:before {
+        content: "\e240"
     }
 </style>
 
@@ -123,19 +128,20 @@
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            @*<GridColumn HeaderText="*" Width="10">
+                            <GridColumn HeaderText="*" Width="10">
                                 <GridCommandColumns>
-                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                    <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
                                 </GridCommandColumns>
-                            </GridColumn>*@
+                            </GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.id_orden_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.fecha) HeaderText="Fecha" Visible="true" Width="15" Format="dd/MM/yyyy"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.fecha) HeaderText="Fecha" Visible="true" Width="10" Format="dd/MM/yyyy"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.fecha_aprobacion) HeaderText="Aprobación" Width="15" Visible="true" Format="dd/MM/yyyy"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.id_compra) HeaderText="#Pedido" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.id_compra_general) HeaderText="#Compra" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.propietario) HeaderText="Propietario" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.aprobador) HeaderText="Aprobador" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.estado) HeaderText="Estado" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.id_compra) HeaderText="#Pedido" Width="15" Visible="false" ></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.id_compra_general) HeaderText="#Compra" Width="20" Visible="false" ></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.tipo_compra) HeaderText="Tipo" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.propietario) HeaderText="Propietario" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.aprobador) HeaderText="Aprobador" Width="15" Visible="false" ></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.estado) HeaderText="Estado" Width="10"></GridColumn>
                         </GridColumns>
                     </SfGrid>
                 }
@@ -269,7 +275,28 @@
             await PurchaseOrderService.SavePurchaseOrder(item);
             await RefreshGrid();
         }
+        else if (command.Title == "Imprimir")
+        {
+            Print(item.id_orden_compra, item.tipo_compra);
+        }
 
+    }
+
+    protected void Print(int purcharseOrderID, string tipo)
+    {
+        String route = "";
+
+        if (tipo == "PEDIDO")
+        {
+            route = String.Concat("PurchaseOrderReport/", purcharseOrderID);
+        }
+        else if (tipo == "COMPRA")
+        {
+            route = String.Concat("GeneralPurchaseOrderReport/", purcharseOrderID);
+        }
+
+
+        Js.InvokeAsync<object>("open", route, "_blank");
     }
 
     protected async Task SavePurchaseOrder(PurchaseOrder purchaseOrder)
@@ -338,6 +365,10 @@
         if (purchaseOrder.tipo_compra == "PEDIDO")
         {
             NavigationManager.NavigateTo($"/PurchaseDetails/{purchaseOrder.id_compra}");
+        }
+        else if (purchaseOrder.tipo_compra == "COMPRA")
+        {
+            NavigationManager.NavigateTo($"/GeneralPurchaseDetails/{purchaseOrder.id_compra_general}");
         }
 
     }

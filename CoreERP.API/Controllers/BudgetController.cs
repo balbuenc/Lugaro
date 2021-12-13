@@ -25,6 +25,14 @@ namespace CoreERP.API.Controllers
             return Ok(await _BudgetRepository.GetAllBudgets());
         }
 
+        [HttpGet]
+        [Route("GetAllBudgetsByUserName/{userName}")]
+        public async Task<IActionResult> GetAlGetAllBudgetsByUserName(string userName)
+        {
+            return Ok(await _BudgetRepository.GetAllBudgetsByUserName(userName));
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBudgetDetails(int id)
         {

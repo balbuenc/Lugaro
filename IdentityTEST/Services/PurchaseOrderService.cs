@@ -48,6 +48,14 @@ namespace CoreERP.UI.Services
               );
         }
 
+        public async Task<PurchaseOrder> GetPurchaseOrderByGeneralPurchaseID(int id)
+        {
+            return await JsonSerializer.DeserializeAsync<PurchaseOrder>(
+              await _httpClient.GetStreamAsync($"api/purchaseOrder/GetPurchaseOrderByGeneralPurchaseID/{id}"),
+              new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+              );
+        }
+
         public async Task SavePurchaseOrder(PurchaseOrder purchaseOrder)
         {
             var clientJson = new StringContent(JsonSerializer.Serialize(purchaseOrder),

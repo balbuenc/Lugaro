@@ -1,0 +1,381 @@
+﻿@page "/GeneralPurchases"
+@using Model
+@using Interfaces
+@inject IGeneralPurchaseService GeneralPurchaseService
+@inject ICurrencyService CurrencyService
+@inject IVendorService VendorService
+@inject IStoreService StoreService
+@inject IInvoiceTypeService InvoiceTypeService
+@inject IEmployeeService EmployeeService
+
+
+@using Microsoft.AspNetCore.Http
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+@attribute [Authorize]
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Grids
+@using System.Collections.ObjectModel
+@inject NavigationManager NavigationManager
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs;
+@using Syncfusion.Blazor.Calendars;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Navigations
+
+<style>
+    .e-custom {
+        border-radius: 10px;
+        height: 30px;
+        width: 180px;
+    }
+
+        .e-custom, .e-custom:hover, .e-custom:focus, .e-custom:active {
+            background-color: #ff6e40;
+            color: #fff;
+        }
+
+    .e-require {
+        border-radius: 10px;
+        height: 30px;
+        width: 180px;
+        background-color: lawngreen
+    }
+
+        .e-require, .e-require:hover {
+            color: white;
+            background-color: red;
+        }
+
+    .e-approve, .e-approve:hover, .e-approve:focus, .e-approve:active {
+        border-radius: 10px;
+        height: 30px;
+        width: 180px;
+        background-color: seagreen;
+        color: white
+    }
+</style>
+
+<style>
+    .e-list-settings:before {
+        content: "\e679";
+    }
+
+    .e-list-print:before {
+        content: "\e743";
+    }
+
+    .e-list-save:before {
+        content: "\e74d";
+    }
+
+    .e-list-saveas:before {
+        content: "\e72b";
+    }
+
+    .e-list-delete:before {
+        content: "\e773";
+    }
+
+    .e-list-undo:before {
+        content: "\e197";
+    }
+
+    .e-list-edit:before {
+        content: "\e7a3";
+    }
+
+    .e-list-approve:before {
+        content: "\eb6e"
+    }
+
+    .e-list-printpdf:before {
+        content: "\e240"
+    }
+</style>
+
+<div class="container-fluid">
+    <p>@Message</p>
+    <span class="error">@ErrorDetails</span>
+
+    <div class="col-lg-12" style="padding:1px; height:50px">
+        <div class="content-wrapper">
+            <div class="alert alert-title" role="banner"><b>Compras generales</b></div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 control-section">
+        <div class="content-wrapper">
+            <div class="row">
+                @if (GridData == null)
+                {
+                    <div class="alert alert-warning" role="alert"><p><em>Cargando datos...</em></p></div>
+                }
+                else
+                {
+                    @*<SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>*@
+                    <SfGrid TValue="GeneralPurchase" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
+                        <GridEvents OnActionBegin="OnBeginHandler"
+                                    OnActionComplete="ActionCompletedHandler"
+                                    TValue="GeneralPurchase"
+                                    OnToolbarClick="ToolbarClickHandler"
+                                    OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
+                        <GridPageSettings PageSize="30"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
+                            <HeaderTemplate>
+                                @{
+                                    var purch = (context as GeneralPurchase);
+                                }
+                                <span>Detalle de compra: @(purch.id_compra_general)</span>
+                            </HeaderTemplate>
+                            <Template>
+                                @{
+                                    var purch = (context as GeneralPurchase);
+                                    if (purch.fecha == t)
+                                        purch.fecha = hoy;
+                                }
+                                <div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(purch.id_compra_general)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(purch.nro_orden_compra)" Enabled="true" Placeholder="Nro. OC" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfDropDownList DataSource="@currencies"
+                                                            TItem="Currency"
+                                                            TValue="Int32"
+                                                            @bind-Value="@(purch.id_moneda)"
+                                                            Placeholder="Moneda"
+                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfDatePicker TValue="DateTime" @bind-Value="@(purch.fecha)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                        </div>
+                                        <div class="form-group col-md-9">
+                                            <SfDropDownList DataSource="@vendors"
+                                                            TItem="Vendor"
+                                                            TValue="Int32"
+                                                            @bind-Value="@(purch.id_proveedor)"
+                                                            Placeholder="Proveedor"
+                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                <DropDownListFieldSettings Value="id_proveedor" Text="proveedor"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(purch.estado)" Enabled="false" Placeholder="Estado" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="form-row">
+
+                                        <div class="form-group col-md-6">
+                                            <SfDropDownList DataSource="@stores"
+                                                            TItem="Store"
+                                                            TValue="Int32"
+                                                            @bind-Value="@(purch.id_deposito)"
+                                                            Placeholder="Depósito"
+                                                            FloatLabelType="FloatLabelType.Always">
+                                                <DropDownListFieldSettings Value="id_deposito" Text="deposito"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Template>
+                        </GridEditSettings>
+                        <GridColumns>
+                            <GridColumn HeaderText="*" Width="5">
+                                <GridCommandColumns>
+                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                </GridCommandColumns>
+                            </GridColumn>
+                           
+                            <GridColumn Field=@nameof(GeneralPurchase.id_compra_general) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(GeneralPurchase.nro_orden_compra) HeaderText="Nro. OC" Visible="false" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(GeneralPurchase.proveedor) HeaderText="Proveedor" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(GeneralPurchase.funcionario) HeaderText="Propietario" Width="20"></GridColumn>
+
+                          
+                            <GridColumn Field=@nameof(GeneralPurchase.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(GeneralPurchase.estado) HeaderText="Estado" Width="10"></GridColumn>
+
+                            
+
+                        </GridColumns>
+                    </SfGrid>
+                }
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+@code {
+    //public IEnumerable<GeneralPurchase> clients { get; set; }
+    public string Message { get; set; }
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
+    public string ErrorDetails = "";
+
+    public IEnumerable<GeneralPurchase> GridData { get; set; }
+    public IEnumerable<Vendor> vendors { get; set; }
+    public IEnumerable<Currency> currencies { get; set; }
+    public IEnumerable<InvoiceType> invoiceTypes { get; set; }
+    public IEnumerable<Employee> employees { get; set; }
+    public IEnumerable<Store> stores { get; set; }
+
+
+    public DateTime hoy = DateTime.Today;
+    public DateTime t;
+
+    SfGrid<GeneralPurchase> Grid { get; set; }
+
+    private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
+
+    public string UserName;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            GridData = await GeneralPurchaseService.GetAllGeneralPurchases();
+            vendors = await VendorService.GetAllVendors();
+            currencies = await CurrencyService.GetAllCurrencies();
+            invoiceTypes = await InvoiceTypeService.GetAllInvoiceTypes();
+            employees = await EmployeeService.GetAllEmployees();
+            stores = await StoreService.GetAllStores();
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            string[] subs = user.Identity.Name.Split("@");
+            UserName = subs[0];
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener compras [OnInitializedAsync] : " + ex.Message;
+        }
+    }
+
+    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<GeneralPurchase> args)
+    {
+        Navigate(((GeneralPurchase)args.RowData));
+    }
+
+    private async Task OnBeginHandler(ActionEventArgs<GeneralPurchase> Args)
+    {
+        try
+        {
+            if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+                await SaveBudget((GeneralPurchase)Args.Data);
+            }
+            else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+                await DeleteBudget(((GeneralPurchase)Args.Data).id_compra_general);
+            }
+            else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+                ((GeneralPurchase)Args.Data).estado = "Generado";
+            }
+
+            return;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener compras [OnBeginHandler]: " + ex.Message + " Inner.: " + ex.InnerException;
+            throw ex;
+        }
+    }
+
+    private async Task ActionCompletedHandler(ActionEventArgs<GeneralPurchase> Args)
+    {
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+        {
+            GridData = await GeneralPurchaseService.GetAllGeneralPurchases();
+            Grid.Refresh();
+        }
+
+    }
+
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.FileName = "Pedidos.xlsx";
+            await this.Grid.ExcelExport(ExcelProperties);
+        }
+
+    }
+
+
+    protected async Task SaveBudget(GeneralPurchase purchase)
+    {
+        try
+        {
+            purchase.id_funcionario = GetEmployeeID(UserName);
+            await GeneralPurchaseService.SaveGeneralPurchase(purchase);
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al registrar compra: " + ex.Message;
+            throw ex;
+        }
+    }
+
+    protected async Task DeleteBudget(int id)
+    {
+        await GeneralPurchaseService.DeleteGeneralPurchase(id);
+    }
+
+    public async Task ExcelExport()
+    {
+        ExcelExportProperties ExportProperties = new ExcelExportProperties();
+        ExportProperties.IncludeHiddenColumn = true;
+
+        await this.Grid.ExcelExport(ExportProperties);
+    }
+
+    public Int32 GetEmployeeID(string username)
+    {
+        int id;
+        try
+        {
+            id = employees.First(c => c.usuario == username).id_funcionario;
+            return id;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener ID de usuario : " + ex.Message;
+            return 1;
+        }
+    }
+
+    private void Navigate(GeneralPurchase purchase)
+    {
+        NavigationManager.NavigateTo($"/GeneralPurchaseDetails/{purchase.id_compra_general}");
+    }
+
+
+}
+
+

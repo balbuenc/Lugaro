@@ -48,6 +48,21 @@ namespace CoreERP.Data.Repositories
             return await db.QueryAsync<Budget>(sql, new { });
         }
 
+        public async Task<IEnumerable<Budget>> GetAllBudgetsByUserName(string userName)
+        {
+            var db = dbConnection();
+            var sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta, p.obra, p.motivo, c2.cliente_exento
+                        from presupuestos p
+                        left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
+                        left outer join clientes c2 on c2.id_cliente = p.id_cliente
+                        left outer join monedas m2 on m2.id_moneda = p.id_moneda 
+                        left outer join condicion_venta cv on cv.id_condicion_venta  = p.id_condicion_venta 
+                        where f2.usuario =  @user
+                        order by p.id_presupuesto desc";
+
+            return await db.QueryAsync<Budget>(sql, new { user = userName});
+        }
+
         public async Task<Budget> GetBudgetDetails(int id)
         {
             var db = dbConnection();

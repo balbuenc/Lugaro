@@ -32,6 +32,14 @@ namespace CoreERP.UI.Services
                  );
         }
 
+        public async Task<IEnumerable<Budget>> GetAlGetAllBudgetsByUserName(string userName)
+        {
+            return await JsonSerializer.DeserializeAsync<IEnumerable<Budget>>(
+                 await _httpClient.GetStreamAsync($"api/budget/GetAllBudgetsByUserName/{userName}"),
+                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                 );
+        }
+
         public async Task<Budget> GetBudgetDetails(int id)
         {
             return await JsonSerializer.DeserializeAsync<Budget>(

@@ -247,18 +247,19 @@
     {
         try
         {
-            GridData = await BudgetService.GetAllBudgets();
-            clients = await ClientService.GetAllClients();
-            employees = await EmployeeService.GetAllEmployees();
-            currencies = await CurrencyService.GetAllCurrencies();
-            invoiceTypes = await InvoiceTypeService.GetAllInvoiceTypes();
-
 
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
             string[] subs = user.Identity.Name.Split("@");
             UserName = subs[0];
+
+
+            GridData = await BudgetService.GetAlGetAllBudgetsByUserName(UserName);
+            clients = await ClientService.GetAllClients();
+            employees = await EmployeeService.GetAllEmployees();
+            currencies = await CurrencyService.GetAllCurrencies();
+            invoiceTypes = await InvoiceTypeService.GetAllInvoiceTypes();
         }
         catch (Exception ex)
         {
@@ -294,7 +295,7 @@
     {
         if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
         {
-            GridData = await BudgetService.GetAllBudgets();
+            GridData = await BudgetService.GetAlGetAllBudgetsByUserName(UserName);
             Grid.Refresh();
         }
 

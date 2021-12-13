@@ -198,6 +198,17 @@ namespace CoreERP.UI
            transferService => { transferService.BaseAddress = new Uri(apiurl); }
            );
 
+            services.AddHttpClient<IGeneralPurchaseService, GeneralPurchaseService>(
+           generalPurchaseService => { generalPurchaseService.BaseAddress = new Uri(apiurl); }
+           );
+
+            services.AddHttpClient<IGeneralPurchaseDetailsService, GeneralPurchaseDetailsService>(
+           generalPurchaseDetailsService => { generalPurchaseDetailsService.BaseAddress = new Uri(apiurl); }
+           );
+
+            services.AddHttpClient<IPaymentService, PaymentService>(
+           paymentService => { paymentService.BaseAddress = new Uri(apiurl); }
+           );
 
         }
 

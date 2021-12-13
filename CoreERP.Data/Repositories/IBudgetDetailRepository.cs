@@ -9,6 +9,7 @@ namespace CoreERP.Data.Repositories
     public interface IBudgetDetailRepository
     {
         Task<IEnumerable<BudgetDetails>> GetAllBudgetDetails();
+        
 
         Task<IEnumerable<BudgetDetails>> GetBudgetDetails(int id);
 
