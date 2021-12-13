@@ -31,6 +31,20 @@ namespace CoreERP.API.Controllers
             return Ok(await _PaymentRepository.GetPaymentDetails(id));
         }
 
+        [HttpGet]
+        [Route("GetPaymentDetailsByPurchaseID/{id}")]
+        public async Task<IActionResult> GetPaymentDetailsByPurchaseID(int id)
+        {
+            return Ok(await _PaymentRepository.GetPaymentDetailsByPurchaseID(id));
+        }
+
+        [HttpGet("{id}")]
+        [Route("GetPaymentDetailsByGeneralPurchaseID/{id}")]
+        public async Task<IActionResult> GetPaymentDetailsByGeneralPurchaseID(int id)
+        {
+            return Ok(await _PaymentRepository.GetPaymentDetailsByGeneralPurchaseID(id));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreatePayment([FromBody] Payment payment)
         {

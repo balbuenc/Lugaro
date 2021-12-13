@@ -11,6 +11,9 @@ namespace CoreERP.UI.Interfaces
         Task<IEnumerable<Payment>> GetAllPayments();
 
         Task<Payment> GetPaymentDetails(int id);
+        Task<Payment> GetPaymentDetailsByPurchaseID(int id);
+        Task<Payment> GetPaymentDetailsByGeneralPurchaseID(int id);
+
 
         Task SavePayment(Payment payment);
 

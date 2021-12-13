@@ -11,6 +11,7 @@
 @inject IStockService StockService
 @inject IPurchaseOrderService PurchaseOrderService
 @inject IEmployeeService EmployeeService
+@inject IPaymentService PaymentService
 
 
 @using Microsoft.AspNetCore.Http
@@ -140,7 +141,11 @@
                     }
                     @if (Estado.ToUpper() == "RECIBIDO")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PayOC">Pagar OC</SfButton>
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="GeneratePayOP">Generar OP</SfButton>
+                    }
+                    @if (Estado.ToUpper() == "PAGO AUTORIZADO")
+                    {
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PayOC">Pagar</SfButton>
                     }
 
 
@@ -413,6 +418,35 @@
         Navigate();
     }
 
+    //OC Generate OP
+    protected async Task GeneratePayOP()
+    {
+        header.estado = "ORDEN DE PAGO";
+        await PurchaseService.SavePurchase(header);
+
+
+        //Get the purcharse Order
+        //Set Aprobation data
+        PurchaseOrder oc;
+        oc = await PurchaseOrderService.GetPurchaseOrderByPurchaseID(header.id_compra);
+        oc.estado = "ORDEN DE PAGO";
+        await PurchaseOrderService.SavePurchaseOrder(oc);
+
+        Payment op = new Payment();
+
+        op.id_compra = header.id_compra;
+        op.fecha_orden = DateTime.Now;
+        op.id_funcionario = employee.id_funcionario;
+        op.estado = "PENDIENTE";
+        op.id_moneda = header.id_moneda;
+
+
+
+        await PaymentService.SavePayment(op);
+
+        Navigate();
+    }
+
     //OC Payment
     protected async Task PayOC()
     {
@@ -428,6 +462,13 @@
         oc.estado = "PAGADO";
 
         await PurchaseOrderService.SavePurchaseOrder(oc);
+
+        //Set Payed status to OP
+        Payment p;
+        p = await PaymentService.GetPaymentDetailsByPurchaseID(header.id_compra);
+        p.estado = "PAGADO";
+        p.fecha_pago = DateTime.Now;
+        await PaymentService.SavePayment(p);
 
         Navigate();
     }

@@ -141,7 +141,11 @@
                     }
                     @if (Estado.ToUpper() == "RECIBIDO")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PayOP">Generar OP</SfButton>
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="GeneratePayOP">Generar OP</SfButton>
+                    }
+                    @if (Estado.ToUpper() == "PAGO AUTORIZADO")
+                    {
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PayOC">Pagar</SfButton>
                     }
 
 
@@ -180,8 +184,8 @@
                                 <SfNumericTextBox @bind-Value="@((context as GeneralPurchaseDetails).id_compra_general_detalle)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
                             </EditTemplate>
                         </GridColumn>
-                        
-                       
+
+
                         <GridColumn Field=@nameof(GeneralPurchaseDetails.descripcion) HeaderText="Descripción" Width="200" AllowGrouping="false">
                             <EditTemplate>
                                 <SfTextBox @bind-Value="@((context as GeneralPurchaseDetails).descripcion)" Enabled="true" Placeholder="Descripción" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
@@ -411,13 +415,20 @@
 
         await PurchaseOrderService.SavePurchaseOrder(oc);
 
+        //Set Payed status to OP
+        Payment p;
+        p = await PaymentService.GetPaymentDetailsByGeneralPurchaseID(header.id_compra_general);
+        p.estado = "PAGADO";
+        p.fecha_pago = DateTime.Now;
+        await PaymentService.SavePayment(p);
+
         Navigate();
     }
 
     //OC Generate OP
-    protected async Task PayOP()
+    protected async Task GeneratePayOP()
     {
-        header.estado = "Orden de pago";
+        header.estado = "ORDEN DE PAGO";
         await GeneralPurchaseService.SaveGeneralPurchase(header);
 
 
@@ -425,7 +436,7 @@
         //Set Aprobation data
         PurchaseOrder oc;
         oc = await PurchaseOrderService.GetPurchaseOrderByGeneralPurchaseID(header.id_compra_general);
-        oc.estado = "Orden de pago";
+        oc.estado = "ORDEN DE PAGO";
         await PurchaseOrderService.SavePurchaseOrder(oc);
 
         Payment op = new Payment();
@@ -435,8 +446,8 @@
         op.id_funcionario = employee.id_funcionario;
         op.estado = "PENDIENTE";
         op.id_moneda = header.id_moneda;
-        
-        
+
+
 
         await PaymentService.SavePayment(op);
 

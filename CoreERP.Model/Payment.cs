@@ -25,7 +25,8 @@ namespace CoreERP.Model
 
         public string nro_comprobante { get; set; }
         public string estado { get; set; }
-        
+
+        public decimal total_orden { get; set; }
 
         public int id_medio_pago { get; set; }
 

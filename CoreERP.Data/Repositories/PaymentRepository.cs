@@ -52,12 +52,16 @@ namespace CoreERP.Data.Repositories
 		                            mp.id_medio_pago,
 		                            mp.medio as medio_pago,
 		                            m.id_moneda,
-		                            m.moneda 
+		                            m.moneda,
+                                    p.estado,
+                                    coalesce (vic.total_compra,0) + coalesce (vicg.total_compra,0) as total_orden 
                             FROM public.pagos p
                             left outer join funcionarios f on f.id_funcionario = p.id_funcionario 
                             left outer join funcionarios aprobadores on aprobadores.id_funcionario = p.aprobado_por
                             left outer join medios_pago mp on mp.id_medio_pago = p.id_medio_pago
-                            left outer join monedas m on m.id_moneda = p.id_moneda   
+                            left outer join monedas m on m.id_moneda = p.id_moneda 
+                            left outer join v_impresion_compras vic on vic.id_compra = p.id_compra 
+                            left outer join v_impresion_compras_generales vicg on vicg.id_compra_general = p.id_compra_general   
                             ;";
 
                 var result = await db.QueryAsync<Payment>(sql, new { });
@@ -81,13 +85,84 @@ namespace CoreERP.Data.Repositories
 		                            mp.id_medio_pago,
 		                            mp.medio as medio_pago,
 		                            m.id_moneda,
-		                            m.moneda 
+		                            m.moneda,
+                                    p.estado,
+                                    coalesce (vic.total_compra,0) + coalesce (vicg.total_compra,0) as total_orden 
                             FROM public.pagos p
                             left outer join funcionarios f on f.id_funcionario = p.id_funcionario 
                             left outer join funcionarios aprobadores on aprobadores.id_funcionario = p.aprobado_por
                             left outer join medios_pago mp on mp.id_medio_pago = p.id_medio_pago
                             left outer join monedas m on m.id_moneda = p.id_moneda 
+                            left outer join v_impresion_compras vic on vic.id_compra = p.id_compra 
+                            left outer join v_impresion_compras_generales vicg on vicg.id_compra_general = p.id_compra_general 
                             where p.id_pago = @Id
+                            ;";
+
+
+                return await db.QueryFirstOrDefaultAsync<Payment>(sql, new { Id = id });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<Payment> GetPaymentDetailsByPurchaseID(int id)
+        {
+            try
+            {
+                var db = dbConnection();
+                var sql = @"SELECT p.id_pago, p.nro_orden_pago, p.fecha_orden, p.id_compra, p.id_compra_general, p.id_funcionario, p.aprobado_por, p.fecha_pago, p.monto_pagado, p.nro_comprobante,
+		                            f.usuario  as responsable,
+		                            f.usuario  as aprobador,
+		                            mp.id_medio_pago,
+		                            mp.medio as medio_pago,
+		                            m.id_moneda,
+		                            m.moneda,
+                                    p.estado,
+                                    coalesce (vic.total_compra,0) + coalesce (vicg.total_compra,0) as total_orden 
+                            FROM public.pagos p
+                            left outer join funcionarios f on f.id_funcionario = p.id_funcionario 
+                            left outer join funcionarios aprobadores on aprobadores.id_funcionario = p.aprobado_por
+                            left outer join medios_pago mp on mp.id_medio_pago = p.id_medio_pago
+                            left outer join monedas m on m.id_moneda = p.id_moneda 
+                            left outer join v_impresion_compras vic on vic.id_compra = p.id_compra 
+                            left outer join v_impresion_compras_generales vicg on vicg.id_compra_general = p.id_compra_general 
+                            where p.id_compra = @Id
+                            ;";
+
+
+                return await db.QueryFirstOrDefaultAsync<Payment>(sql, new { Id = id });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public async Task<Payment> GetPaymentDetailsByGeneralPurchaseID(int id)
+        {
+            try
+            {
+                var db = dbConnection();
+                var sql = @"SELECT p.id_pago, p.nro_orden_pago, p.fecha_orden, p.id_compra, p.id_compra_general, p.id_funcionario, p.aprobado_por, p.fecha_pago, p.monto_pagado, p.nro_comprobante,
+		                            f.usuario  as responsable,
+		                            f.usuario  as aprobador,
+		                            mp.id_medio_pago,
+		                            mp.medio as medio_pago,
+		                            m.id_moneda,
+		                            m.moneda,
+                                    p.estado,
+                                    coalesce (vic.total_compra,0) + coalesce (vicg.total_compra,0) as total_orden 
+                            FROM public.pagos p
+                            left outer join funcionarios f on f.id_funcionario = p.id_funcionario 
+                            left outer join funcionarios aprobadores on aprobadores.id_funcionario = p.aprobado_por
+                            left outer join medios_pago mp on mp.id_medio_pago = p.id_medio_pago
+                            left outer join monedas m on m.id_moneda = p.id_moneda 
+                            left outer join v_impresion_compras vic on vic.id_compra = p.id_compra 
+                            left outer join v_impresion_compras_generales vicg on vicg.id_compra_general = p.id_compra_general 
+                            where p.id_compra_general = @Id
                             ;";
 
 
@@ -146,7 +221,7 @@ namespace CoreERP.Data.Repositories
                 var sql = @"UPDATE public.pagos
                             SET nro_orden_pago=@nro_orden_pago, fecha_orden=@fecha_orden, id_compra=@id_compra, id_compra_general=@id_compra_general, id_funcionario=@id_funcionario, aprobado_por=@aprobado_por, 
                             fecha_pago=@fecha_pago, monto_pagado=@monto_pagado, nro_comprobante=@nro_comprobante, estado=@estado, id_medio_pago=@id_medio_pago,id_moneda=@id_moneda
-                            WHERE id_cuenta=@id_cuenta;";
+                            WHERE id_pago=@id_pago;";
 
                 var result = await db.ExecuteAsync(sql, new
                 {

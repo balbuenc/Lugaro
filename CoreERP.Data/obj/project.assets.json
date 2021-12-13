@@ -638,11 +638,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
+      "projectUniqueName": "C:\\Dev\\CoreERP.Data\\CoreERP.Data.csproj",
       "projectName": "CoreERP.Data",
-      "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
+      "projectPath": "C:\\Dev\\CoreERP.Data\\CoreERP.Data.csproj",
       "packagesPath": "C:\\Users\\cbalbuena\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\obj\\",
+      "outputPath": "C:\\Dev\\CoreERP.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -661,8 +661,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
-              "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj"
+            "C:\\Dev\\CoreERP.Model\\CoreERP.Model.csproj": {
+              "projectPath": "C:\\Dev\\CoreERP.Model\\CoreERP.Model.csproj"
             }
           }
         }

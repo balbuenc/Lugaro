@@ -6,7 +6,9 @@
 @inject IEmployeeService EmployeeService
 
 @inject ICurrencyService CurrencyService
-@inject IPaymentMethodService PaymentMethodService 
+@inject IPaymentMethodService PaymentMethodService
+@inject IGeneralPurchaseService GeneralPurchaseService
+@inject IPurchaseService  PurchaseService
 
 
 @using Microsoft.AspNetCore.Http
@@ -101,7 +103,7 @@
                                             <SfNumericTextBox @bind-Value="@(pay.id_pago)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <SfNumericTextBox @bind-Value="@(pay.nro_orden_pago)" Enabled="true" Placeholder="Nro. factura" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
+                                            <SfNumericTextBox @bind-Value="@(pay.nro_orden_pago)" Enabled="true" Placeholder="#Orden pago" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@currencies"
@@ -125,7 +127,7 @@
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(pay.responsable)" Enabled="true" Placeholder="Responsable" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                            <SfTextBox @bind-Value="@(pay.responsable)" Enabled="false" Placeholder="Responsable" FloatLabelType="FloatLabelType.Always"></SfTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfTextBox @bind-Value="@(pay.estado)" Enabled="false" Placeholder="Estado" FloatLabelType="FloatLabelType.Always"></SfTextBox>
@@ -137,54 +139,58 @@
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(pay.moneda)" Enabled="true" Placeholder="Moneda" FloatLabelType="FloatLabelType.Always" Multiline="true"></SfTextBox>
+                                            <SfTextBox @bind-Value="@(pay.moneda)" Enabled="false" Placeholder="Moneda" FloatLabelType="FloatLabelType.Always"></SfTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@paymentmethods"
                                                             TItem="PaymentMethod"
                                                             TValue="Int32"
                                                             @bind-Value="@(pay.id_medio_pago)"
-                                                            Placeholder="Moneda"
+                                                            Placeholder="Medio pago"
                                                             FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_medio_pago" Text="medio"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
                                     </div>
                                     <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <SfNumericTextBox @bind-Value="@(pay.nro_orden_pago)" Enabled="true" Placeholder="#OP" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                        </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-3">
                                             <SfTextBox @bind-Value="@(pay.nro_comprobante)" Enabled="true" Placeholder="#Comprobante" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(pay.total_orden)" Enabled="false" Placeholder="Toatal OC" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(pay.monto_pagado)" Enabled="true" Placeholder="Monto (Autorizado)" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
                                     </div>
                                     <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <SfNumericTextBox @bind-Value="@(pay.monto_pagado)" Enabled="true" Placeholder="Monto" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                        </div>
+                                        @if (pay.estado == "PENDIENTE")
+                                        {
+                                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right"  @onclick="@((args) => ApproveOP(args,pay))" >Aprobar OP</SfButton>
+                                        }
                                     </div>
-
                                 </div>
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
                             <GridColumn HeaderText="*" Width="8">
                                 <GridCommandColumns>
-                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-list-edit", CssClass = "e-flat" })"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
                             <GridColumn Field=@nameof(Payment.id_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(Payment.fecha_orden) HeaderText="Fecha OP" Visible="true" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Payment.nro_orden_pago) HeaderText="#OP" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Payment.responsable) HeaderText="Responsable" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Payment.moneda) HeaderText="Mon." Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.fecha_orden) HeaderText="Fecha OP" Visible="true" Width="15" Format="dd/MM/yyyy"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.nro_orden_pago) HeaderText="#OP" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.responsable) HeaderText="Responsable" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.moneda) HeaderText="Mon." Width="10"></GridColumn>
                             <GridColumn Field=@nameof(Payment.fecha_pago) HeaderText="Fecha pago" Format="dd/MM/yyyy" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Payment.estado) HeaderText="Estado" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Payment.aprobador) HeaderText="Aprobador"  Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.aprobador) HeaderText="Aprobador" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Payment.total_orden) HeaderText="Total OC" Format="N0" Width="10"></GridColumn>
                             <GridColumn Field=@nameof(Payment.monto_pagado) HeaderText="Monto" Format="N0" Width="10"></GridColumn>
                             <GridColumn Field=@nameof(Payment.nro_comprobante) HeaderText="#Comprobante" Visible="true" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Payment.medio_pago) HeaderText="Medio" Visible="false" Width="10"></GridColumn>
-                            
+
 
                         </GridColumns>
                     </SfGrid>
@@ -219,7 +225,7 @@
 
     public string UserName;
 
-   
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -234,7 +240,7 @@
 
 
             GridData = await PaymentService.GetAllPayments();
-            
+
             employees = await EmployeeService.GetAllEmployees();
             currencies = await CurrencyService.GetAllCurrencies();
             paymentmethods = await PaymentMethodService.GetAllPaymentMethods();
@@ -280,6 +286,36 @@
 
     }
 
+
+    protected async Task ApproveOP(Microsoft.AspNetCore.Components.Web.MouseEventArgs args, Payment pay)
+    {
+
+        pay.estado = "APROBADO";
+
+        Grid.CloseEdit();
+
+        await PaymentService.SavePayment(pay);
+
+        if(pay.id_compra != 0)
+        {
+            Purchase p;
+            p = await PurchaseService.GetPurchaseDetails(pay.id_compra);
+            p.estado = "PAGO AUTORIZADO";
+            await PurchaseService.SavePurchase(p);
+        }
+        else if (pay.id_compra_general != 0)
+        {
+            GeneralPurchase gp;
+            gp = await GeneralPurchaseService.GetGeneralPurchaseDetails(pay.id_compra_general);
+            gp.estado = "PAGO AUTORIZADO";
+            await GeneralPurchaseService.SaveGeneralPurchase(gp);
+        }
+
+        GridData = await PaymentService.GetAllPayments();
+
+        Grid.Refresh();
+
+    }
 
     protected async Task SavePayment(Payment payment)
     {
@@ -331,11 +367,20 @@
         Navigate(((Payment)args.RowData));
     }
 
+
+
     private void Navigate(Payment payment)
     {
-        NavigationManager.NavigateTo($"/PaymentDetails/{payment.id_pago}");
-    }
+        if (payment.id_compra != 0)
+        {
+            NavigationManager.NavigateTo($"/PurchaseDetails/{payment.id_compra}");
+        }
+        else if (payment.id_compra_general != 0)
+        {
+            NavigationManager.NavigateTo($"/GeneralPurchaseDetails/{payment.id_compra_general}");
+        }
 
+    }
 
 }
 

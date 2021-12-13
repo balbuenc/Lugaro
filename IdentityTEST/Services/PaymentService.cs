@@ -39,6 +39,22 @@ namespace CoreERP.UI.Services
               new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
               );
         }
+        public async Task<Payment> GetPaymentDetailsByPurchaseID(int id)
+        {
+            return await JsonSerializer.DeserializeAsync<Payment>(
+              await _httpClient.GetStreamAsync($"api/payment/GetPaymentDetailsByPurchaseID/{id}"),
+              new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+              );
+        }
+
+        public async Task<Payment> GetPaymentDetailsByGeneralPurchaseID(int id)
+        {
+            return await JsonSerializer.DeserializeAsync<Payment>(
+              await _httpClient.GetStreamAsync($"api/payment/GetPaymentDetailsByGeneralPurchaseID/{id}"),
+              new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+              );
+        }
+
 
         public async Task SavePayment(Payment payment)
         {
