@@ -57,6 +57,10 @@
     .e-list-edit:before {
         content: "\e7a3";
     }
+
+    .e-list-printpdf:before {
+        content: "\e240"
+    }
 </style>
 
 <div class="container-fluid">
@@ -174,11 +178,10 @@
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn HeaderText="*" Width="8">
+                            <GridColumn HeaderText="Acciones" Width="15">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-list-edit", CssClass = "e-flat" })"></GridCommandColumn>
-                                </GridCommandColumns>
-                                <GridCommandColumns>
+                                
                                     <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
@@ -308,7 +311,7 @@
 
 
 
-        route = String.Concat("PaymentOrderReport/", pay.id_compra);
+        route = String.Concat("GenerealPaymentOrderReport/", pay.id_compra);
 
 
         Js.InvokeAsync<object>("open", route, "_blank");
