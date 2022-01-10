@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30413.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreERP.UI", "CoreERP.UI.csproj", "{AC0CC7CF-0F0C-439A-917F-C988E9A1E75F}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreERP.Model", "..\CoreERP.Model\CoreERP.Model.csproj", "{8D071F8D-AD0C-40EB-B9B5-4516A28FFB2E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreERP.Data", "..\CoreERP.Data\CoreERP.Data.csproj", "{3A26A6BB-0743-4F2F-9920-9E013755350E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportDesign", "..\ReportDesign\ReportDesign.csproj", "{C56E6F39-B828-4EC3-A161-B3FD5ED907F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{3A26A6BB-0743-4F2F-9920-9E013755350E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A26A6BB-0743-4F2F-9920-9E013755350E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A26A6BB-0743-4F2F-9920-9E013755350E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C56E6F39-B828-4EC3-A161-B3FD5ED907F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C56E6F39-B828-4EC3-A161-B3FD5ED907F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C56E6F39-B828-4EC3-A161-B3FD5ED907F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C56E6F39-B828-4EC3-A161-B3FD5ED907F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
