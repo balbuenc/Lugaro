@@ -60,10 +60,17 @@
         background-color: lawngreen
     }
 
-        .e-require, .e-require:hover {
-            color: white;
-            background-color: red;
-        }
+    .e-reverse {
+        border-radius: 10px;
+        height: 30px;
+        width: 180px;
+        background-color: lightgray
+    }
+
+    .e-require, .e-require:hover {
+        color: white;
+        background-color: red;
+    }
 
     .e-approve, .e-approve:hover, .e-approve:focus, .e-approve:active {
         border-radius: 10px;
@@ -220,32 +227,37 @@
                 <div class="col-md-12" style="vertical-align:middle;">
                     @if (!this.IsPrintable)
                     {
-                        <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="Print">Imprimir presupuesto</SfButton>
+                    <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="Print">Imprimir presupuesto</SfButton>
                     }
                     @if (Estado == "Generado")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
+                    <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
                     }
                     @if (Estado == "Pendiente")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="Autorization">Aprobar presupuesto</SfButton>
+                    <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="Autorization">Aprobar presupuesto</SfButton>
                     }
                     @if (Estado == "Aprobado")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Remisión especial</SfButton>
+                    <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>
+                    <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Remisión especial</SfButton>
                     }
                     @if (Estado == "Facturado")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión especial</SfButton>
+                    <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
+                    <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
+                    <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión especial</SfButton>
                     }
                     @if (Estado == "Remitido")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
+                    <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
+                    <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
+
+                    }
+                    @if (Estado == "Muestra")
+                    {
+                    <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
+                    <SfButton CssClass="e-reverse" IconPosition="IconPosition.Right" OnClick="ReverseStock">Devolución</SfButton>
                     }
                 </div>
             </div>
@@ -335,11 +347,11 @@
                                 <EditTemplate>
                                     @if (isChecked)
                                     {
-                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="false" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="false" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                     else
                                     {
-                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="true" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="true" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                 </EditTemplate>
                             </GridColumn>
@@ -347,11 +359,11 @@
                                 <EditTemplate>
                                     @if (isChecked)
                                     {
-                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="true" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="true" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                     else
                                     {
-                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="false" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="false" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                 </EditTemplate>
                             </GridColumn>
@@ -437,7 +449,7 @@
                     <b>@Message</b>
                 </div>
             </Content>
-            
+
         </DialogTemplates>
 
     </SfDialog>
@@ -727,7 +739,7 @@
 
     protected async Task SpecialRemission()
     {
-        header.estado = "Remitido";
+        header.estado = "Muestra";
         await BudgetService.SaveBudget(header);
         //await PrintInvoice();
 
@@ -749,6 +761,20 @@
             s = await StockService.GetStockDetails(item.id_producto);
 
             s.cantidad = s.cantidad - item.cantidad;
+            await StockService.SaveStock(s);
+
+        }
+    }
+
+ protected async Task ReverseStock()
+    {
+        Stock s;
+        for (int i = 0; i < GridData.Count(); i++)
+        {
+            BudgetDetails item = GridData.ElementAt(i);
+            s = await StockService.GetStockDetails(item.id_producto);
+
+            s.cantidad = s.cantidad + item.cantidad;
             await StockService.SaveStock(s);
 
         }
@@ -886,7 +912,7 @@
         GridData = await BudgetDetailsService.GetBudgetDetails(id);
         Grid.Refresh();
 
-        //reload discount limits based on budget's 
+        //reload discount limits based on budget's
         discountLimits = (await DiscountLimitService.GetDiscountLimitsByBudgetID(id)).ToList();
     }
 
