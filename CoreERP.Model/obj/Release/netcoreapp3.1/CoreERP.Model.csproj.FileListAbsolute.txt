@@ -25,3 +25,13 @@ C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\C
 C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.csproj.CoreCompileInputs.cache
 C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.dll
 C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.pdb
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\bin\Release\netcoreapp3.1\CoreERP.Model.deps.json
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\bin\Release\netcoreapp3.1\CoreERP.Model.dll
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\bin\Release\netcoreapp3.1\CoreERP.Model.pdb
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.csproj.AssemblyReference.cache
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.AssemblyInfoInputs.cache
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.AssemblyInfo.cs
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.csproj.CoreCompileInputs.cache
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.dll
+C:\Users\Christian\source\repos\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.pdb
