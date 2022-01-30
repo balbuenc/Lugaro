@@ -388,6 +388,21 @@
         </div>
     </div>
 
+    <SfDialog Width="510px" IsModal="true" @bind-Visible="@IsRepositionVisible">
+        <DialogEvents OnOverlayClick="@OnOverlayclick">
+        </DialogEvents>
+        <DialogTemplates>
+            <Content>
+                <div class="row">
+                    <div class="col-12">
+                        <h5>La devolución se realizó con éxito. </h5>
+                    </div>
+                </div>
+                
+            </Content>
+        </DialogTemplates>
+    </SfDialog>
+
     <SfDialog Width="510px" IsModal="true" @bind-Visible="@IsVisible">
         <DialogEvents OnOverlayClick="@OnOverlayclick">
         </DialogEvents>
@@ -466,6 +481,7 @@
 
     public bool IsSearchVisible { get; set; } = false;
     public bool IsMessageVisible { get; set; } = false;
+    public bool IsRepositionVisible { get; set; } = false;
 
 
 
@@ -518,6 +534,7 @@
     {
         this.IsVisible = false;
         this.IsSearchVisible = false;
+        this.IsRepositionVisible = false;
     }
 
     private async void OnItemAdded()
@@ -766,7 +783,7 @@
         }
     }
 
- protected async Task ReverseStock()
+    protected async Task ReverseStock()
     {
         Stock s;
         for (int i = 0; i < GridData.Count(); i++)
@@ -778,6 +795,8 @@
             await StockService.SaveStock(s);
 
         }
+
+        IsRepositionVisible = true;
     }
 
 
