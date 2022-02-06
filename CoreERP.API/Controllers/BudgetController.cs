@@ -26,10 +26,10 @@ namespace CoreERP.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllBudgetsByUserName/{userName}")]
-        public async Task<IActionResult> GetAlGetAllBudgetsByUserName(string userName)
+        [Route("GetAllBudgetsByUserName/{userName}/{canViewOnlyOwned}")]
+        public async Task<IActionResult> GetAlGetAllBudgetsByUserName(string userName, bool canViewOnlyOwned)
         {
-            return Ok(await _BudgetRepository.GetAllBudgetsByUserName(userName));
+            return Ok(await _BudgetRepository.GetAllBudgetsByUserName(userName, canViewOnlyOwned));
         }
 
 

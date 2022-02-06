@@ -233,7 +233,7 @@
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
                     }
-                    @if (Estado == "Pendiente")
+                    @if (Estado == "Pendiente" && UserPermissions.CanAuthorize)
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="Autorization">Aprobar presupuesto</SfButton>
                     }
@@ -524,6 +524,47 @@
 
     private bool IsVisible { get; set; } = false;
 
+
+    //Authorization UserPermissions
+    AuthorizationMatrix UserPermissions = new AuthorizationMatrix();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private async Task AuthorizeUser(AuthorizationMatrix m)
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            m.CanView = false;
+            m.CanViewOnlyOwned = true;
+            m.CanEdit = false;
+            m.CanCreate = false;
+            m.CanDelete = false;
+        }
+
+        if (user.IsInRole("Administrators"))
+        {
+            // Perform an action only available to users in the 'admin' role.
+            m.CanView = true;
+            m.CanViewOnlyOwned = true;
+            m.CanEdit = true;
+            m.CanCreate = false;
+            m.CanDelete = true;
+            m.CanAuthorize = true;           
+        }
+        else if (user.IsInRole("Sales"))
+        {
+            m.CanView = true;
+            m.CanViewOnlyOwned = true;
+            m.CanEdit = true;
+            m.CanCreate = true;
+            m.CanDelete = false;
+            m.CanAuthorize = false;
+        }
+    }
+
     private void OpenDialog()
     {
         this.IsVisible = true;
@@ -813,6 +854,9 @@
         try
         {
             int id = Int32.Parse(BudgetID);
+
+            await AuthorizeUser(UserPermissions);
+
             GridData = await BudgetDetailsService.GetBudgetDetails(id);
             header = await BudgetService.GetBudgetDetails(id);
 

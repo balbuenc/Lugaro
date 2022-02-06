@@ -50,6 +50,7 @@ namespace CoreERP.UI
                     Configuration.GetConnectionString("AuthenticationDB")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
