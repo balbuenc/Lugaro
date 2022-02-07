@@ -20,7 +20,7 @@
 @inject NavigationManager NavigationManager
 
 
-@attribute [Authorize]
+@attribute [Authorize (Roles="Administrator, Sales")]
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Data
 @using Syncfusion.Blazor.Grids

@@ -30,17 +30,27 @@
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
     string ADMINISTRATION_ROLE = "Administrators";
+    string SALES_ROLE = "Sales";
+    string SERVICES_ROLE = "Services";
+    string RRHH_ROLE = "HumanResources";
+
     System.Security.Claims.ClaimsPrincipal CurrentUser;
 
     protected override async Task OnInitializedAsync()
     {
-        // ensure there is a ADMINISTRATION_ROLE
-        var RoleResult = await _RoleManager.FindByNameAsync(ADMINISTRATION_ROLE);
+        // Create ADMINISTRATION_ROLE Role
+        //await _RoleManager.CreateAsync(new IdentityRole(SALES_ROLE));
+        //await _RoleManager.CreateAsync(new IdentityRole(SERVICES_ROLE));
+
+        // ensure there is a RRHH_ROLE
+        var RoleResult = await _RoleManager.FindByNameAsync(RRHH_ROLE);
         if (RoleResult == null)
         {
             // Create ADMINISTRATION_ROLE Role
-            await _RoleManager.CreateAsync(new IdentityRole(ADMINISTRATION_ROLE));
+            await _RoleManager.CreateAsync(new IdentityRole(RRHH_ROLE));
         }
+
+
         // Ensure a user named Admin@BlazorHelpWebsite.com is an Administrator
         var user = await _UserManager.FindByNameAsync("cbalbuena");
         if (user != null)

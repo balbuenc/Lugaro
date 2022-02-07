@@ -12,7 +12,8 @@
 
 @inject IJSRuntime Js
 
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Administrators, Services")]
+
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Data
 @using Syncfusion.Blazor.Grids
