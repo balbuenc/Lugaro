@@ -232,17 +232,17 @@
                     {
                         <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="Print">Imprimir presupuesto</SfButton>
                     }
-                    @if (Estado == "Generado")
+                    @if (Estado.ToUpper() == "GENERADO")
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
                     }
-                    @if (Estado == "Pendiente" && UserPermissions.CanAuthorize)
+                    @if (Estado.ToUpper() == "PENDIENTE" && UserPermissions.CanAuthorize)
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="Autorization">Aprobar presupuesto</SfButton>
                     }
-                    @if (Estado == "Aprobado")
+                    @if (Estado.ToUpper() == "APROBADO")
                     {
-                        if (Motivo != "MUESTRA")
+                        if (Motivo.ToUpper() != "MUESTRA")
                         {
                             <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>
                         }
@@ -250,18 +250,18 @@
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Generar Remisión esp.</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
                     }
-                    @if (Estado == "Facturado")
+                    @if (Estado.ToUpper() == "FACTURADO")
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
 
                     }
-                    @if (Estado == "REMITIDO")
+                    @if (Estado.ToUpper() == "REMITIDO")
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
                     }
-                    @if (Estado == "PRESTAMO")
+                    @if (Estado.ToUpper() == "PRESTAMO")
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
@@ -746,7 +746,7 @@
 
     protected async Task RequireAutorization()
     {
-        header.estado = "Pendiente";
+        header.estado = "PENDIENTE";
         await BudgetService.SaveBudget(header);
         Navigate();
 
@@ -754,7 +754,7 @@
 
     protected async Task Autorization()
     {
-        header.estado = "Aprobado";
+        header.estado = "APROBADO";
         await BudgetService.SaveBudget(header);
         Navigate();
     }
@@ -797,7 +797,7 @@
             }
 
             //Save Budget header
-            header.estado = "Facturado";
+            header.estado = "FACTURADO";
             await BudgetService.SaveBudget(header);
 
 

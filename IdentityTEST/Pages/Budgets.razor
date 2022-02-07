@@ -13,7 +13,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 
-@attribute [Authorize (Roles="Administrators, Sales")]
+@attribute [Authorize(Roles = "Administrators, Sales")]
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Data
 @using Syncfusion.Blazor.Grids
@@ -59,6 +59,15 @@
 
 </style>
 
+<style> 
+    .e-grid .e-headercelldiv{ 
+        font-size:11px; 
+    } 
+    .e-grid .e-rowcell{ 
+        font-size:11px; 
+    } 
+</style> 
+
 <div class="container-fluid">
     <p>@Message</p>
     <span class="error">@ErrorDetails</span>
@@ -81,7 +90,7 @@
                 else
                 {
                     @*<SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>*@
-                    <SfGrid TValue="Budget" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
+                    <SfGrid TValue="Budget" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
@@ -184,23 +193,37 @@
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn HeaderText="*" Width="8">
+                            <GridColumn HeaderText="Cmd." Width="10">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
-                            <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="15" Visible="true"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID"  Width="15" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="20" Visible="true"></GridColumn>
                             <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
                             <GridColumn Field=@nameof(Budget.moneda) HeaderText="Mon." Width="15" Visible="false"></GridColumn>
                             <GridColumn Field=@nameof(Budget.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.estado) HeaderText="Estado" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.direccion_entrega) HeaderText="Entregar en" Visible="false" Width="10"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.contacto) HeaderText="Contacto" Visible="false" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.estado) Width="30">
+                                <Template>
+                                    @{
+                                        var budg = (context as Budget);
+                                        if ( budg.estado.ToUpper() == "GENERADO")
+                                        {
+                                            <h6><span class="badge rounded-pill bg-primary">@budg.estado</span></h6>
+                                        }
+                                        else
+                                        {
+                                           <h6><span class="badge rounded-pill bg-secondary">@budg.estado</span></h6>
+                                        }
+                                    }
+                                </Template>
+                            </GridColumn>
+                            <GridColumn Field=@nameof(Budget.direccion_entrega) HeaderText="Entregar en" Visible="false" Width="25"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.contacto) HeaderText="Contacto" Visible="false" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Visible="false" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.obra) HeaderText="Obra" Visible="false" Width="10"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Visible="false" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.obra) HeaderText="Obra" Visible="false" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Visible="true" Width="20"></GridColumn>
 
                         </GridColumns>
                     </SfGrid>
@@ -270,7 +293,7 @@
         {
             // Perform an action only available to users in the 'admin' role.
             m.CanView = true;
-            m.CanViewOnlyOwned = true;
+            m.CanViewOnlyOwned = false;
             m.CanEdit = true;
             m.CanCreate = true;
             m.CanDelete = true;
