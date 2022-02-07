@@ -20,7 +20,7 @@
 @inject NavigationManager NavigationManager
 
 
-@attribute [Authorize (Roles="Administrators, Sales")]
+@attribute [Authorize(Roles = "Administrators, Sales")]
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Data
 @using Syncfusion.Blazor.Grids
@@ -180,6 +180,9 @@
                                     <td>
                                         <p class="m-0"><b>Exento:</b>@Exento</p>
                                     </td>
+                                     <td>
+                                        <p class="m-0"><b>Motivo:</b>@Motivo</p>
+                                    </td>
                                 </tr>
                             </tbody>
 
@@ -241,6 +244,7 @@
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Generar Remisión esp.</SfButton>
+                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
                     }
                     @if (Estado == "Facturado")
                     {
@@ -248,13 +252,14 @@
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
 
                     }
-                    @if (Estado == "Remitido")
+                    @if (Estado == "REMISION LEGAL")
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
                     }
-                    @if (Estado == "Prestamo")
+                    @if (Estado == "PRESTAMO")
                     {
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
                         <SfButton CssClass="e-reverse" IconPosition="IconPosition.Right" OnClick="ReverseStock">Devolución</SfButton>
                     }
@@ -507,7 +512,7 @@
     public string Vendedor = "";
     public string Condicion = "";
     public string Exento = "";
-
+    public string Motivo = "";
 
     public IEnumerable<BudgetDetails> GridData { get; set; }
 
@@ -552,7 +557,7 @@
             m.CanEdit = true;
             m.CanCreate = false;
             m.CanDelete = true;
-            m.CanAuthorize = true;           
+            m.CanAuthorize = true;
         }
         else if (user.IsInRole("Sales"))
         {
@@ -771,14 +776,16 @@
     {
         try
         {
-            //create Sale
+            //create Sale based on Budget
             Sale s;
             s = await SaleService.SaveSale(header);
 
+
+            // Generate Quota for the Sale
             await QuotaService.SaveQuota(s);
 
-            //await PrintInvoice();
 
+            //Discount Stock of products
             await ModifyStock();
 
             //Save Budget header
@@ -796,7 +803,15 @@
 
     protected async Task SpecialRemission()
     {
-        header.estado = "Prestamo";
+        if (header.motivo == "MUESTRA")
+        {
+            header.estado = "PRESTAMO";
+        }
+        else if (header.motivo == "VENTA")
+        {
+            header.estado = "REMITIDO";
+        }
+
         await BudgetService.SaveBudget(header);
 
         if (header.motivo == "VENTA" || header.motivo == "MUESTRA")
@@ -841,7 +856,7 @@
 
     protected async Task Remission()
     {
-        header.estado = "Remitido";
+        header.estado = "REMISION LEGAL";
         await BudgetService.SaveBudget(header);
 
         Navigate();
@@ -873,6 +888,7 @@
             Vendedor = header.vendedor;
             Condicion = header.condicion;
             Exento = header.cliente_exento;
+            Motivo = header.motivo;
 
             //Verify if prinatable layout
             if (IsPrintable)
