@@ -59,14 +59,15 @@
 
 </style>
 
-<style> 
-    .e-grid .e-headercelldiv{ 
-        font-size:11px; 
-    } 
-    .e-grid .e-rowcell{ 
-        font-size:11px; 
-    } 
-</style> 
+<style>
+    .e-grid .e-headercelldiv {
+        font-size: 11px;
+    }
+
+    .e-grid .e-rowcell {
+        font-size: 11px;
+    }
+</style>
 
 <div class="container-fluid">
     <p>@Message</p>
@@ -198,7 +199,7 @@
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
-                            <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID"  Width="15" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="15" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="20"></GridColumn>
                             <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="20" Visible="true"></GridColumn>
                             <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
@@ -208,14 +209,39 @@
                                 <Template>
                                     @{
                                         var budg = (context as Budget);
-                                        if ( budg.estado.ToUpper() == "GENERADO")
+                                        if (budg.estado.ToUpper() == "GENERADO")
                                         {
-                                            <h6><span class="badge rounded-pill bg-primary">@budg.estado</span></h6>
+                                            <h6><span class="badge bg-primary">@budg.estado</span></h6>
+                                        }
+                                        else if (budg.estado.ToUpper() == "PENDIENTE")
+                                        {
+                                            <h6><span class="badge bg-secondary">@budg.estado</span></h6>
+                                        }
+                                        else if (budg.estado.ToUpper() == "APROBADO")
+                                        {
+                                            <h6><span class="badge bg-success">@budg.estado</span></h6>
+                                        }
+                                        else if (budg.estado.ToUpper() == "FACTURADO")
+                                        {
+                                            <h6><span class="badge bg-danger">@budg.estado</span></h6>
+                                        }
+                                        else if (budg.estado.ToUpper() == "REMITIDO")
+                                        {
+                                            <h6><span class="badge bg-warning text-dark">@budg.estado</span></h6>
+                                        }
+                                        else if (budg.estado.ToUpper() == "PRESTAMO")
+                                        {
+                                            <h6><span class="badge bg-secondary">@budg.estado</span></h6>
+                                        }
+                                        else if (budg.estado.ToUpper() == "IMPORTADO")
+                                        {
+                                            <h6><span class="badge bg-light text-dark">@budg.estado</span></h6>
                                         }
                                         else
                                         {
-                                           <h6><span class="badge rounded-pill bg-secondary">@budg.estado</span></h6>
-                                        }
+                                            <h6><span class="badge bg-light bg-dark">@budg.estado</span></h6>
+                                        }
+                                            
                                     }
                                 </Template>
                             </GridColumn>
