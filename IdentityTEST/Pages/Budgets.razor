@@ -209,40 +209,42 @@
                                 <Template>
                                     @{
                                         var budg = (context as Budget);
-                                        if (budg.estado.ToUpper() == "GENERADO")
+                                        if (budg.estado != null)
                                         {
-                                            <h6><span class="badge bg-primary">@budg.estado</span></h6>
-                                        }
-                                        else if (budg.estado.ToUpper() == "PENDIENTE")
-                                        {
-                                            <h6><span class="badge bg-secondary">@budg.estado</span></h6>
-                                        }
-                                        else if (budg.estado.ToUpper() == "APROBADO")
-                                        {
-                                            <h6><span class="badge bg-success">@budg.estado</span></h6>
-                                        }
-                                        else if (budg.estado.ToUpper() == "FACTURADO")
-                                        {
-                                            <h6><span class="badge bg-danger">@budg.estado</span></h6>
-                                        }
-                                        else if (budg.estado.ToUpper() == "REMITIDO")
-                                        {
-                                            <h6><span class="badge bg-warning text-dark">@budg.estado</span></h6>
-                                        }
-                                        else if (budg.estado.ToUpper() == "PRESTAMO")
-                                        {
-                                            <h6><span class="badge bg-secondary">@budg.estado</span></h6>
-                                        }
-                                        else if (budg.estado.ToUpper() == "IMPORTADO")
-                                        {
-                                            <h6><span class="badge bg-light text-dark">@budg.estado</span></h6>
-                                        }
-                                        else
-                                        {
-                                            <h6><span class="badge bg-light bg-dark">@budg.estado</span></h6>
-                                        }
+                                            if (budg.estado.ToUpper() == "GENERADO")
+                                            {
+                                                <h6><span class="badge bg-primary">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "PENDIENTE")
+                                            {
+                                                <h6><span class="badge bg-secondary">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "APROBADO")
+                                            {
+                                                <h6><span class="badge bg-success">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "FACTURADO")
+                                            {
+                                                <h6><span class="badge bg-danger">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "REMITIDO")
+                                            {
+                                                <h6><span class="badge bg-warning text-dark">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "PRESTAMO")
+                                            {
+                                                <h6><span class="badge bg-secondary">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "IMPORTADO")
+                                            {
+                                                <h6><span class="badge bg-light text-dark">@budg.estado</span></h6>
+                                            }
+                                            else
+                                            {
+                                                <h6><span class="badge bg-light bg-dark">@budg.estado</span></h6>
+                                            }
 
-                                            
+                                        }
                                     }
                                 </Template>
                             </GridColumn>
@@ -348,7 +350,7 @@
 
             await AuthorizeUser(UserPermissions);
 
-            GridData = await BudgetService.GetAlGetAllBudgetsByUserName(UserName, UserPermissions.CanViewOnlyOwned);
+            GridData = await BudgetService.GetAllBudgetsByUserName(UserName, UserPermissions.CanViewOnlyOwned);
             clients = await ClientService.GetAllClients();
             employees = await EmployeeService.GetAllEmployees();
             currencies = await CurrencyService.GetAllCurrencies();
@@ -390,7 +392,7 @@
     {
         if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
         {
-            GridData = await BudgetService.GetAlGetAllBudgetsByUserName(UserName, UserPermissions.CanViewOnlyOwned);
+            GridData = await BudgetService.GetAllBudgetsByUserName(UserName, UserPermissions.CanViewOnlyOwned);
             Grid.Refresh();
         }
 

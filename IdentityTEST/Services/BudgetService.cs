@@ -32,7 +32,7 @@ namespace CoreERP.UI.Services
                  );
         }
 
-        public async Task<IEnumerable<Budget>> GetAlGetAllBudgetsByUserName(string userName, bool canViewOnlyOwned)
+        public async Task<IEnumerable<Budget>> GetAllBudgetsByUserName(string userName, bool canViewOnlyOwned)
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<Budget>>(
                  await _httpClient.GetStreamAsync($"api/budget/GetAllBudgetsByUserName/{userName}/{canViewOnlyOwned}"),
