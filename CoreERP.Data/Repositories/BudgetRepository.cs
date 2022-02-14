@@ -112,7 +112,7 @@ namespace CoreERP.Data.Repositories
                 var sql = @"INSERT INTO public.presupuestos (id_cliente, id_funcionario, fecha, estado, nro_presupuesto,id_moneda,cotizacion,plazo_entrega,forma_pago,observaciones,contacto,direccion_entrega,id_condicion_venta,obra,motivo) VALUES(@id_cliente, @id_funcionario, @fecha, @estado, @nro_presupuesto,@id_moneda,@cotizacion,@plazo_entrega,@forma_pago,@observaciones,@contacto,@direccion_entrega,@id_condicion_venta,@obra,@motivo);";
 
 
-                budget.estado = "Generado";
+                budget.estado = "GENERADO";
 
                 var result = await db.ExecuteAsync(sql, new
                 {

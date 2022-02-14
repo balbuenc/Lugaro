@@ -6,7 +6,7 @@
 
 @using ServiceReference;
 @using System.ServiceModel;
-
+@using CoreERP.UI.Tools;
 
 
 @attribute [Authorize]
@@ -17,15 +17,15 @@
 
 @using System.IO;
 
-    <div class="control-section">
-      
-        @if (!string.IsNullOrEmpty(pdfContent))
-        {
-            <embed src="@pdfContent" width="1024px" height="2100px" />
-        }
-    </div>
+<div class="control-section">
 
-@code{
+    @if (!string.IsNullOrEmpty(pdfContent))
+    {
+        <embed src="@pdfContent" width="1024px" height="2100px" />
+    }
+</div>
+
+@code {
 
     [Parameter]
     public string BudgetID { get; set; }
@@ -36,12 +36,16 @@
     string pdfContent = "";
     byte[] array;
 
+    public SystemTools erpTools;
+    public string ReportExecution2005EndPointUrl;
+    public string ReportPath;
 
-    const string ReportExecution2005EndPointUrl = "http://192.168.0.19/ReportServer/ReportExecution2005.asmx";
+
+    //const string ReportExecution2005EndPointUrl = "http://192.168.0.19/ReportServer/ReportExecution2005.asmx";
     const string SsrsServiceAccountActiveDirectoryUserName = "cbalbuena";
     const string SsrsServiceAccountActiveDirectoryPassword = "Paraguay1";
     const string SsrsServiceAccountActiveDirectoryDomain = "itcs";
-    const string ReportPath = "/LugaroSSRS/Factura";
+    //const string ReportPath = "/LugaroSSRS/Factura";
     const string ReportWidth = "8.5in";
     const string ReportHeight = "11in";
     const string ReportFormat = "PDF";  // Other options include WORDOPENXML and EXCELOPENXML
@@ -87,6 +91,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        //Get Report Server System configuration
+        erpTools = new SystemTools();
+
+        ReportExecution2005EndPointUrl = await erpTools.GetSystemParam("ReportExecution2005EndPointUrl");
+        ReportPath = await erpTools.GetSystemParam("ReportPath");
+        ReportPath += "/Factura";
+
 
         array = await RenderReport(ReportPath, null, null);
 
@@ -141,6 +152,6 @@
         return response.Result;
     }
 
-   
+
 
 }
