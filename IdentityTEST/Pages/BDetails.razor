@@ -839,8 +839,19 @@
             BudgetDetails item = GridData.ElementAt(i);
             s = await StockService.GetStockDetails(item.id_producto);
 
+            if (s.id_stock == 0)
+            {
+                continue;
+            }
+
             s.cantidad = s.cantidad - item.cantidad;
-            await StockService.SaveStock(s);
+            try{
+                await StockService.SaveStock(s);
+            }
+            catch(Exception ex)
+            {
+                continue;
+            }
 
         }
     }
