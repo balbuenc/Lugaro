@@ -258,8 +258,9 @@
                     }
                     @if (Estado.ToUpper() == "REMITIDO")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
+                        @*<SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>*@
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>
                     }
                     @if (Estado.ToUpper() == "PRESTAMO")
                     {
@@ -763,7 +764,6 @@
     {
         if (header.nro_presupuesto == null || header.nro_presupuesto == "")
         {
-
             OpenDialog();
             return;
         }
@@ -789,11 +789,10 @@
             await QuotaService.SaveQuota(s);
 
 
-            if (header.motivo == "MONTAJE")
+            if (header.motivo == "VENTA")
             {
                 //Discount Stock of products
                 await ModifyStock();
-
             }
 
             //Save Budget header
@@ -875,7 +874,7 @@
 
     protected async Task Remission()
     {
-        header.estado = "REMISION LEGAL";
+        header.estado = "REMITIDO";
         await BudgetService.SaveBudget(header);
 
         Navigate();
