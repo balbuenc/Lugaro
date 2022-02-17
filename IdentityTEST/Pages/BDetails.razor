@@ -259,9 +259,10 @@
                     }
                     @if (Estado.ToUpper() == "REMITIDO")
                     {
-                        @*<SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>*@
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>
+                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
+                        @*<SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>*@
                     }
                     @if (Estado.ToUpper() == "PRESTAMO")
                     {
@@ -815,7 +816,7 @@
         {
             header.estado = "PRESTAMO";
         }
-        else if (header.motivo == "VENTA")
+        else if (header.motivo == "VENTA" || header.motivo == "MONTAJE")
         {
             header.estado = "REMITIDO";
         }
