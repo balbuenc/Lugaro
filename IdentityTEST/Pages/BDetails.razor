@@ -254,6 +254,7 @@
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
+                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Generar Remisión esp.</SfButton>
 
                     }
                     @if (Estado.ToUpper() == "REMITIDO")
@@ -844,10 +845,11 @@
             }
 
             s.cantidad = s.cantidad - item.cantidad;
-            try{
+            try
+            {
                 await StockService.SaveStock(s);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 continue;
             }
