@@ -70,6 +70,7 @@ namespace CoreERP.API
             services.AddScoped<IGeneralPurchaseRepository, GeneralPurchaseRepository>();
             services.AddScoped<IGeneralPurchaseDetailsRepository, GeneralPurchaseDetailsRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 
             services.AddControllers();
 
