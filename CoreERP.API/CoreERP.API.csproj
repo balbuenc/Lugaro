@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>273f45c3-8f39-43d8-9e6b-08581d5765d3</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\IdentityTEST</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +16,8 @@
     <ProjectReference Include="..\CoreERP.Data\CoreERP.Data.csproj" />
     <ProjectReference Include="..\CoreERP.Model\CoreERP.Model.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 
 </Project>

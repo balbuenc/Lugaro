@@ -255,6 +255,7 @@
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Generar Remisión esp.</SfButton>
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CancelInvoice">Anular factura</SfButton>
 
                     }
                     @if (Estado.ToUpper() == "REMITIDO")
@@ -269,6 +270,10 @@
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
                         <SfButton CssClass="e-reverse" IconPosition="IconPosition.Right" OnClick="ReverseStock">Devolución</SfButton>
+                    }
+                    @if(Estado.ToUpper() == "ANULADO")
+                    {
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                     }
                 </div>
             </div>
@@ -758,6 +763,13 @@
     protected async Task Autorization()
     {
         header.estado = "APROBADO";
+        await BudgetService.SaveBudget(header);
+        Navigate();
+    }
+
+    protected async Task CancelInvoice()
+    {
+        header.estado = "ANULADO";
         await BudgetService.SaveBudget(header);
         Navigate();
     }
