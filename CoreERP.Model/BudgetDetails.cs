@@ -60,5 +60,7 @@ namespace CoreERP.Model
 
         public string cliente_exento { get; set; }
 
+        public string estado_venta { get; set; }
+
     }
 }

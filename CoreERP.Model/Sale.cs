@@ -12,5 +12,6 @@ namespace CoreERP.Model
         public DateTime fecha { get; set; }
         public String condicion { get; set; }
         public decimal importe { get; set; }
+        public string estado { get; set; }
     }
 }

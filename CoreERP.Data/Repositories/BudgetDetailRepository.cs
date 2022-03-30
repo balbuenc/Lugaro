@@ -38,9 +38,11 @@ namespace CoreERP.Data.Repositories
         {
             var db = dbConnection();
             var sql = @"select pd.id_presupuesto, pd.id_producto, pd.id_descuento, pd.cantidad, pd.costo, pd.precio, p.codigo, p.producto , d.descuento, d.porcentaje 
+                        ,v.estado as estado_venta
                         from presupuesto_detalles pd
                         inner join productos p on p.id_producto = pd.id_producto
-                        left outer join descuentos d on d.id_descuento = pd.id_descuento";
+                        left outer join descuentos d on d.id_descuento = pd.id_descuento
+                        left outer join ventas v on v.id_presupuesto = pd.id_presupuesto";
 
             return await db.QueryAsync<BudgetDetails>(sql, new { });
         }
@@ -49,9 +51,11 @@ namespace CoreERP.Data.Repositories
         {
             var db = dbConnection();
             var sql = @"select pd.id_presupuesto_detalle, pd.id_presupuesto, pd.id_producto, pd.id_descuento, pd.cantidad, pd.costo, pd.precio, p.codigo, p.producto , d.descuento, pd.porcentaje , pd.total , pd.precio_unitario
+                        ,v.estado as estado_venta
                         from presupuesto_detalles pd
                         inner join productos p on p.id_producto = pd.id_producto
                         left outer join descuentos d on d.id_descuento = pd.id_descuento 
+                        left outer join ventas v on v.id_presupuesto = pd.id_presupuesto 
                         where pd.id_presupuesto = @Id
                         order by 1 desc";
 

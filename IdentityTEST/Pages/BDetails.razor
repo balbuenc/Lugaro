@@ -156,10 +156,10 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <p class="m-0"><b>Nro.:</b> @NroPresupuesto</p>
+                                        <p class="m-0"><b>#Factura:</b> @NroPresupuesto</p>
                                     </td>
                                     <td>
-                                        <p class="m-0"><b>Estado:</b> @Estado</p>
+                                        <p class="m-0"><b>Est. venta:</b> @Estado</p>
                                     </td>
                                     <td>
                                         <p class="m-0"><b>Fecha:</b> @Fecha</p>
@@ -182,6 +182,9 @@
                                     </td>
                                     <td>
                                         <p class="m-0"><b>Motivo:</b>@Motivo</p>
+                                    </td>
+                                    <td>
+                                        <p class="m-0"><b>Est. fact.:</b>@EstadoFacturacion</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -255,8 +258,11 @@
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Generar Remisión esp.</SfButton>
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CancelInvoice">Anular factura</SfButton>
-
+                       
+                    }
+                    @if(EstadoFacturacion.ToUpper() == "FACTURADO")
+                    {
+                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CancelInvoice">Anular factura</SfButton>
                     }
                     @if (Estado.ToUpper() == "REMITIDO")
                     {
@@ -525,6 +531,7 @@
     public string Condicion = "";
     public string Exento = "";
     public string Motivo = "";
+    public string EstadoFacturacion = "";
 
     public IEnumerable<BudgetDetails> GridData { get; set; }
 
@@ -769,8 +776,13 @@
 
     protected async Task CancelInvoice()
     {
-        header.estado = "ANULADO";
+        //registro el estado del presupuesto como Aprobado
+        header.estado = "APROBADO";
         await BudgetService.SaveBudget(header);
+
+        // Cancelo la factura
+         Sale s;
+         s = await SaleService.SaveSale(header);
         Navigate();
     }
 
@@ -922,6 +934,7 @@
             Condicion = header.condicion;
             Exento = header.cliente_exento;
             Motivo = header.motivo;
+            EstadoFacturacion = header.estado_venta;
 
             //Verify if prinatable layout
             if (IsPrintable)

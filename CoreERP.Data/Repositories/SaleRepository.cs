@@ -82,16 +82,21 @@ namespace CoreERP.Data.Repositories
             {
                 var db = dbConnection();
 
+                //var sql = @"INSERT INTO public.ventas
+                //            (id_credito, venta, monto_capital, monto_interes, vencimiento, fecha_pago, multa, mora, id_venta, estado)
+                //            VALUES(@id_credito, @venta, @monto_capital, @monto_interes, @vencimiento, @fecha_pago, @multa, @mora, @id_venta, @estado);";
+
                 var sql = @"INSERT INTO public.ventas
-                            (id_credito, venta, monto_capital, monto_interes, vencimiento, fecha_pago, multa, mora, id_venta)
-                            VALUES(@id_credito, @venta, @monto_capital, @monto_interes, @vencimiento, @fecha_pago, @multa, @mora, @id_venta);";
+                            (id_credito, venta, monto_capital, monto_interes, vencimiento, fecha_pago, multa, mora, id_venta, estado)
+                            VALUES(@id_credito, @venta, @monto_capital, @monto_interes, @vencimiento, @fecha_pago, @multa, @mora, @id_venta, @estado);";
 
                 var result = await db.ExecuteAsync(sql, new
                 {
                     venta.id_presupuesto,
                     venta.factura,
                     venta.fecha,
-                    venta.importe
+                    venta.importe,
+                    venta.estado
                 }
                 );
 

@@ -56,21 +56,25 @@ namespace CoreERP.Data.Repositories
             if (!canViewOnlyOwned)
             { 
                 sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta, p.obra, p.motivo, c2.cliente_exento
+                        ,v.estado as estado_venta
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
                         left outer join monedas m2 on m2.id_moneda = p.id_moneda 
                         left outer join condicion_venta cv on cv.id_condicion_venta  = p.id_condicion_venta 
+                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto 
                         order by p.id_presupuesto desc";
             }
             else
             {
                 sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta, p.obra, p.motivo, c2.cliente_exento
+                        ,v.estado as estado_venta
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
                         left outer join monedas m2 on m2.id_moneda = p.id_moneda 
                         left outer join condicion_venta cv on cv.id_condicion_venta  = p.id_condicion_venta 
+                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto 
                         where f2.usuario =  @user
                         order by p.id_presupuesto desc";
             }
@@ -82,11 +86,13 @@ namespace CoreERP.Data.Repositories
         {
             var db = dbConnection();
             var sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta,p.id_funcionario, p.obra, p.motivo, c2.cliente_exento
+                        ,v.estado as estado_venta
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
                         left outer join monedas m2 on m2.id_moneda = p.id_moneda
                         left outer join condicion_venta cv on cv.id_condicion_venta  = p.id_condicion_venta 
+                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto
                         where p.id_presupuesto = @Id";
 
             return await db.QueryFirstOrDefaultAsync<Budget>(sql, new { Id = id });

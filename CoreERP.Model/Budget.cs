@@ -36,5 +36,7 @@ namespace CoreERP.Model
         public string motivo { get; set; }
 
         public string cliente_exento { get; set; }
+
+        public string estado_venta { get; set; }
     }
 }
