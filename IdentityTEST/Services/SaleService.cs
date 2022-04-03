@@ -61,5 +61,19 @@ namespace CoreERP.UI.Services
             }
         }
 
+        public async Task UpdateSale(Sale sale)
+        {
+            try
+            {
+                var clientJson = new StringContent(JsonSerializer.Serialize(sale), Encoding.UTF8, "application/json");
+
+                await _httpClient.PutAsync("api/sale", clientJson);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

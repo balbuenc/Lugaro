@@ -14,6 +14,8 @@ namespace CoreERP.UI.Interfaces
 
         Task<Sale> SaveSale(Budget budget);
 
+        Task UpdateSale(Sale sale); 
+
 
         Task DeleteSale(int id);
     }

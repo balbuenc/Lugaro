@@ -65,7 +65,7 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = "select * from ventas  where id_presupuesto = @Id";
+                var sql = "select * from ventas  where id_presupuesto = @Id order by id_venta desc limit 1";
 
 
                 return await db.QueryFirstOrDefaultAsync<Sale>(sql, new { Id = id });
@@ -75,6 +75,8 @@ namespace CoreERP.Data.Repositories
                 throw ex;
             }
         }
+
+       
 
         public async Task<bool> InsertSale(Sale venta)
         {
@@ -139,7 +141,7 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"UPDATE public.ventas
-                            SET id_credito=@id_credito, venta=@venta, monto_capital=@monto_capital, monto_interes=@monto_interes, vencimiento=@vencimiento, fecha_pago=@fecha_pago, multa=@multa, mora=@mora, id_venta=@id_venta
+                            SET id_presupuesto=@id_presupuesto, factura=@factura, fecha=@fecha, condicion=@condicion, importe=@importe, estado=@estado
                             where id_venta=@id_venta;";
 
                 var result = await db.ExecuteAsync(sql, new
@@ -148,6 +150,8 @@ namespace CoreERP.Data.Repositories
                     venta.factura,
                     venta.fecha,
                     venta.importe,
+                    venta.estado,
+                    venta.condicion,
                     venta.id_venta
                 }
                 );

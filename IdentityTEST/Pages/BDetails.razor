@@ -258,18 +258,18 @@
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Generar Remisión esp.</SfButton>
-                       
+
                     }
-                    @if(EstadoFacturacion.ToUpper() == "FACTURADO")
+                    @if (EstadoFacturacion.ToUpper() == "FACTURADO")
                     {
-                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CancelInvoice">Anular factura</SfButton>
+                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CancelInvoice">Anular factura</SfButton>
                     }
                     @if (Estado.ToUpper() == "REMITIDO")
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
-                        @*<SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>*@
+                      
                     }
                     @if (Estado.ToUpper() == "PRESTAMO")
                     {
@@ -277,7 +277,7 @@
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
                         <SfButton CssClass="e-reverse" IconPosition="IconPosition.Right" OnClick="ReverseStock">Devolución</SfButton>
                     }
-                    @if(Estado.ToUpper() == "ANULADO")
+                    @if (Estado.ToUpper() == "ANULADO")
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                     }
@@ -780,9 +780,14 @@
         header.estado = "APROBADO";
         await BudgetService.SaveBudget(header);
 
-        // Cancelo la factura
-         Sale s;
-         s = await SaleService.SaveSale(header);
+        // Obtengo la factura actual del presupuesto y la cancel Cancelo la factura
+        Sale s;
+        s = await SaleService.GetSaleDetails (header.id_presupuesto);
+
+        s.estado = "ANULADO";
+
+        await SaleService.UpdateSale(s);
+
         Navigate();
     }
 
@@ -815,7 +820,7 @@
             await QuotaService.SaveQuota(s);
 
 
-            if (header.motivo == "VENTA")
+            if (header.motivo == "MONTAJE")
             {
                 //Discount Stock of products
                 await ModifyStock();
@@ -844,6 +849,8 @@
         {
             header.estado = "REMITIDO";
         }
+
+    
 
         await BudgetService.SaveBudget(header);
 
@@ -934,7 +941,11 @@
             Condicion = header.condicion;
             Exento = header.cliente_exento;
             Motivo = header.motivo;
-            EstadoFacturacion = header.estado_venta;
+
+            if (header.estado_venta == null)
+                EstadoFacturacion = "PENDIENTE";
+            else
+                EstadoFacturacion = header.estado_venta;
 
             //Verify if prinatable layout
             if (IsPrintable)

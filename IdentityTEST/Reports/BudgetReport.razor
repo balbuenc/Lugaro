@@ -39,13 +39,11 @@
 
     public SystemTools erpTools;
     public string ReportExecution2005EndPointUrl;
+    public string SsrsServiceAccountActiveDirectoryUserName;
+    public string SsrsServiceAccountActiveDirectoryPassword;
+    public string SsrsServiceAccountActiveDirectoryDomain;
     public string ReportPath;
 
-    //const string ReportExecution2005EndPointUrl = "http://192.168.0.19/ReportServer/ReportExecution2005.asmx";
-    const string SsrsServiceAccountActiveDirectoryUserName = "cbalbuena";
-    const string SsrsServiceAccountActiveDirectoryPassword = "Parguay2022!";
-    const string SsrsServiceAccountActiveDirectoryDomain = "itcs";
-    //const string ReportPath = "/LugaroSSRS/Presupuesto";
     const string ReportWidth = "8.5in";
     const string ReportHeight = "11in";
     const string ReportFormat = "PDF";  // Other options include WORDOPENXML and EXCELOPENXML
@@ -93,11 +91,14 @@
     {
 
         //RunReport().Wait();
-        
+
         //Get Report Server System configuration
         erpTools = new SystemTools();
-        
+
         ReportExecution2005EndPointUrl = await erpTools.GetSystemParam("ReportExecution2005EndPointUrl");
+        SsrsServiceAccountActiveDirectoryUserName = await erpTools.GetSystemParam("SsrsServiceAccountActiveDirectoryUserName");
+        SsrsServiceAccountActiveDirectoryPassword = await erpTools.GetSystemParam("SsrsServiceAccountActiveDirectoryPassword");
+        SsrsServiceAccountActiveDirectoryDomain = await erpTools.GetSystemParam("SsrsServiceAccountActiveDirectoryDomain");
         ReportPath = await erpTools.GetSystemParam("ReportPath");
         ReportPath += "/Presupuesto";
 
