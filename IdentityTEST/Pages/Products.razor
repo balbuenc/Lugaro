@@ -28,6 +28,7 @@
 @using Syncfusion.Blazor.Cards
 
 @using System.IO
+@using System.Data
 
 
 <style>
@@ -52,6 +53,70 @@
     }
 </style>
 
+<style>
+    #button-control {
+        width: 100%;
+        margin: 8% 0;
+        text-align: center;
+    }
+
+        #button-control .e-btn {
+            float: left;
+        }
+
+    @@media only screen and (max-width: 500px) {
+        #button-control {
+            margin-left: -3%;
+        }
+    }
+
+    .button-section {
+        width: 80%;
+        margin: auto;
+    }
+
+    #button-control .col-xs-12 {
+        margin: 15px 0;
+    }
+
+    @@font-face {
+        font-family: 'button-icons';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .e-btn-sb-icons {
+        font-family: 'button-icons';
+        line-height: 1;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .e-play-icon::before {
+        content: '\e701';
+    }
+
+    .e-pause-icon::before {
+        content: '\e705';
+    }
+
+    .e-open-icon::before {
+        content: '\e70d';
+    }
+
+    .e-add-icon::before {
+        content: '\e70a';
+    }
+
+    .e-import-icon::before {
+        content: '\ef56f';
+    }
+</style>
 
 
 <div class="container-fluid">
@@ -60,7 +125,10 @@
 
     <div class="col-lg-12" style="padding:1px; height:50px">
         <div class="content-wrapper">
-            <div class="alert alert-title" role="banner"><b>Productos</b></div>
+            <div class="alert alert-title" role="banner">
+                <b>Productos</b>
+                <SfButton IsPrimary="true" IconCss="e-btn-sb-icons e-open-icon" IconPosition=@IconPosition.Right OnClick=OpenImportDialog>Importar productos</SfButton>
+            </div>
         </div>
     </div>
 
@@ -82,177 +150,177 @@
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
                             <HeaderTemplate>
                                 @{
-                                    var prod = (context as Product);
-                                    getProductStock(prod.id_producto);
-                                }
-                                <span>Detalle de Producto: @(prod.producto)</span>
-                            </HeaderTemplate>
-                            <Template>
-                                @{
-                                    var prod = (context as Product);
-                                }
-                                <div class="container-fluid">
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            <SfNumericTextBox @bind-Value="@(prod.id_producto)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                        </div>
-                                        <div class="form-group col-md-9">
-                                            <SfTextBox @bind-Value="@(prod.producto)" Enabled="true" Placeholder="Prodúcto" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
+                                var prod = (context as Product);
+                                getProductStock(prod.id_producto);
+                            }
+                            <span>Detalle de Producto: @(prod.producto)</span>
+                        </HeaderTemplate>
+                        <Template>
+                            @{
+                                var prod = (context as Product);
+                            }
+                            <div class="container-fluid">
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <SfNumericTextBox @bind-Value="@(prod.id_producto)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                     </div>
-                                    <div class="from-row">
-                                        <div class="form-group col-md-12">
-                                            <SfCard ID="ProductCard">
-
-                                                <Syncfusion.Blazor.Cards.CardImage Image=@prod.imagen></Syncfusion.Blazor.Cards.CardImage>
-                                                <Syncfusion.Blazor.Cards.CardHeader Title=@prod.codigo SubTitle=@prod.producto />
-                                            </SfCard>
-                                        </div>
-                                    </div>
-                                    <div class="from-row">
-                                        <div class="form-group col-md-12">
-                                            <label class="col-form-label">Subir Imagen:</label>
-                                            <SfUploader ID="UploadFiles" AllowedExtensions=".png,.jpeg,.jpg">
-                                                <UploaderEvents ValueChange="onChange" OnRemove="onRemove"></UploaderEvents>
-                                                <UploaderTemplates>
-                                                    <Template Context="HttpContext">
-                                                        <table>
-                                                            <tr>
-                                                                <td>
-                                                                    <img class="upload-image" alt="Preview Image @(HttpContext.Name)"
-                                                                         src="@(files.Count >0 ? files.Where(item=>item.Name == HttpContext.Name)?.FirstOrDefault()?.Path : string.Empty)">
-                                                                </td>
-                                                                <td>
-                                                                    <div style="padding: 7px;">
-                                                                        <h5 title="@(HttpContext.Name)">@(HttpContext.Name)</h5>
-                                                                        <i>@(HttpContext.Size) Bytes</i>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                        <span class="e-icons e-file-remove-btn remove" id="removeIcon" title="Remove"></span>
-                                                        <span class="e-upload-icon e-icons e-file-remove-btn" title="Upload" id="iconUpload" @onclick="@uploadFile"></span>
-                                                    </Template>
-                                                </UploaderTemplates>
-                                            </SfUploader>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <SfTextBox @bind-Value="@(prod.codigo)" Enabled="true" Placeholder="Código" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <SfTextBox @bind-Value="@(prod.descripcion)" Enabled="true" Placeholder="Descripción" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            <SfNumericTextBox @bind-Value="@(prod.costo)" Enabled="true" Placeholder="Costo" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfNumericTextBox @bind-Value="@(prod.precio)" Enabled="true" Placeholder="Precio" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfDropDownList DataSource="@currencies"
-                                                            TItem="Currency"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(prod.id_moneda)"
-                                                            Placeholder="Moneda"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-3">
-                                            <SfDropDownList DataSource="@brands"
-                                                            TItem="Brand"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(prod.id_marca)"
-                                                            Placeholder="Marca"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                <DropDownListFieldSettings Value="id_marca" Text="marca"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfDropDownList DataSource="@vendors"
-                                                            TItem="Vendor"
-                                                            TValue="Int32?"
-                                                            @bind-Value="@(prod.id_proveedor)"
-                                                            Placeholder="Proveedor"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                <DropDownListFieldSettings Text="proveedor" Value="id_proveedor"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <SfDropDownList DataSource="@origins"
-                                                            TItem="Origin"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(prod.id_origen)"
-                                                            Placeholder="Origen"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                                <DropDownListFieldSettings Text="origen" Value="id_origen"></DropDownListFieldSettings>
-                                            </SfDropDownList>
-                                        </div>
-
+                                    <div class="form-group col-md-9">
+                                        <SfTextBox @bind-Value="@(prod.producto)" Enabled="true" Placeholder="Prodúcto" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
                                     </div>
                                 </div>
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h5><b>Existencia del producto por depósito</b></h5>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <SfGrid ID="StockGrid" @ref="StockGrid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarStock" DataSource="@stock">
-                                                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal">
+                                <div class="from-row">
+                                    <div class="form-group col-md-12">
+                                        <SfCard ID="ProductCard">
 
-                                                </GridEditSettings>
-                                                <GridEvents OnActionBegin="OnStockBeginHandler" TValue="Stock" CommandClicked="OnCommandClicked"></GridEvents>
-                                                <GridColumns>
-
-                                                    <GridColumn Field=@nameof(Stock.id_stock) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
-
-                                                    <GridColumn Field=@nameof(Stock.deposito) HeaderText="Depósito" Width="30">
-                                                        <EditTemplate Context="con">
-                                                            <SfDropDownList TValue="Int32" TItem="Store" @bind-Value="@((con as Stock).id_deposito)" Placeholder="Depósito" DataSource="@stores">
-                                                                <DropDownListFieldSettings Text="deposito" Value="id_deposito"></DropDownListFieldSettings>
-                                                            </SfDropDownList>
-                                                        </EditTemplate>
-                                                    </GridColumn>
-                                                    <GridColumn Field=@nameof(Stock.cantidad) HeaderText="Cantidad" Width="15"></GridColumn>
-                                                    <GridColumn HeaderText="Adm." Width="15">
-                                                        <GridCommandColumns>
-                                                            <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-transfer", CssClass="e-flat" })" Title="Transferir"></GridCommandColumn>
-                                                            <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
-                                                            <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
-                                                            <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-save", CssClass="e-flat" })"></GridCommandColumn>
-                                                            <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-cancel-icon", CssClass="e-flat" })"></GridCommandColumn>
-                                                        </GridCommandColumns>
-
-                                                    </GridColumn>
-                                                </GridColumns>
-                                            </SfGrid>
-                                        </div>
+                                            <Syncfusion.Blazor.Cards.CardImage Image=@prod.imagen></Syncfusion.Blazor.Cards.CardImage>
+                                            <Syncfusion.Blazor.Cards.CardHeader Title=@prod.codigo SubTitle=@prod.producto />
+                                        </SfCard>
                                     </div>
                                 </div>
-                            </Template>
-                        </GridEditSettings>
-                        <GridColumns>
-                            <GridColumn Field=@nameof(Product.id_producto) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(Product.codigo) HeaderText="Código" Width="10"></GridColumn>
-                            <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Product.proveedor) HeaderText="Proveedor" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Product.marca) HeaderText="Marca" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Product.costo) HeaderText="Costo" Visible="false" Width="10" Format="N2"></GridColumn>
-                            <GridColumn Field=@nameof(Product.precio) HeaderText="Precio" Width="10" Format="N2"></GridColumn>
-                            <GridColumn Field=@nameof(Product.origen) HeaderText="Origen" Visible="false" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Product.descripcion) HeaderText="Descripción" Visible="false" Width="10"></GridColumn>
-                            <GridColumn Field=@nameof(Product.dias_garantia) HeaderText="Garantía" Visible="false" Width="10"></GridColumn>
+                                <div class="from-row">
+                                    <div class="form-group col-md-12">
+                                        <label class="col-form-label">Subir Imagen:</label>
+                                        <SfUploader ID="UploadFiles" AllowedExtensions=".png,.jpeg,.jpg">
+                                            <UploaderEvents ValueChange="onChange" OnRemove="onRemove"></UploaderEvents>
+                                            <UploaderTemplates>
+                                                <Template Context="HttpContext">
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                <img class="upload-image" alt="Preview Image @(HttpContext.Name)"
+                                                                     src="@(files.Count >0 ? files.Where(item=>item.Name == HttpContext.Name)?.FirstOrDefault()?.Path : string.Empty)">
+                                                            </td>
+                                                            <td>
+                                                                <div style="padding: 7px;">
+                                                                    <h5 title="@(HttpContext.Name)">@(HttpContext.Name)</h5>
+                                                                    <i>@(HttpContext.Size) Bytes</i>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <span class="e-icons e-file-remove-btn remove" id="removeIcon" title="Remove"></span>
+                                                    <span class="e-upload-icon e-icons e-file-remove-btn" title="Upload" id="iconUpload" @onclick="@uploadFile"></span>
+                                                </Template>
+                                            </UploaderTemplates>
+                                        </SfUploader>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <SfTextBox @bind-Value="@(prod.codigo)" Enabled="true" Placeholder="Código" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <SfTextBox @bind-Value="@(prod.descripcion)" Enabled="true" Placeholder="Descripción" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <SfNumericTextBox @bind-Value="@(prod.costo)" Enabled="true" Placeholder="Costo" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <SfNumericTextBox @bind-Value="@(prod.precio)" Enabled="true" Placeholder="Precio" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <SfDropDownList DataSource="@currencies"
+                                                        TItem="Currency"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(prod.id_moneda)"
+                                                        Placeholder="Moneda"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                            <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
+                                        </SfDropDownList>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <SfDropDownList DataSource="@brands"
+                                                        TItem="Brand"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(prod.id_marca)"
+                                                        Placeholder="Marca"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                            <DropDownListFieldSettings Value="id_marca" Text="marca"></DropDownListFieldSettings>
+                                        </SfDropDownList>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <SfDropDownList DataSource="@vendors"
+                                                        TItem="Vendor"
+                                                        TValue="Int32?"
+                                                        @bind-Value="@(prod.id_proveedor)"
+                                                        Placeholder="Proveedor"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                            <DropDownListFieldSettings Text="proveedor" Value="id_proveedor"></DropDownListFieldSettings>
+                                        </SfDropDownList>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <SfDropDownList DataSource="@origins"
+                                                        TItem="Origin"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(prod.id_origen)"
+                                                        Placeholder="Origen"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                            <DropDownListFieldSettings Text="origen" Value="id_origen"></DropDownListFieldSettings>
+                                        </SfDropDownList>
+                                    </div>
 
-                        </GridColumns>
-                    </SfGrid>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h5><b>Existencia del producto por depósito</b></h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <SfGrid ID="StockGrid" @ref="StockGrid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarStock" DataSource="@stock">
+                                            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal">
+
+                                            </GridEditSettings>
+                                            <GridEvents OnActionBegin="OnStockBeginHandler" TValue="Stock" CommandClicked="OnCommandClicked"></GridEvents>
+                                            <GridColumns>
+
+                                                <GridColumn Field=@nameof(Stock.id_stock) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+
+                                                <GridColumn Field=@nameof(Stock.deposito) HeaderText="Depósito" Width="30">
+                                                    <EditTemplate Context="con">
+                                                        <SfDropDownList TValue="Int32" TItem="Store" @bind-Value="@((con as Stock).id_deposito)" Placeholder="Depósito" DataSource="@stores">
+                                                            <DropDownListFieldSettings Text="deposito" Value="id_deposito"></DropDownListFieldSettings>
+                                                        </SfDropDownList>
+                                                    </EditTemplate>
+                                                </GridColumn>
+                                                <GridColumn Field=@nameof(Stock.cantidad) HeaderText="Cantidad" Width="15"></GridColumn>
+                                                <GridColumn HeaderText="Adm." Width="15">
+                                                    <GridCommandColumns>
+                                                        <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-transfer", CssClass="e-flat" })" Title="Transferir"></GridCommandColumn>
+                                                        <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                                        <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
+                                                        <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-save", CssClass="e-flat" })"></GridCommandColumn>
+                                                        <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-cancel-icon", CssClass="e-flat" })"></GridCommandColumn>
+                                                    </GridCommandColumns>
+
+                                                </GridColumn>
+                                            </GridColumns>
+                                        </SfGrid>
+                                    </div>
+                                </div>
+                            </div>
+                        </Template>
+                    </GridEditSettings>
+                    <GridColumns>
+                        <GridColumn Field=@nameof(Product.id_producto) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+                        <GridColumn Field=@nameof(Product.codigo) HeaderText="Código" Width="10"></GridColumn>
+                        <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="30"></GridColumn>
+                        <GridColumn Field=@nameof(Product.proveedor) HeaderText="Proveedor" Width="20"></GridColumn>
+                        <GridColumn Field=@nameof(Product.marca) HeaderText="Marca" Width="20"></GridColumn>
+                        <GridColumn Field=@nameof(Product.costo) HeaderText="Costo" Visible="false" Width="10" Format="N2"></GridColumn>
+                        <GridColumn Field=@nameof(Product.precio) HeaderText="Precio" Width="10" Format="N2"></GridColumn>
+                        <GridColumn Field=@nameof(Product.origen) HeaderText="Origen" Visible="false" Width="20"></GridColumn>
+                        <GridColumn Field=@nameof(Product.descripcion) HeaderText="Descripción" Visible="false" Width="10"></GridColumn>
+                        <GridColumn Field=@nameof(Product.dias_garantia) HeaderText="Garantía" Visible="false" Width="10"></GridColumn>
+
+                    </GridColumns>
+                </SfGrid>
                 }
 
             </div>
@@ -324,6 +392,34 @@
 
         </SfDialog>
 
+
+        <SfDialog ID="ImportDialog" Width="600px" Height="400px" ShowCloseIcon="true" @bind-Visible="@isVisibleImportDialog">
+            <DialogTemplates>
+                <Header><b>Importación de Productos</b></Header>
+                <Content>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="text-left"><b>Factor:</b> </div>
+                            </div>
+                            <div class="col-6">
+                                <SfNumericTextBox TValue="decimal" @bind-Value=@Factor Placeholder="Factor"></SfNumericTextBox>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-12">
+                                <SfUploader ID="Uploader" @ref="Uploader" AutoUpload="false" Multiple="false" AllowedExtensions=".csv">
+                                    <UploaderEvents ValueChange="OnImportChange"></UploaderEvents>
+                                </SfUploader>
+                            </div>
+                        </div>
+                    </div>
+                </Content>
+
+            </DialogTemplates>
+
+        </SfDialog>
     </div>
 
 </div>
@@ -365,6 +461,8 @@
     SfGrid<Stock> StockGrid { get; set; }
     SfGrid<Stock> DestinationGrid { get; set; }
 
+    SfUploader Uploader { get; set; }
+
     protected Stock originStock { get; set; }
     protected Stock destinationStock { get; set; }
 
@@ -380,6 +478,9 @@
     public string UserName;
 
     protected bool isVisibleTransferDialog = false;
+    protected bool isVisibleImportDialog = false;
+
+    public decimal Factor = 0;
 
 
 
@@ -410,6 +511,94 @@
         }
     }
 
+    private void OnImportChange(UploadChangeEventArgs args)
+    {
+        try
+        {
+            string path = "./wwwroot/Images/";
+            foreach (var file in args.Files)
+            {
+                path = path + file.FileInfo.Name;
+
+                FileStream filestream = new FileStream(path, FileMode.Create, FileAccess.Write);
+                file.Stream.WriteTo(filestream);
+                filestream.Close();
+                file.Stream.Close();
+            }
+
+
+            //Procesi el archivo
+            ImportCSV(path);
+
+              //Reload Products
+            NavigationManager.NavigateTo($"/Product", true);
+
+            //Close Dialog
+            isVisibleImportDialog = false;
+
+          
+
+        }
+        catch (Exception ex)
+        {
+            return;
+        }
+
+
+
+    }
+
+    protected void ImportCSV(string csvPath)
+    {
+
+        Product p = new Product();
+
+        //Read the contents of CSV file.
+        string csvData = File.ReadAllText(csvPath);
+        int i = 0;
+
+        //Execute a loop over the rows.
+        foreach (string row in csvData.Split('\n'))
+        {
+            if (!string.IsNullOrEmpty(row))
+            {
+
+                int col = 0;
+
+                //Execute a loop over the columns.
+                if (i > 0)
+                {
+                    foreach (string cell in row.Split(';'))
+                    {
+                        if (col == 0)
+                        {
+                            p.codigo = cell;
+                        }
+                        else if (col == 1)
+                        {
+                            p.producto = cell;
+                        }
+                        else if (col == 4)
+                        {
+                            p.costo = Convert.ToDecimal(cell);
+                            p.precio = Convert.ToDecimal(cell) + (Convert.ToDecimal(cell) * Convert.ToDecimal(Factor));
+                        }
+
+                        col++;
+                    }
+
+                    p.id_origen = 1;
+                    p.id_proveedor = 3;
+                    p.id_moneda = 1;
+                    p.id_marca = 1;
+
+                    ProductService.SaveProduct(p);
+                }
+                i++;
+            }
+        }
+    }
+
     public async Task uploadFile(MouseEventArgs args)
     {
         filepath = await ProductService.SaveImage(content);
@@ -436,7 +625,16 @@
     private void OpenTransferDialog()
     {
         isVisibleTransferDialog = true;
+    }
 
+    private void OpenImportDialog()
+    {
+        isVisibleImportDialog = true;
+    }
+
+    private void CloseImportDialog()
+    {
+        isVisibleImportDialog = false;
     }
 
     public void OnCommandClicked(CommandClickEventArgs<Stock> args)
@@ -590,6 +788,6 @@
         }
 
     }
-}
+    }
 
 
