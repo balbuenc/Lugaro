@@ -400,10 +400,18 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-6">
-                                <div class="text-left"><b>Factor:</b> </div>
+                                <div class="text-left"><b>Coeficiente:</b> </div>
                             </div>
                             <div class="col-6">
-                                <SfNumericTextBox TValue="decimal" @bind-Value=@Factor Placeholder="Factor"></SfNumericTextBox>
+                                <SfNumericTextBox TValue="decimal" @bind-Value=@Coeficiente Placeholder="Coeficiente"></SfNumericTextBox>
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-6">
+                                <div class="text-left"><b>Descuento de fábrica:</b> </div>
+                            </div>
+                            <div class="col-6">
+                                <SfNumericTextBox TValue="decimal" @bind-Value=@Descuento Placeholder="Descuento"></SfNumericTextBox>
                             </div>
                         </div>
                         <hr />
@@ -480,7 +488,8 @@
     protected bool isVisibleTransferDialog = false;
     protected bool isVisibleImportDialog = false;
 
-    public decimal Factor = 0;
+    public decimal Coeficiente = 0;
+    public decimal Descuento = 0;
 
 
 
@@ -578,10 +587,10 @@
                         {
                             p.producto = cell;
                         }
-                        else if (col == 4)
+                        else if (col == 2)
                         {
                             p.costo = Convert.ToDecimal(cell);
-                            p.precio = Convert.ToDecimal(cell) + (Convert.ToDecimal(cell) * Convert.ToDecimal(Factor));
+                            p.precio = Convert.ToDecimal(cell) + (Convert.ToDecimal(cell) * Convert.ToDecimal(Coeficiente)) - (Convert.ToDecimal(Descuento) * (Convert.ToDecimal(cell)));
                         }
 
                         col++;
