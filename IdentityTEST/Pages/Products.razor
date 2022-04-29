@@ -406,7 +406,7 @@
                                 <SfNumericTextBox TValue="decimal" @bind-Value=@Coeficiente Placeholder="Coeficiente"></SfNumericTextBox>
                             </div>
                         </div>
-                         <div class="row">
+                        <div class="row">
                             <div class="col-6">
                                 <div class="text-left"><b>Descuento de fábrica:</b> </div>
                             </div>
@@ -539,13 +539,13 @@
             //Procesi el archivo
             ImportCSV(path);
 
-              //Reload Products
+            //Reload Products
             NavigationManager.NavigateTo($"/Product", true);
 
             //Close Dialog
             isVisibleImportDialog = false;
 
-          
+
 
         }
         catch (Exception ex)
@@ -561,6 +561,12 @@
     {
 
         Product p = new Product();
+        decimal precio_lista = 0;
+        decimal precio_lista_descontado = 0;
+        decimal precio_venta = 0;
+        decimal precio_venta_iva_incluido = 0;
+        decimal monto_iva = 0;
+        decimal porc_iva = 0.1m;
 
         //Read the contents of CSV file.
         string csvData = File.ReadAllText(csvPath);
@@ -589,8 +595,20 @@
                         }
                         else if (col == 2)
                         {
-                            p.costo = Convert.ToDecimal(cell);
-                            p.precio = Convert.ToDecimal(cell) + (Convert.ToDecimal(cell) * Convert.ToDecimal(Coeficiente)) - (Convert.ToDecimal(Descuento) * (Convert.ToDecimal(cell)));
+                            precio_lista =Convert.ToDecimal(cell); 
+                            
+
+                            precio_lista_descontado = precio_lista - (precio_lista * (Convert.ToDecimal(Descuento)));
+
+                            precio_venta = precio_lista_descontado * Convert.ToDecimal(Coeficiente);
+                                                       
+                            monto_iva = Decimal.Multiply(precio_venta, porc_iva);
+                            
+                            precio_venta_iva_incluido = precio_venta + monto_iva;
+
+                            //set product values
+                            p.costo =  precio_lista;
+                            p.precio = precio_venta_iva_incluido;
                         }
 
                         col++;
