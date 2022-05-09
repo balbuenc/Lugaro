@@ -1,0 +1,356 @@
+﻿@page "/CreditNotes"
+@using Model
+@using Interfaces
+@inject ICreditNoteService CreditNoteService
+
+@inject IEmployeeService EmployeeService
+
+@using Microsoft.AspNetCore.Http
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+@inject IJSRuntime Js
+
+@attribute [Authorize(Roles = "Administrators, Services")]
+
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Grids
+@using System.Collections.ObjectModel
+@inject NavigationManager NavigationManager
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs;
+@using Syncfusion.Blazor.Calendars;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Popups
+
+<style>
+    .e-list-settings:before {
+        content: "\e679";
+    }
+
+    .e-list-print:before {
+        content: "\e743";
+    }
+
+    .e-list-save:before {
+        content: "\e74d";
+    }
+
+    .e-list-saveas:before {
+        content: "\e72b";
+    }
+
+    .e-list-delete:before {
+        content: "\e773";
+    }
+
+    .e-list-undo:before {
+        content: "\e197";
+    }
+
+    .e-list-edit:before {
+        content: "\e7a3";
+    }
+
+    .e-list-approve:before {
+        content: "\eb6e"
+    }
+
+    .e-list-printpdf:before {
+        content: "\e240"
+    }
+</style>
+
+<div class="container-fluid">
+    <p>@Message</p>
+    <span class="error">@ErrorDetails</span>
+
+    <div class="col-lg-12" style="padding:1px; height:50px">
+        <div class="content-wrapper">
+            <div class="alert alert-title" role="banner"><b>Notas de Crédito.</b></div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 control-section">
+        <div class="content-wrapper">
+            <div class="row">
+                @if (GridData == null)
+                {
+                    <div class="alert alert-warning" role="alert"><p><em>Cargando datos...</em></p></div>
+                }
+                else
+                {
+                    <SfGrid TValue="CreditNote" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
+                        <GridEvents OnActionBegin="OnBeginHandler"
+                                    OnActionComplete="ActionCompletedHandler"
+                                    TValue="CreditNote"
+                                    OnToolbarClick="ToolbarClickHandler"
+                                    OnRecordDoubleClick="RecordDoubleClickHandler"
+                                    CommandClicked="OnCommandClicked">
+
+                        </GridEvents>
+                        <GridPageSettings PageSize="30"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+
+                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
+                            <HeaderTemplate>
+                                @{
+                                    var credit = (context as CreditNote);
+                                }
+                                <span>Detalle de la nota de créito: @(credit.id_nota_credito)</span>
+                            </HeaderTemplate>
+                            <Template>
+                                @{
+                                    var credit = (context as CreditNote);
+                                    if (credit.fecha == t)
+                                        credit.fecha = hoy;
+                                }
+                                <div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(credit.id_nota_credito)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfDatePicker @bind-Value="@(credit.fecha)" Enabled="true" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <SfTextBox @bind-Value="@(credit.nro_nota)" Enabled="true" Placeholder="Nro. nota" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-8">
+                                            <SfTextBox @bind-Value="@(credit.motivo)" Enabled="true" Placeholder="Motivo" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                    </div>
+                                  
+                                </div>
+                            </Template>
+                        </GridEditSettings>
+                        <GridColumns>
+                            <GridColumn HeaderText="Cmd." Width="10">
+                                <GridCommandColumns>
+                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                    <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
+                                   
+                                </GridCommandColumns>
+                            </GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.id_nota_credito) HeaderText="ID" TextAlign="TextAlign.Right" Width="10" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.fecha) HeaderText="Fecha" Visible="true" Width="20" Format="dd/MM/yyyy"></GridColumn>
+                            
+                            <GridColumn Field=@nameof(CreditNote.nro_nota) HeaderText="#Comp." Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.motivo) HeaderText="Motivo." Width="35"  TextAlign="TextAlign.Left"></GridColumn>
+                            
+
+                        </GridColumns>
+                    </SfGrid>
+                }
+
+            </div>
+        </div>
+
+        <SfDialog Width="400px" Height="200px" IsModal="true" @bind-Visible="@IsMessageVisible" ShowCloseIcon="true">
+            <DialogEvents OnOverlayClick="@OnOverlayclick">
+            </DialogEvents>
+
+            <DialogTemplates>
+                <Header>
+                    <h1><b>Mensaje del sistema.</b></h1>
+                </Header>
+                <Content>
+                    <div class="col-12">
+                        <b>@SystemMessage</b>
+                    </div>
+                </Content>
+
+            </DialogTemplates>
+
+        </SfDialog>
+    </div>
+
+</div>
+
+
+@code {
+    //public IEnumerable<CreditNote> clients { get; set; }
+    public string Message { get; set; }
+    public string SystemMessage { get; set; }
+
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
+    public string ErrorDetails = "";
+
+    private bool IsMessageVisible { get; set; } = false;
+
+    public IEnumerable<CreditNote> GridData { get; set; }
+
+    public IEnumerable<Employee> employees { get; set; }
+    public Employee employee { get; set; }
+
+
+    public DateTime hoy = DateTime.Today;
+    public DateTime t;
+
+    SfGrid<CreditNote> Grid { get; set; }
+
+    private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
+
+    public string UserName;
+    public string Estado;
+
+    private void OnOverlayclick(MouseEventArgs arg)
+    {
+        this.IsMessageVisible = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            GridData = await CreditNoteService.GetAllCreditNotes();
+
+            employees = await EmployeeService.GetAllEmployees();
+
+
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            string[] subs = user.Identity.Name.Split("@");
+            UserName = subs[0];
+
+            employee = await EmployeeService.GetEmployeeDetailsByUsername(UserName);
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener caja chicas [OnInitializedAsync] : " + ex.Message;
+        }
+    }
+
+
+
+    private async Task OnBeginHandler(ActionEventArgs<CreditNote> Args)
+    {
+        try
+        {
+            if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+                await SaveCreditNote((CreditNote)Args.Data);
+            }
+            else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+                await DeleteCreditNote(((CreditNote)Args.Data).id_nota_credito);
+            }
+
+            return;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener nota de crédito [OnBeginHandler]: " + ex.Message + " Inner.: " + ex.InnerException;
+            throw ex;
+        }
+    }
+
+
+
+    private async Task ActionCompletedHandler(ActionEventArgs<CreditNote> Args)
+    {
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+        {
+            await RefreshGrid();
+        }
+
+    }
+
+    protected async Task RefreshGrid()
+    {
+        GridData = await CreditNoteService.GetAllCreditNotes();
+        Grid.Refresh();
+    }
+
+    public async void OnCommandClicked(CommandClickEventArgs<CreditNote> args)
+    {
+        var item = args.RowData;
+        var command = args.CommandColumn;
+
+        if (command.Title == "Imprimir")
+        {
+            Print(item.id_nota_credito);
+        }
+
+    }
+
+    protected async Task SaveCreditNote(CreditNote creditNote)
+    {
+        try
+        {
+            //Assing the actual userID to the new Credit Note.
+            creditNote.id_funcionario = GetEmployeeID(UserName);
+            //Create the new CreditNote
+            await CreditNoteService.SaveCreditNote(creditNote);
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al registrar nota de crédito: " + ex.Message;
+            throw ex;
+        }
+    }
+
+   
+
+    protected async Task DeleteCreditNote(int id)
+    {
+        await CreditNoteService.DeleteCreditNote(id);
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.FileName = "NotasCredito.xlsx";
+            await this.Grid.ExcelExport(ExcelProperties);
+        }
+
+    }
+
+    public Int32 GetEmployeeID(string username)
+    {
+        int id;
+        try
+        {
+            id = employees.First(c => c.usuario == username).id_funcionario;
+            return id;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener ID de usuario : " + ex.Message;
+            return 1;
+        }
+    }
+
+    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<CreditNote> args)
+    {
+        Navigate(((CreditNote)args.RowData));
+    }
+
+    private void Navigate(CreditNote creditNote)
+    {
+        NavigationManager.NavigateTo($"/CreditNoteDetails/{creditNote.id_nota_credito}");
+    }
+
+    protected void Print(int CreditNoteID)
+    {
+        String route;
+        route = String.Concat("CreditNoteReport/", CreditNoteID);
+
+        Js.InvokeAsync<object>("open", route, "_blank");
+    }
+
+
+
+}
+
+

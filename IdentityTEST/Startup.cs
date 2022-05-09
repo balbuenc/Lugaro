@@ -211,6 +211,14 @@ namespace CoreERP.UI
            paymentService => { paymentService.BaseAddress = new Uri(apiurl); }
            );
 
+            services.AddHttpClient<ICreditNoteService, CreditNoteService>(
+          creditNoteService => { creditNoteService.BaseAddress = new Uri(apiurl); }
+          );
+
+            services.AddHttpClient<ICreditNoteDetailsService, CreditNoteDetailsService>(
+        creditNoteDetailsService => { creditNoteDetailsService.BaseAddress = new Uri(apiurl); }
+        );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
