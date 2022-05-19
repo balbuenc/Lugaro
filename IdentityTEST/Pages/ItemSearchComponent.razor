@@ -43,6 +43,7 @@
                                 <GridColumn Field=@nameof(Product.id_producto) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                                 <GridColumn Field=@nameof(Product.codigo) HeaderText="Código" Width="30" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })"></GridColumn>
                                 <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="100" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })"></GridColumn>
+                                <GridColumn Field=@nameof(Product.precio) HeaderText="Precio" Width="20" Format="N2" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })"></GridColumn>
 
                                 <GridColumn HeaderText="Manage Records" Width="10">
                                     <GridCommandColumns>
@@ -63,18 +64,19 @@
                 <div class="col-12">
                     <SfGrid ID="Selected" @ref="SelectedGrid" AllowSorting="true" DataSource="@products">
                          <GridEditSettings AllowAdding="true"  AllowDeleting="true" ></GridEditSettings>
-                        <GridColumns>
-                            <GridColumn Field=@nameof(Product.id_producto) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(Product.codigo) HeaderText="Código" Width="10"></GridColumn>
-                            <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="30"></GridColumn>
-                            <GridColumn HeaderText="Acciones" Width="100">
-                                <GridCommandColumns>
-                                    
-                                    <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
-                                    
-                                </GridCommandColumns>
-                            </GridColumn>
-                        </GridColumns>
+                         <GridColumns>
+                             <GridColumn Field=@nameof(Product.id_producto) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
+                             <GridColumn Field=@nameof(Product.codigo) HeaderText="Código" Width="10"></GridColumn>
+                             <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="100"></GridColumn>
+                             <GridColumn Field=@nameof(Product.precio) HeaderText="Precio" Width="20" Format="N2"></GridColumn>
+                             <GridColumn HeaderText="Acciones" Width="100">
+                                 <GridCommandColumns>
+
+                                     <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+
+                                 </GridCommandColumns>
+                             </GridColumn>
+                         </GridColumns>
                     </SfGrid>
                 </div>
             </div>

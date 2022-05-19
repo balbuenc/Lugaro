@@ -235,52 +235,49 @@
                     {
                         <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="Print">Imprimir presupuesto</SfButton>
                     }
+
                     @if (Estado.ToUpper() == "GENERADO")
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
                     }
+
                     @if (Estado.ToUpper() == "PENDIENTE" && UserPermissions.CanAuthorize)
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="Autorization">Aprobar presupuesto</SfButton>
                     }
+
                     @if (Estado.ToUpper() == "APROBADO")
                     {
-                        if (Motivo.ToUpper() != "MUESTRA")
-                        {
-                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>
-                        }
-
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Generar Remisión esp.</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
                     }
-                    @if (Estado.ToUpper() == "FACTURADO")
-                    {
-                        
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Remission">Generar remisión</SfButton>
-                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="SpecialRemission">Generar Remisión esp.</SfButton>
 
-                    }
-                    @if (EstadoFacturacion.ToUpper() == "FACTURADO")
-                    {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CancelInvoice">Anular factura</SfButton>
-                    }
+
                     @if (Estado.ToUpper() == "REMITIDO")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
-
                     }
+
                     @if (Estado.ToUpper() == "PRESTAMO")
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
                         <SfButton CssClass="e-reverse" IconPosition="IconPosition.Right" OnClick="ReverseStock">Devolución</SfButton>
                     }
-                    @if (Estado.ToUpper() == "ANULADO")
+
+
+                    @*Invoice controls*@ 
+                    @if (Motivo.ToUpper() != "MUESTRA" && (Estado.ToUpper() != "PENDIENTE" && Estado.ToUpper() != "GENERADO"))
                     {
-                        <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
+                        @if ((EstadoFacturacion.ToUpper() == "PENDIENTE" || EstadoFacturacion.ToUpper() == "ANULADO") )
+                        {
+                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>
+                        }
+                        else
+                        {
+                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
+                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CancelInvoice">Anular factura</SfButton>
+                        }
                     }
                 </div>
             </div>
@@ -370,11 +367,11 @@
                                 <EditTemplate>
                                     @if (isChecked)
                                     {
-                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="false" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="false" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                     else
                                     {
-                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="true" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="true" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                 </EditTemplate>
                             </GridColumn>
@@ -382,11 +379,11 @@
                                 <EditTemplate>
                                     @if (isChecked)
                                     {
-                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="true" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="true" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                     else
                                     {
-                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="false" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="false" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                 </EditTemplate>
                             </GridColumn>
@@ -698,7 +695,16 @@
 
             //Call Reporting Service WSL
             String route;
-            route = String.Concat("InvoiceReport/", BudgetID);
+
+            if(Moneda == "Dolar")
+            {
+                route = String.Concat("DolarInvoiceReport/", BudgetID);
+            }
+            else
+            {
+                route = String.Concat("InvoiceReport/", BudgetID);
+            }
+
 
             Js.InvokeAsync<object>("open", route, "_blank");
 
@@ -831,8 +837,8 @@
             }
 
             //Save Budget header
-            header.estado = "FACTURADO";
-            await BudgetService.SaveBudget(header);
+            //header.estado = "FACTURADO";
+            //await BudgetService.SaveBudget(header);
 
 
             Navigate();
