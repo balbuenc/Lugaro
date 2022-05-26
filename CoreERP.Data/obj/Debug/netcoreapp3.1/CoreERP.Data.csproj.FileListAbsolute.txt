@@ -10,3 +10,15 @@ C:\Users\HP\source\repos\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.cspro
 C:\Users\HP\source\repos\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.csproj.CopyComplete
 C:\Users\HP\source\repos\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.dll
 C:\Users\HP\source\repos\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.pdb
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.csprojAssemblyReference.cache
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.AssemblyInfoInputs.cache
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.AssemblyInfo.cs
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.csproj.CoreCompileInputs.cache
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\bin\Debug\netcoreapp3.1\CoreERP.Data.deps.json
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\bin\Debug\netcoreapp3.1\CoreERP.Data.dll
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\bin\Debug\netcoreapp3.1\CoreERP.Data.pdb
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\bin\Debug\netcoreapp3.1\CoreERP.Model.dll
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\bin\Debug\netcoreapp3.1\CoreERP.Model.pdb
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.csproj.CopyComplete
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.dll
+C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Data\obj\Debug\netcoreapp3.1\CoreERP.Data.pdb

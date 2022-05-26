@@ -430,12 +430,17 @@
             <Content>
                 <div class="row">
                     <div class="col-12">
-                        <h5>La venta no puede generarse sin un nro. de factura válido. </h5>
+                        <h5>Datos de la factura. </h5>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-6">
                         <SfTextBox Placeholder="Nro. Factura" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NroPresupuesto"></SfTextBox>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <SfDatePicker  TValue="DateTime" Placeholder="Fecha emisión" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@FechaFactura" ></SfDatePicker>
                     </div>
                 </div>
             </Content>
@@ -521,6 +526,7 @@
     public string Titulo = "";
     public string Cliente = "";
     public string Fecha = "";
+    public DateTime FechaFactura;
     public string NroPresupuesto = "";
     public string Moneda = "";
     public string Cotizacion = "";
@@ -642,8 +648,11 @@
     private async void OnConfirmation()
     {
         header.nro_presupuesto = NroPresupuesto;
+        header.fecha_factura = FechaFactura;
+
         await BudgetService.SaveBudget(header);
-        CheckInvoiceNumber();
+        // CheckInvoiceNumber();
+        await Invoice();
     }
 
     protected async Task Print()
@@ -803,15 +812,15 @@
 
     protected async void CheckInvoiceNumber()
     {
-        if (header.nro_presupuesto == null || header.nro_presupuesto == "")
-        {
-            OpenDialog();
-            return;
-        }
-        else
-        {
-            await Invoice();
-        }
+        //if (header.nro_presupuesto == null || header.nro_presupuesto == "")
+        //{
+        OpenDialog();
+        //        return;
+        //    }
+        //else
+        //{
+        //await Invoice();
+        //}
 
     }
 
@@ -944,6 +953,7 @@
             Titulo = "Detalle de prespuesto ID. " + BudgetID;
             Cliente = header.cliente;
             Fecha = header.fecha.ToShortDateString();
+            FechaFactura = DateTime.Now;
             NroPresupuesto = header.nro_presupuesto;
             Moneda = header.moneda;
             Cotizacion = header.cotizacion.ToString();

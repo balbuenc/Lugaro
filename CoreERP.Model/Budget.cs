@@ -13,7 +13,7 @@ namespace CoreERP.Model
         public String estado { get; set; }
 
         public string nro_presupuesto { get; set; }
-        public Int32  id_moneda { get; set; }
+        public Int32 id_moneda { get; set; }
         public decimal cotizacion { get; set; }
 
         public Int32 id_condicion_venta { get; set; }
@@ -38,5 +38,7 @@ namespace CoreERP.Model
         public string cliente_exento { get; set; }
 
         public string estado_venta { get; set; }
+
+        public DateTime fecha_factura { get; set; }
     }
 }

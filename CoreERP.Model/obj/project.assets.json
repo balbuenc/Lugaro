@@ -1,8 +1,7 @@
 {
   "version": 3,
   "targets": {
-    ".NETCoreApp,Version=v3.1": {},
-    ".NETCoreApp,Version=v3.1/win-x64": {}
+    ".NETCoreApp,Version=v3.1": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
@@ -15,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
+      "projectUniqueName": "C:\\temp\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
       "projectName": "CoreERP.Model",
-      "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
+      "projectPath": "C:\\temp\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
       "packagesPath": "C:\\Users\\cbalbuena\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\obj\\",
+      "outputPath": "C:\\temp\\Lugaro\\CoreERP.Model\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -64,11 +63,6 @@
           }
         },
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
-      }
-    },
-    "runtimes": {
-      "win-x64": {
-        "#import": []
       }
     }
   }

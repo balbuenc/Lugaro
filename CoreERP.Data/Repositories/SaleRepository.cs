@@ -116,11 +116,12 @@ namespace CoreERP.Data.Repositories
             {
                 var db = dbConnection();
 
-                var sql = @"CALL public.sp_generar_venta(@p_id_presupuesto);";
+                var sql = @"CALL public.sp_generar_venta_fecha(@p_id_presupuesto,@p_fecha_facturacion);";
 
                 var p = new DynamicParameters();
                 p.Add("@p_id_presupuesto", budget.id_presupuesto, System.Data.DbType.Int32);
-               
+                p.Add("@p_fecha_facturacion", budget.fecha_factura, System.Data.DbType.Date);
+
                 var result = await db.ExecuteAsync(sql, p);
 
                 var sql1 = "select * from ventas  where id_presupuesto = @Id";
