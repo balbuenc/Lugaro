@@ -40,5 +40,7 @@ namespace CoreERP.Model
         public string estado_venta { get; set; }
 
         public DateTime fecha_factura { get; set; }
+
+        public decimal Total { get; set; }
     }
 }

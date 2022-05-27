@@ -1,0 +1,59 @@
+﻿@page "/SaleReports"
+
+@attribute [Authorize]
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Grids
+@using System.Collections.ObjectModel
+@inject NavigationManager NavigationManager
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs;
+@using Syncfusion.Blazor.Calendars;
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+
+
+@using System.IO
+@using System.Data
+
+
+<div class="container-fluid">
+    <p>@Message</p>
+    <span class="error">@ErrorDetails</span>
+
+    <div class="col-lg-12" style="padding:1px; height:50px">
+        <div class="content-wrapper">
+            <div class="alert alert-title" role="banner">
+                <b>Informes de ventas</b>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 control-section">
+        <div class="content-wrapper">
+            <div class="row">
+                <div class="col-2">Rango de fechas.</div>
+                <div class="col-4">
+                    <SfDateRangePicker  Placeholder="Choose a Range" Min="@MinDate" Max="@MaxDate"></SfDateRangePicker>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+@code {
+    //public IEnumerable<Product> clients { get; set; }
+    public string Message { get; set; }
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
+    public string[] ToolbarStock = new string[] { "Add", };
+
+    public string ErrorDetails = "";
+
+    public DateTime MinDate { get; set; } 
+    public DateTime MaxDate { get; set; } 
+}
