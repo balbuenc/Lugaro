@@ -13,5 +13,11 @@ namespace CoreERP.Model
         public String condicion { get; set; }
         public decimal importe { get; set; }
         public string estado { get; set; }
+
+        public string cliente { get; set; }
+
+        public string vendedor { get; set; }
+        public DateTime fecha_presupuesto { get; set; }
+        public string moneda { get; set; }
     }
 }

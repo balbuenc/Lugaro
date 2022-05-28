@@ -111,7 +111,7 @@
                         <BarDropdownItem To="/Budgets">Ventas</BarDropdownItem>
                         <BarDropdownItem To="/Discounts">Descuentos</BarDropdownItem>
                         <BarDropdownItem To="/CreditNotes">Notas de Crédito</BarDropdownItem>
-                       
+
                     </BarDropdownMenu>
                 </BarDropdown>
             </BarItem>
@@ -147,6 +147,19 @@
             <BarItem>
                 <BarDropdown>
                     <BarDropdownToggle>
+                        <BarIcon IconName="IconName.Archive" />
+                        Informes
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdownItem To="/BudgetReports">Presupuestos</BarDropdownItem>
+                        <BarDropdownItem To="/SaleReports">Ventas</BarDropdownItem>
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+
+            <BarItem>
+                <BarDropdown>
+                    <BarDropdownToggle>
                         <BarIcon IconName="@("fa-power-off")"></BarIcon>
                         Sesión
                     </BarDropdownToggle>
@@ -168,18 +181,7 @@
                 </BarDropdown>
             </BarItem>
 
-            <BarItem>
-                <BarDropdown>
-                    <BarDropdownToggle>
-                        <BarIcon IconName="IconName.MoneyBillAlt" />
-                        Informes
-                    </BarDropdownToggle>
-                    <BarDropdownMenu>
-                        
-                        <BarDropdownItem To="/BudgetReports">Presupuestos</BarDropdownItem>
-                    </BarDropdownMenu>
-                </BarDropdown>
-            </BarItem>
+
 
         </BarStart>
 

@@ -47,8 +47,13 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = @"select * from ventas 
-                            order by c.id_venta desc";
+                var sql = @"select v.id_venta, v.fecha, v.factura, v.condicion, v.estado, p.fecha as fecha_presupuesto, v.importe , f.usuario as vendedor, c2.razon_social as cliente, m.moneda 
+                            from ventas v
+                            inner join presupuestos p on p.id_presupuesto = v.id_presupuesto 
+                            inner join funcionarios f on f.id_funcionario = p.id_funcionario 
+                            inner join clientes c2 on c2.id_cliente = p.id_cliente 
+                            inner join monedas m on m.id_moneda = p.id_moneda 
+                            order by v.id_venta desc";
 
                 var result = await db.QueryAsync<Sale>(sql, new { });
 
