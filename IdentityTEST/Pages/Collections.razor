@@ -9,6 +9,42 @@
 @using System.IO
 @using Syncfusion.Blazor.Buttons
 
+@inject IJSRuntime Js
+
+    <style>
+        .e-list-settings:before {
+            content: "\e679";
+        }
+
+        .e-list-print:before {
+            content: "\e743";
+        }
+
+        .e-list-save:before {
+            content: "\e74d";
+        }
+
+        .e-list-saveas:before {
+            content: "\e72b";
+        }
+
+        .e-list-delete:before {
+            content: "\e773";
+        }
+
+        .e-list-undo:before {
+            content: "\e197";
+        }
+
+        .e-list-edit:before {
+            content: "\e7a3";
+        }
+
+        .e-list-printpdf:before {
+            content: "\e240"
+        }
+    </style>
+
 
 <div class="container-fluid">
     <p>@Message</p>
@@ -31,7 +67,9 @@
                     <SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>
                     <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true">
 
-                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Collection"></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler"
+                                    TValue="Collection"
+                                    CommandClicked="OnCommandClicked"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
 
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
@@ -102,7 +140,12 @@
 
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn Field=@nameof(Collection.id_cobranza) HeaderText="ID" TextAlign="TextAlign.Center" Width="30" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn HeaderText="*" Width="10">
+                                <GridCommandColumns>
+                                    <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
+                                </GridCommandColumns>
+                            </GridColumn>
+                            <GridColumn Field=@nameof(Collection.id_cobranza) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Collection.cliente) HeaderText="Cliente" Width="40"></GridColumn>
                             <GridColumn Field=@nameof(Collection.ruc) HeaderText="RUC" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Collection.fecha) HeaderText="Fecha cobro" Width="15"></GridColumn>
@@ -192,9 +235,33 @@
 
         ExportProperties.Theme = Theme;
 
-     
+
 
         await this.Grid.ExcelExport(ExportProperties);
+    }
+
+
+    public async void OnCommandClicked(CommandClickEventArgs<Collection> args)
+    {
+        var item = args.RowData;
+        var command = args.CommandColumn;
+
+        if (command.Title == "Imprimir")
+        {
+            Print(item.id_cobranza);
+        }
+    }
+
+    protected void Print(int collectionID)
+    {
+        String route = "";
+
+
+        route = String.Concat("ReceiptReport/", collectionID);
+
+
+
+        Js.InvokeAsync<object>("open", route, "_blank");
     }
 
 
