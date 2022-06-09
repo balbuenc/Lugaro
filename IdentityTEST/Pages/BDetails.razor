@@ -266,17 +266,17 @@
                     }
 
 
-                    @*Invoice controls*@ 
+                    @*Invoice controls*@
                     @if (Motivo.ToUpper() != "MUESTRA" && (Estado.ToUpper() != "PENDIENTE" && Estado.ToUpper() != "GENERADO"))
                     {
-                        @if ((EstadoFacturacion.ToUpper() == "PENDIENTE" || EstadoFacturacion.ToUpper() == "ANULADO") )
+                        @if ((EstadoFacturacion.ToUpper() == "PENDIENTE" || EstadoFacturacion.ToUpper() == "ANULADO"))
                         {
                             <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber">Facturar</SfButton>
                         }
                         else
                         {
                             <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="PrintInvoice">Imprimir factura</SfButton>
-                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CancelInvoice">Anular factura</SfButton>
+                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="ShowCancelInvoiceDialog">Anular factura</SfButton>
                         }
                     }
                 </div>
@@ -367,11 +367,11 @@
                                 <EditTemplate>
                                     @if (isChecked)
                                     {
-                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="false" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="false" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                     else
                                     {
-                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="true" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).porcentaje)" Enabled="true" Placeholder="% Desc." FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                 </EditTemplate>
                             </GridColumn>
@@ -379,11 +379,11 @@
                                 <EditTemplate>
                                     @if (isChecked)
                                     {
-                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="true" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="true" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                     else
                                     {
-                                    <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="false" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                        <SfNumericTextBox @bind-Value="@((context as BudgetDetails).precio_unitario)" Enabled="false" Placeholder="P. Unitario" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
                                     }
                                 </EditTemplate>
                             </GridColumn>
@@ -440,7 +440,7 @@
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <SfDatePicker  TValue="DateTime" Placeholder="Fecha emisión" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@FechaFactura" ></SfDatePicker>
+                        <SfDatePicker TValue="DateTime" Placeholder="Fecha emisión" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@FechaFactura"></SfDatePicker>
                     </div>
                 </div>
             </Content>
@@ -450,6 +450,31 @@
             <DialogButton Content="Cancel" IsPrimary="true" OnClick="@OnOverlayclick" />
         </DialogButtons>
     </SfDialog>
+
+    <SfDialog Width="510px" IsModal="true" @bind-Visible="@IsCancelInvoiceVisible">
+        <DialogEvents OnOverlayClick="@OnOverlayclick">
+        </DialogEvents>
+        <DialogTemplates>
+            <Content>
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Anular factura.</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <SfTextBox Placeholder="Motivo" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@MotivoAnulacion"></SfTextBox>
+                    </div>
+                </div>
+               
+            </Content>
+        </DialogTemplates>
+        <DialogButtons>
+            <DialogButton Content="OK" IsPrimary="true" OnClick="@CancelInvoice" />
+            <DialogButton Content="Cancel" IsPrimary="true" OnClick="@OnOverlayclick" />
+        </DialogButtons>
+    </SfDialog>
+
 
     <SfDialog Width="1024px" Height="660px" IsModal="true" @bind-Visible="@IsSearchVisible" ShowCloseIcon="true">
         <DialogEvents OnOverlayClick="@OnOverlayclick">
@@ -507,6 +532,7 @@
     public bool IsSearchVisible { get; set; } = false;
     public bool IsMessageVisible { get; set; } = false;
     public bool IsRepositionVisible { get; set; } = false;
+    public bool IsCancelInvoiceVisible { get; set; } = false;
 
 
 
@@ -536,6 +562,7 @@
     public string Exento = "";
     public string Motivo = "";
     public string EstadoFacturacion = "";
+    public string MotivoAnulacion = "";
 
     public IEnumerable<BudgetDetails> GridData { get; set; }
 
@@ -603,6 +630,7 @@
         this.IsVisible = false;
         this.IsSearchVisible = false;
         this.IsRepositionVisible = false;
+        this.IsCancelInvoiceVisible = false;
     }
 
     private async void OnItemAdded()
@@ -690,6 +718,11 @@
         IsSearchVisible = true;
     }
 
+    protected void ShowCancelInvoiceDialog()
+    {
+        IsCancelInvoiceVisible = true;
+    }
+
     protected void PrintInvoice()
     {
         try
@@ -705,7 +738,7 @@
             //Call Reporting Service WSL
             String route;
 
-            if(Moneda == "Dolar")
+            if (Moneda == "Dolar")
             {
                 route = String.Concat("DolarInvoiceReport/", BudgetID);
             }
@@ -792,20 +825,33 @@
 
     protected async Task CancelInvoice()
     {
-        //registro el estado del presupuesto como Aprobado
-        header.estado = "APROBADO";
-        await BudgetService.SaveBudget(header);
+
 
         // Obtengo la factura actual del presupuesto y la cancel Cancelo la factura
         Sale s;
-        s = await SaleService.GetSaleDetails(header.id_presupuesto);
+        s = await SaleService.GetSaleDetailsByInvoice(header.nro_presupuesto);
 
         s.estado = "ANULADO";
+        s.motivo_anulacion = MotivoAnulacion;
 
         await SaleService.UpdateSale(s);
 
-        //Revierto el Stock a su estado original
-        await ReverseStock();
+        //registro el estado del presupuesto como Aprobado y Quito el Nro de Factura
+        header.estado = "APROBADO";
+        header.nro_presupuesto = "";
+        await BudgetService.SaveBudget(header);
+
+        //Revierto el Stock a su estado original en el caso quee sea necesario
+        try
+        {
+            await ReverseStock();
+        }
+        catch (Exception ex)
+        {
+            Navigate();
+        }
+
+
 
         Navigate();
     }

@@ -12,6 +12,8 @@ namespace CoreERP.Data.Repositories
 
         Task<Sale> GetSaleDetails(int id);
 
+        Task<Sale> GetSaleDetailsByInvoice(string invoice_number);
+
         Task<bool> InsertSale(Sale sale);
 
         Task<bool> UpdateSale(Sale sale);

@@ -34,6 +34,13 @@ namespace CoreERP.API.Controllers
             return Ok(await _SaleRepository.GetSaleDetails(id));
         }
 
+        [HttpGet]
+        [Route("GetSaleByInvoice/{invoice_number}")]
+        public async Task<IActionResult> GetSaleDetailsByInvoice(string invoice_number)
+        {
+            return Ok(await _SaleRepository.GetSaleDetailsByInvoice(invoice_number));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateSale([FromBody] Budget budget)
         {

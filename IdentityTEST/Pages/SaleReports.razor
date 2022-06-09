@@ -91,9 +91,10 @@
                             <GridColumn Field=@nameof(Sale.vendedor) HeaderText="Usuario" Width="20" Visible="true"></GridColumn>
                             <GridColumn Field=@nameof(Sale.cliente) HeaderText="Cliente" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(Sale.estado) HeaderText="Estado" Width="22"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.condicion) HeaderText="Condición"  Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.condicion) HeaderText="Condición" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Sale.moneda) HeaderText="Mon." Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Sale.importe) HeaderText="Importe" Format="N2" Visible="true" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.motivo_anulacion) HeaderText="Motivo" Width="25"></GridColumn>
                         </GridColumns>
                     </SfGrid>
                 }

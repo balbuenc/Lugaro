@@ -19,5 +19,7 @@ namespace CoreERP.Model
         public string vendedor { get; set; }
         public DateTime fecha_presupuesto { get; set; }
         public string moneda { get; set; }
+
+        public string motivo_anulacion { get; set; }
     }
 }

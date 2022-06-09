@@ -44,3 +44,12 @@ C:\Dev\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.AssemblyInfo.cs
 C:\Dev\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.csproj.CoreCompileInputs.cache
 C:\Dev\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.dll
 C:\Dev\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.pdb
+C:\temp\Lugaro\CoreERP.Model\bin\Release\netcoreapp3.1\CoreERP.Model.deps.json
+C:\temp\Lugaro\CoreERP.Model\bin\Release\netcoreapp3.1\CoreERP.Model.dll
+C:\temp\Lugaro\CoreERP.Model\bin\Release\netcoreapp3.1\CoreERP.Model.pdb
+C:\temp\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.csprojAssemblyReference.cache
+C:\temp\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.AssemblyInfoInputs.cache
+C:\temp\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.AssemblyInfo.cs
+C:\temp\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.csproj.CoreCompileInputs.cache
+C:\temp\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.dll
+C:\temp\Lugaro\CoreERP.Model\obj\Release\netcoreapp3.1\CoreERP.Model.pdb

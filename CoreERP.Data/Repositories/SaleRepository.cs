@@ -47,7 +47,7 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = @"select v.id_venta, v.fecha, v.factura, v.condicion, v.estado, p.fecha as fecha_presupuesto, v.importe , f.usuario as vendedor, c2.razon_social as cliente, m.moneda 
+                var sql = @"select v.id_venta, v.fecha, v.factura, v.condicion, v.estado, p.fecha as fecha_presupuesto, v.importe , f.usuario as vendedor, c2.razon_social as cliente, m.moneda , v.motivo_anulacion
                             from ventas v
                             inner join presupuestos p on p.id_presupuesto = v.id_presupuesto 
                             inner join funcionarios f on f.id_funcionario = p.id_funcionario 
@@ -70,7 +70,7 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = "select * from ventas  where id_presupuesto = @Id order by id_venta desc limit 1";
+                var sql = "select * from ventas  where id_presupuesto = @Id and estado = 'FACTURADO' order by id_venta desc limit 1";
 
 
                 return await db.QueryFirstOrDefaultAsync<Sale>(sql, new { Id = id });
@@ -81,7 +81,23 @@ namespace CoreERP.Data.Repositories
             }
         }
 
-       
+        public async Task<Sale> GetSaleDetailsByInvoice(string invoice_number)
+        {
+            try
+            {
+                var db = dbConnection();
+                var sql = "select * from ventas  where factura = @factura";
+
+
+                return await db.QueryFirstOrDefaultAsync<Sale>(sql, new { factura = invoice_number });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
 
         public async Task<bool> InsertSale(Sale venta)
         {
@@ -147,7 +163,7 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"UPDATE public.ventas
-                            SET id_presupuesto=@id_presupuesto, factura=@factura, fecha=@fecha, condicion=@condicion, importe=@importe, estado=@estado
+                            SET id_presupuesto=@id_presupuesto, factura=@factura, fecha=@fecha, condicion=@condicion, importe=@importe, estado=@estado, motivo_anulacion=@motivo_anulacion
                             where id_venta=@id_venta;";
 
                 var result = await db.ExecuteAsync(sql, new
@@ -158,7 +174,8 @@ namespace CoreERP.Data.Repositories
                     venta.importe,
                     venta.estado,
                     venta.condicion,
-                    venta.id_venta
+                    venta.id_venta,
+                    venta.motivo_anulacion
                 }
                 );
 

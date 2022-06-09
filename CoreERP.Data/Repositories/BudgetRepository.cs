@@ -45,7 +45,7 @@ namespace CoreERP.Data.Repositories
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
                         left outer join monedas m2 on m2.id_moneda = p.id_moneda 
                         left outer join condicion_venta cv on cv.id_condicion_venta  = p.id_condicion_venta 
-                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto 
+                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto and v.estado != 'ANULADO'
                         order by p.id_presupuesto desc";
 
             return await db.QueryAsync<Budget>(sql, new { });
@@ -65,7 +65,7 @@ namespace CoreERP.Data.Repositories
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
                         left outer join monedas m2 on m2.id_moneda = p.id_moneda 
                         left outer join condicion_venta cv on cv.id_condicion_venta  = p.id_condicion_venta 
-                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto 
+                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto and v.estado != 'ANULADO'
                         order by p.id_presupuesto desc";
             }
             else
@@ -77,7 +77,7 @@ namespace CoreERP.Data.Repositories
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
                         left outer join monedas m2 on m2.id_moneda = p.id_moneda 
                         left outer join condicion_venta cv on cv.id_condicion_venta  = p.id_condicion_venta 
-                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto 
+                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto and v.estado != 'ANULADO'
                         where f2.usuario =  @user
                         order by p.id_presupuesto desc";
             }

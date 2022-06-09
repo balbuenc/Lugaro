@@ -41,6 +41,14 @@ namespace CoreERP.UI.Services
               );
         }
 
+        public async Task<Sale> GetSaleDetailsByInvoice(string invoice_number)
+        {
+            return await JsonSerializer.DeserializeAsync<Sale>(
+              await _httpClient.GetStreamAsync($"api/sale/GetSaleByInvoice/{invoice_number}"),
+              new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+              );
+        }
+
         public async Task<Sale> SaveSale(Budget budget)
         {
             try

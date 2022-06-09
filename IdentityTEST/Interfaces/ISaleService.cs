@@ -12,6 +12,9 @@ namespace CoreERP.UI.Interfaces
 
         Task<Sale> GetSaleDetails(int id);
 
+        Task<Sale> GetSaleDetailsByInvoice(string invoice_number);
+
+
         Task<Sale> SaveSale(Budget budget);
 
         Task UpdateSale(Sale sale); 
