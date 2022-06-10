@@ -825,8 +825,6 @@
 
     protected async Task CancelInvoice()
     {
-
-
         // Obtengo la factura actual del presupuesto y la cancel Cancelo la factura
         Sale s;
         s = await SaleService.GetSaleDetailsByInvoice(header.nro_presupuesto);
@@ -835,6 +833,10 @@
         s.motivo_anulacion = MotivoAnulacion;
 
         await SaleService.UpdateSale(s);
+
+        //Elimino las cuotas de la venta
+        await QuotaService.DeleteQuotaBySaleId(s.id_venta);
+
 
         //registro el estado del presupuesto como Aprobado y Quito el Nro de Factura
         header.estado = "APROBADO";
@@ -850,8 +852,6 @@
         {
             Navigate();
         }
-
-
 
         Navigate();
     }

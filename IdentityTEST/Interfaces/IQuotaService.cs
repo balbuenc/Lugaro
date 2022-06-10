@@ -18,5 +18,7 @@ namespace CoreERP.UI.Interfaces
 
 
         Task DeleteQuota(int id);
+
+        Task DeleteQuotaBySaleId(int id);
     }
 }

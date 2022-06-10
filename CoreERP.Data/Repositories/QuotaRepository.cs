@@ -41,6 +41,25 @@ namespace CoreERP.Data.Repositories
             }
         }
 
+        public async Task<bool> DeleteQuotaBySaleId(int id)
+        {
+            try
+            {
+                var db = dbConnection();
+
+                var sql = @"DELETE from cuotas
+                        WHERE id_venta = @Id ";
+
+                var result = await db.ExecuteAsync(sql, new { Id = id });
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public async Task<IEnumerable<Quota>> GetAllQuotas()
         {
             try
@@ -48,7 +67,8 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
                 var sql = @"select v.factura , v.condicion , c2.razon_social as cliente, c2.ruc , m.moneda,
                             c.id_cuota, c.id_credito ,c.id_venta, c.cuota, c.monto_capital ,c.monto_interes ,c.multa , c.mora, c.vencimiento ,c.fecha_pago , c.estado, c.total,
-                            c.cuota || '/' || c.cant_cuotas as cuota_str, c.id_moneda
+                            c.cuota || '/' || c.cant_cuotas as cuota_str, c.id_moneda,
+                            c.monto_capital - (select coalesce (sum(c3.monto_cobrado),0) from cobranzas c3 where c3.id_cuota = c.id_cuota) as saldo
                             from cuotas c 
                             left outer join ventas v on v.id_venta = c.id_venta 
                             left outer join presupuestos p on p.id_presupuesto = v.id_presupuesto 

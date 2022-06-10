@@ -17,6 +17,7 @@ namespace CoreERP.Data.Repositories
         Task<bool> UpdateQuota(Quota client);
 
         Task<bool> DeleteQuota(int id);
+        Task<bool> DeleteQuotaBySaleId(int id);
 
         Task<bool> GenerateSalesQuote(Sale sale);
 

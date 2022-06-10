@@ -41,6 +41,8 @@ namespace CoreERP.Model
 
         public string cuota_str { get; set; }
 
-        public int? id_metodo_pago { get; set; } 
+        public int? id_metodo_pago { get; set; }
+
+        public decimal saldo { get; set; }
     }
 }

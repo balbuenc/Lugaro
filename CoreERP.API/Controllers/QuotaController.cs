@@ -77,5 +77,19 @@ namespace CoreERP.API.Controllers
 
             return NoContent(); //success
         }
+
+
+        [HttpDelete]
+        [Route("DeleteQuotaBySaleId/{id}")]
+        public async Task<IActionResult> DeleteQuotaBySaleId(int id)
+        {
+            if (id == 0)
+                return BadRequest();
+
+            await _QuotaRepository.DeleteQuotaBySaleId(id);
+
+            return NoContent(); //success
+        }
+
     }
 }

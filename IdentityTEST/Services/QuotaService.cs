@@ -24,6 +24,11 @@ namespace CoreERP.UI.Services
             await _httpClient.DeleteAsync($"api/quota/{id}");
         }
 
+        public async Task DeleteQuotaBySaleId(int id)
+        {
+            await _httpClient.DeleteAsync($"api/quota/DeleteQuotaBySaleId/{id}");
+        }
+
         public async Task<IEnumerable<Quota>> GetAllQuotas()
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<Quota>>(

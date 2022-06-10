@@ -110,8 +110,8 @@
 
                                     actQuote = quo;
 
-                                   
-                                 
+
+
                                 }
                                 <div>
                                     <div class="form-row">
@@ -158,17 +158,26 @@
                                             <SfTextBox @bind-Value="@(quo.estado)" Enabled="false" Placeholder="Estado" FloatLabelType="FloatLabelType.Always"></SfTextBox>
                                         </div>
 
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(quo.saldo)" Enabled="false" Placeholder="SALDO" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+
                                     </div>
                                     @if (quo.estado == "PENDIENTE")
                                     {
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <SfNumericTextBox  @bind-value="@MontoPagado" Placeholder="Monto a pagar" Min="0" Max="@(quo.saldo)" Format="N0"  FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                            </div>
+                                        </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <SfDropDownList DataSource="@paymentMethods"
-                                                                TItem="PaymentMethod"
-                                                                TValue="Int32?"
-                                                                @bind-Value="@(quo.id_metodo_pago)"  
-                                                                Placeholder="Medio de pago"
-                                                                FloatLabelType="FloatLabelType.Always" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="PaymentMethod"
+                                                        TValue="Int32?"
+                                                        @bind-Value="@(quo.id_metodo_pago)"
+                                                        Placeholder="Medio de pago"
+                                                        FloatLabelType="FloatLabelType.Always" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                     <DropDownListFieldSettings Value="id_medio_pago" Text="medio"></DropDownListFieldSettings>
                                                 </SfDropDownList>
                                             </div>
@@ -198,7 +207,9 @@
                             <GridColumn Field=@nameof(Quota.mora) HeaderText="Mora" Visible="false" Width="10"></GridColumn>
                             <GridColumn Field=@nameof(Quota.multa) HeaderText="Multa" Visible="false" Width="15" Format="N0"></GridColumn>
                             <GridColumn Field=@nameof(Quota.total) HeaderText="Total" Visible="true" Width="20" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.saldo) HeaderText="Saldo" Visible="true" Width="20" Format="N0"></GridColumn>
                             <GridColumn Field=@nameof(Quota.estado) HeaderText="Estado" Visible="true" Width="20"></GridColumn>
+
 
 
                         </GridColumns>
@@ -236,6 +247,8 @@
 
     public Quota actQuote { get; set; }
 
+    public decimal MontoPagado { get; set; } = 0;
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -265,10 +278,19 @@
         coll.id_cuota = actQuote.id_cuota;
         coll.id_medio_pago = actQuote.id_metodo_pago;
         coll.fecha = DateTime.Now;
-        coll.monto_cobrado = actQuote.total;
+        //coll.monto_cobrado = actQuote.total;
+        coll.monto_cobrado = MontoPagado;
         coll.id_funcionario = GetEmployeeID(UserName);
 
-        actQuote.estado = "CANCELADA";
+        if(actQuote.saldo <= MontoPagado)
+        {
+            actQuote.estado = "CANCELADA";
+        }
+        else
+        {
+            actQuote.estado = "PENDIENTE";            
+        }
+
         actQuote.fecha_pago = coll.fecha;
 
         //Actualizo la CUOTA a CANCELADA
