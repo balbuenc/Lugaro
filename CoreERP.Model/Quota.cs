@@ -44,5 +44,7 @@ namespace CoreERP.Model
         public int? id_metodo_pago { get; set; }
 
         public decimal saldo { get; set; }
+
+        public string factura { get; set; }
     }
 }

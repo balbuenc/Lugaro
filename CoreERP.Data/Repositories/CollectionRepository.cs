@@ -48,7 +48,8 @@ namespace CoreERP.Data.Repositories
             {
                 var db = dbConnection();
                 var sql = @"SELECT c.id_cobranza, c.fecha, c.id_cuota, c.id_funcionario, c.monto_cobrado, c.id_medio_pago, c.nro_recibo, c.nro_comprobante, c.nro_transaccion,
-                                   cli.razon_social as cliente, cli.ruc, f.usuario as funcionario, cuo.cuota || '/' || cuo.cant_cuotas as cuota, mp.medio as medio_pago
+                                   cli.razon_social as cliente, cli.ruc, f.usuario as funcionario, cuo.cuota || '/' || cuo.cant_cuotas as cuota, mp.medio as medio_pago,
+                                   ven.factura 
                             FROM public.cobranzas c
                             left outer join cuotas cuo on cuo.id_cuota = c.id_cuota
                             left outer join ventas ven on ven.id_venta  = cuo.id_venta

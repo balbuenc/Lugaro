@@ -65,12 +65,13 @@
                 else
                 {
                     <SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowFiltering="true" >
 
                         <GridEvents OnActionBegin="OnBeginHandler"
                                     TValue="Collection"
                                     CommandClicked="OnCommandClicked"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
                             <HeaderTemplate>
@@ -103,11 +104,14 @@
                                         <div class="form-group col-md-2">
                                             <SfNumericTextBox @bind-Value="@(colle.id_cobranza)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
-                                        <div class="form-group col-md-7">
+                                        <div class="form-group col-md-5">
                                             <SfTextBox @bind-Value="@(colle.cliente)" Enabled="false" Placeholder="Cliente" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(colle.cuota)" Enabled="false" Placeholder="Cu0ta" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                            <SfTextBox @bind-Value="@(colle.cuota)" Enabled="false" Placeholder="Cuota" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(colle.factura)" Enabled="false" Placeholder="Factura" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
                                         </div>
                                     </div>
 
@@ -148,8 +152,9 @@
                             <GridColumn Field=@nameof(Collection.id_cobranza) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Collection.cliente) HeaderText="Cliente" Width="40"></GridColumn>
                             <GridColumn Field=@nameof(Collection.ruc) HeaderText="RUC" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Collection.fecha) HeaderText="Fecha cobro" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Collection.cuota) HeaderText="cuota" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(Collection.fecha) HeaderText="Fecha cobro" Format="dd/MM/yyyy" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Collection.cuota) HeaderText="Cuota" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(Collection.factura) HeaderText="Factura" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Collection.funcionario) HeaderText="Funcionario" Width="10"></GridColumn>
                             <GridColumn Field=@nameof(Collection.monto_cobrado) HeaderText="Monto" Width="20" Format="N0"></GridColumn>
                             <GridColumn Field=@nameof(Collection.medio_pago) HeaderText="Medio" Width="20"></GridColumn>

@@ -7,11 +7,3 @@ C:\Users\HP\source\repos\CoreERP.Model\obj\Debug\netcoreapp3.1\CoreERP.Model.csp
 C:\Users\HP\source\repos\CoreERP.Model\obj\Debug\netcoreapp3.1\CoreERP.Model.dll
 C:\Users\HP\source\repos\CoreERP.Model\obj\Debug\netcoreapp3.1\CoreERP.Model.pdb
 C:\Users\HP\source\repos\CoreERP.Model\obj\Debug\netcoreapp3.1\CoreERP.Model.csprojAssemblyReference.cache
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\bin\Debug\netcoreapp3.1\CoreERP.Model.deps.json
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\bin\Debug\netcoreapp3.1\CoreERP.Model.dll
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\bin\Debug\netcoreapp3.1\CoreERP.Model.pdb
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\obj\Debug\netcoreapp3.1\CoreERP.Model.AssemblyInfoInputs.cache
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\obj\Debug\netcoreapp3.1\CoreERP.Model.AssemblyInfo.cs
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\obj\Debug\netcoreapp3.1\CoreERP.Model.csproj.CoreCompileInputs.cache
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\obj\Debug\netcoreapp3.1\CoreERP.Model.dll
-C:\Users\cbalbuena\source\repos\Lugaro\CoreERP.Model\obj\Debug\netcoreapp3.1\CoreERP.Model.pdb

@@ -42,7 +42,7 @@ namespace CoreERP.Data.Repositories
                         from presupuesto_detalles pd
                         inner join productos p on p.id_producto = pd.id_producto
                         left outer join descuentos d on d.id_descuento = pd.id_descuento
-                        left outer join ventas v on v.id_presupuesto = pd.id_presupuesto";
+                        left outer join ventas v on v.id_presupuesto = pd.id_presupuesto and v.estado != 'ANULADO'";
 
             return await db.QueryAsync<BudgetDetails>(sql, new { });
         }
@@ -55,7 +55,7 @@ namespace CoreERP.Data.Repositories
                         from presupuesto_detalles pd
                         inner join productos p on p.id_producto = pd.id_producto
                         left outer join descuentos d on d.id_descuento = pd.id_descuento 
-                        left outer join ventas v on v.id_presupuesto = pd.id_presupuesto 
+                        left outer join ventas v on v.id_presupuesto = pd.id_presupuesto and v.estado != 'ANULADO'
                         where pd.id_presupuesto = @Id
                         order by 1 desc";
 

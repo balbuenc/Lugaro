@@ -32,6 +32,8 @@ namespace CoreERP.Model
 
         public string ruc { get; set; }
 
+        public string factura { get; set; }
+
 
     }
 }
