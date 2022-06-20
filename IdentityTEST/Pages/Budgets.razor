@@ -56,7 +56,6 @@
     .e-list-edit:before {
         content: "\e7a3";
     }
-
 </style>
 
 
@@ -111,11 +110,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@currencies"
-                                                        TItem="Currency"
-                                                        TValue="Int32"
-                                                        @bind-Value="@(budg.id_moneda)"
-                                                        Placeholder="Moneda"
-                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                            TItem="Currency"
+                                                            TValue="Int32"
+                                                            @bind-Value="@(budg.id_moneda)"
+                                                            Placeholder="Moneda"
+                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -126,11 +125,11 @@
                                         </div>
                                         <div class="form-group col-md-9">
                                             <SfDropDownList DataSource="@clients"
-                                                        TItem="Client"
-                                                        TValue="Int32?"
-                                                        @bind-Value="@(budg.id_cliente)"
-                                                        Placeholder="Cliente"
-                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                            TItem="Client"
+                                                            TValue="Int32?"
+                                                            @bind-Value="@(budg.id_cliente)"
+                                                            Placeholder="Cliente"
+                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_cliente" Text="razon_social"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -144,11 +143,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@invoiceTypes"
-                                                        TItem="InvoiceType"
-                                                        TValue="Int32"
-                                                        @bind-Value="@(budg.id_condicion_venta)"
-                                                        Placeholder="Tipo factura"
-                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                            TItem="InvoiceType"
+                                                            TValue="Int32"
+                                                            @bind-Value="@(budg.id_condicion_venta)"
+                                                            Placeholder="Tipo factura"
+                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_condicion_venta" Text="condicion"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -164,11 +163,11 @@
                                         </div>
                                         <div class="form-group col-md-6">
                                             <SfDropDownList DataSource="@LocalMotivo"
-                                                        TItem="Motivo"
-                                                        TValue="string"
-                                                        @bind-Value="@(budg.motivo)"
-                                                        Placeholder="Motivo"
-                                                        FloatLabelType="FloatLabelType.Always">
+                                                            TItem="Motivo"
+                                                            TValue="string"
+                                                            @bind-Value="@(budg.motivo)"
+                                                            Placeholder="Motivo"
+                                                            FloatLabelType="FloatLabelType.Always">
                                                 <DropDownListFieldSettings Value="ID" Text="Text"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -188,7 +187,7 @@
                         <GridColumns>
                             <GridColumn HeaderText="Cmd." Width="10">
                                 <GridCommandColumns>
-                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-list-edit", CssClass = "e-flat" })"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
                             <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="15" IsPrimaryKey="true"></GridColumn>
@@ -371,6 +370,21 @@
             {
                 await DeleteBudget(((Budget)Args.Data).id_presupuesto);
             }
+            else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+                Budget b = new Budget();
+                Client c = await ClientService.GetDefaultClientDetails();
+
+                b.id_cliente = c.id_cliente;
+                b.id_moneda = 1;
+                b.motivo = "VENTA";
+                b.id_condicion_venta = 2;
+                b.fecha = DateTime.Now;
+
+                Int32 id = await SaveBudget(b);
+
+                Navigate(id);
+            }
 
             return;
         }
@@ -392,12 +406,13 @@
     }
 
 
-    protected async Task SaveBudget(Budget budget)
+    protected async Task<Int32> SaveBudget(Budget budget)
     {
         try
         {
             budget.id_funcionario = GetEmployeeID(UserName);
-            await BudgetService.SaveBudget(budget);
+            int id = await BudgetService.SaveBudget(budget);
+            return id;
         }
         catch (Exception ex)
         {
@@ -445,6 +460,11 @@
     private void Navigate(Budget budget)
     {
         NavigationManager.NavigateTo($"/BudgetDetails/{budget.id_presupuesto}");
+    }
+
+    private void Navigate(int id)
+    {
+        NavigationManager.NavigateTo($"/BudgetDetails/{id}");
     }
 
 

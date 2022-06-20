@@ -103,7 +103,7 @@ namespace CoreERP.Data.Repositories
             return await db.QueryFirstOrDefaultAsync<Budget>(sql, new { Id = id });
         }
 
-        public async Task<bool> InsertBudget(Budget budget)
+        public async Task<Int32> InsertBudget(Budget budget)
         {
             var db = dbConnection();
 
@@ -120,12 +120,14 @@ namespace CoreERP.Data.Repositories
 
                 budget.cotizacion = resulCotizacion.cotizacion;
 
-                var sql = @"INSERT INTO public.presupuestos (id_cliente, id_funcionario, fecha, estado, nro_presupuesto,id_moneda,cotizacion,plazo_entrega,forma_pago,observaciones,contacto,direccion_entrega,id_condicion_venta,obra,motivo) VALUES(@id_cliente, @id_funcionario, @fecha, @estado, @nro_presupuesto,@id_moneda,@cotizacion,@plazo_entrega,@forma_pago,@observaciones,@contacto,@direccion_entrega,@id_condicion_venta,@obra,@motivo);";
+                var sql = @"INSERT INTO public.presupuestos (id_cliente, id_funcionario, fecha, estado, nro_presupuesto,id_moneda,cotizacion,plazo_entrega,forma_pago,observaciones,contacto,direccion_entrega,id_condicion_venta,obra,motivo) 
+                            VALUES(@id_cliente, @id_funcionario, @fecha, @estado, @nro_presupuesto,@id_moneda,@cotizacion,@plazo_entrega,@forma_pago,@observaciones,@contacto,@direccion_entrega,@id_condicion_venta,@obra,@motivo)
+                            RETURNING id_presupuesto;";
 
 
                 budget.estado = "GENERADO";
 
-                var result = await db.ExecuteAsync(sql, new
+                Object result = await db.ExecuteScalarAsync(sql, new
                 {
                     budget.id_cliente,
                     budget.id_funcionario,
@@ -145,11 +147,11 @@ namespace CoreERP.Data.Repositories
                 }
                 );
 
-                return true;
+                return Convert.ToInt32(result);
             }
             catch (Exception ex)
             {
-                return false;
+                return -1;
             }
         }
 

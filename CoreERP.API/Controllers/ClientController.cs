@@ -26,6 +26,15 @@ namespace CoreERP.API.Controllers
             return Ok(await _clientRepository.GetAllClients());
         }
 
+
+        [HttpGet]
+        [Route("GetDefaultClientDetails")]
+        public async Task<IActionResult> GetDefaultClientDetails()
+        {
+            return Ok(await _clientRepository.GetDefaultClientDetails());
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetClientDetails(int id)
         {

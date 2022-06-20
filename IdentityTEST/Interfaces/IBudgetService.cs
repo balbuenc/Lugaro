@@ -14,7 +14,7 @@ namespace CoreERP.UI.Interfaces
 
         Task<Budget> GetBudgetDetails(int id);
 
-        Task SaveBudget(Budget budget);
+        Task<Int32> SaveBudget(Budget budget);
 
 
         Task DeleteBudget(int id);

@@ -13,7 +13,7 @@ namespace CoreERP.Data.Repositories
 
         Task<Budget> GetBudgetDetails(int id);
 
-        Task<bool> InsertBudget(Budget budget);
+        Task<Int32> InsertBudget(Budget budget);
 
         Task<bool> UpdateBudget(Budget budget);
 

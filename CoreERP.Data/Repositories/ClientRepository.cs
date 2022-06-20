@@ -75,6 +75,15 @@ namespace CoreERP.Data.Repositories
             return await db.QueryFirstOrDefaultAsync<Client>(sql, new { Id = id });
         }
 
+        public async Task<Client> GetDefaultClientDetails()
+        {
+            var db = dbConnection();
+            var sql = @"select * from Clientes where por_defecto = true limit 1";
+
+
+            return await db.QueryFirstOrDefaultAsync<Client>(sql, new { });
+        }
+
         public async Task<bool> InsertClient(Client client)
         {
 

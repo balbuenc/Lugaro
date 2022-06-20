@@ -48,15 +48,27 @@ namespace CoreERP.UI.Services
              );
         }
 
-        public async Task SaveBudget(Budget budget)
+        public async Task<Int32> SaveBudget(Budget budget)
         {
             var clientJson = new StringContent(JsonSerializer.Serialize(budget),
                Encoding.UTF8, "application/json");
 
+            String id;
+
             if (budget.id_presupuesto == 0)
-                await _httpClient.PostAsync("api/budget", clientJson);
+            {
+                var response = await _httpClient.PostAsync("api/budget", clientJson);
+                id = await response.Content.ReadAsStringAsync();
+            }
             else
-                await _httpClient.PutAsync("api/budget", clientJson);
+            {
+                var response = await _httpClient.PutAsync("api/budget", clientJson);
+                id = "0";
+            }
+
+
+
+            return Convert.ToInt32(id);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace CoreERP.Data.Repositories
         Task<IEnumerable<Client>> GetAllClients();
 
         Task<Client> GetClientDetails(int id);
+        Task<Client> GetDefaultClientDetails();
 
         Task<bool> InsertClient(Client client);
 

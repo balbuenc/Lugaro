@@ -11,6 +11,7 @@ namespace CoreERP.UI.Interfaces
         Task<IEnumerable<Client>> GetAllClients();
 
         Task<Client> GetClientDetails(int id);
+        Task<Client> GetDefaultClientDetails();
 
         Task SaveCient(Client client);
 

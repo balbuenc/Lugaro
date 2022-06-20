@@ -33,6 +33,15 @@ namespace CoreERP.UI.Services
                );
         }
 
+
+        public async Task<Client> GetDefaultClientDetails()
+        {
+            return await JsonSerializer.DeserializeAsync<Client>(
+               await _httpClient.GetStreamAsync($"api/client/GetDefaultClientDetails"),
+               new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+               );
+        }
+
         public async Task<Client> GetClientDetails(int id)
         {
             return await JsonSerializer.DeserializeAsync<Client>(
