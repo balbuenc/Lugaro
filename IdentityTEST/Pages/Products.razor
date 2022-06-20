@@ -536,7 +536,7 @@
             }
 
 
-            //Procesi el archivo
+            //Proceso el archivo
             ImportCSV(path);
 
             //Reload Products
@@ -598,7 +598,7 @@
                             precio_lista =Convert.ToDecimal(cell); 
                             
 
-                            precio_lista_descontado = precio_lista - (precio_lista * (Convert.ToDecimal(Descuento)));
+                            precio_lista_descontado = precio_lista - ( (precio_lista * (Convert.ToDecimal(Descuento))) / 100 );
 
                             precio_venta = precio_lista_descontado * Convert.ToDecimal(Coeficiente);
                                                        

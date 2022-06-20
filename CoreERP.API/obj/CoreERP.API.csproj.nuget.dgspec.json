@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.API\\CoreERP.API.csproj": {}
+    "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.API\\CoreERP.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.API\\CoreERP.API.csproj": {
+    "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.API\\CoreERP.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.API\\CoreERP.API.csproj",
+        "projectUniqueName": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.API\\CoreERP.API.csproj",
         "projectName": "CoreERP.API",
-        "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.API\\CoreERP.API.csproj",
+        "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.API\\CoreERP.API.csproj",
         "packagesPath": "C:\\Users\\cbalbuena\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.API\\obj\\",
+        "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -30,11 +30,11 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj": {
-                "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj"
+              "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Data\\CoreERP.Data.csproj": {
+                "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Data\\CoreERP.Data.csproj"
               },
-              "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
-                "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj"
+              "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Model\\CoreERP.Model.csproj": {
+                "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Model\\CoreERP.Model.csproj"
               }
             }
           }
@@ -79,14 +79,14 @@
         }
       }
     },
-    "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj": {
+    "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Data\\CoreERP.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
+        "projectUniqueName": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Data\\CoreERP.Data.csproj",
         "projectName": "CoreERP.Data",
-        "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
+        "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Data\\CoreERP.Data.csproj",
         "packagesPath": "C:\\Users\\cbalbuena\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\obj\\",
+        "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -105,8 +105,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
-                "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj"
+              "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Model\\CoreERP.Model.csproj": {
+                "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Model\\CoreERP.Model.csproj"
               }
             }
           }
@@ -156,14 +156,14 @@
         }
       }
     },
-    "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
+    "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Model\\CoreERP.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
+        "projectUniqueName": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Model\\CoreERP.Model.csproj",
         "projectName": "CoreERP.Model",
-        "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
+        "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Model\\CoreERP.Model.csproj",
         "packagesPath": "C:\\Users\\cbalbuena\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\obj\\",
+        "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Movicor\\CoreERP.Model\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

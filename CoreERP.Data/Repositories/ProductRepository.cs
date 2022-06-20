@@ -73,7 +73,17 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = @"select p.id_producto, p.codigo, p.producto, p.precio from productos p ";
+                var sql = @"select 	p.id_producto, 
+		                            p.codigo, 
+		                            p.producto, 
+		                            p.precio,
+		                            s.id_stock,
+		                            d.deposito,
+		                            s.cantidad 
+                            from productos p 
+                            left outer join stock s on s.id_producto = p.id_producto 
+                            left outer join depositos d on d.id_deposito = s.id_deposito
+                            order by p.codigo;";
 
                 var result = await db.QueryAsync<Product>(sql, new { });
 

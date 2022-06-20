@@ -62,5 +62,7 @@ namespace CoreERP.Model
 
         public string estado_venta { get; set; }
 
+        public int id_stock { get; set; }
+
     }
 }

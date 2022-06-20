@@ -25,5 +25,11 @@ namespace CoreERP.Model
         public string proveedor { get; set; }
         public string marca { get; set; }
         public string moneda { get; set; }
+
+        //optional properties just in the cas of product definition with stock by store
+        public int id_stock { get; set; }
+        public int id_deposito { get; set; }
+        public string deposito { get; set; }
+        public int cantidad { get; set; }
     }
 }
