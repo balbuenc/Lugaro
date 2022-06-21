@@ -42,7 +42,7 @@
                         {
                             <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" DataSource="@GridData" AllowFiltering="true">
                                 <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.FilterBar" Mode="FilterBarMode.OnEnter"></GridFilterSettings>
-                                <GridEvents CommandClicked="OnCommandClicked" TValue="Product"></GridEvents>
+                                <GridEvents TValue="Product" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
                                 <GridPageSettings PageSize="5"></GridPageSettings>
                                 <GridColumns>
                                     <GridColumn Field=@nameof(Product.id_producto) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
@@ -50,12 +50,8 @@
                                     <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="100" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
                                     <GridColumn Field=@nameof(Product.precio) HeaderText="Precio" Width="20" Format="N2" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
                                     <GridColumn Field=@nameof(Product.deposito) HeaderText="Depósito" Width="20" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
-                                    <GridColumn Field=@nameof(Product.cantidad) HeaderText="Cant." Width="15" Format="N0"></GridColumn>
-                                    <GridColumn HeaderText="Manage Records" Width="10">
-                                        <GridCommandColumns>
-                                            <GridCommandColumn Type="CommandButtonType.None" Title="Agregar" ButtonOption="@(new CommandButtonOptions() { IconCss = "fas fa-plus-square", CssClass = "eng" })"></GridCommandColumn>
-                                        </GridCommandColumns>
-                                    </GridColumn>
+                                    <GridColumn Field=@nameof(Product.cantidad) HeaderText="Cant." Width="15" Format="N0"   AllowFiltering="false"></GridColumn>
+                                   
                                 </GridColumns>
                             </SfGrid>
                         }
@@ -127,13 +123,13 @@
 
     }
 
-    public async void OnCommandClicked(CommandClickEventArgs<Product> args)
+   
+
+    public async void RecordDoubleClickHandler(RecordDoubleClickEventArgs<Product> args)
     {
         var item = args.RowData;
         await OnItemAdded(item.id_producto);
     }
-
-
 
 }
 
