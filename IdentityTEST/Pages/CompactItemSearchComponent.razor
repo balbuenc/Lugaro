@@ -1,0 +1,140 @@
+﻿
+@using Model
+@using Interfaces
+@inject IProductService ProductService
+@inject IBudgetDetailsService BudgetDetailsService
+
+@attribute [Authorize]
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Grids
+@using System.Collections.ObjectModel
+@inject NavigationManager NavigationManager
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs;
+@using Syncfusion.Blazor.Calendars;
+@using Syncfusion.Blazor.Buttons
+
+<style>
+    .eng {
+        color: #187ac7;
+        font-size: smaller;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <div class="col-lg-12 control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <h6><b>Buscador de productos</b></h6>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        @if (GridData == null)
+                        {
+                            <div class="alert alert-warning" role="alert"><p><em>Cargando datos...</em></p></div>
+                        }
+                        else
+                        {
+                            <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" DataSource="@GridData" AllowFiltering="true">
+                                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.FilterBar" Mode="FilterBarMode.OnEnter"></GridFilterSettings>
+                                <GridEvents CommandClicked="OnCommandClicked" TValue="Product"></GridEvents>
+                                <GridPageSettings PageSize="5"></GridPageSettings>
+                                <GridColumns>
+                                    <GridColumn Field=@nameof(Product.id_producto) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
+                                    <GridColumn Field=@nameof(Product.codigo) HeaderText="Código" Width="30" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
+                                    <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="100" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
+                                    <GridColumn Field=@nameof(Product.precio) HeaderText="Precio" Width="20" Format="N2" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
+                                    <GridColumn Field=@nameof(Product.deposito) HeaderText="Depósito" Width="20" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
+                                    <GridColumn Field=@nameof(Product.cantidad) HeaderText="Cant." Width="15" Format="N0"></GridColumn>
+                                    <GridColumn HeaderText="Manage Records" Width="10">
+                                        <GridCommandColumns>
+                                            <GridCommandColumn Type="CommandButtonType.None" Title="Agregar" ButtonOption="@(new CommandButtonOptions() { IconCss = "fas fa-plus-square", CssClass = "eng" })"></GridCommandColumn>
+                                        </GridCommandColumns>
+                                    </GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@code {
+    //public IEnumerable<Product> clients { get; set; }
+    public string Message { get; set; }
+
+    public string ErrorDetails = "";
+
+    public IEnumerable<Product> GridData { get; set; }
+
+    public SfGrid<Product> Grid { get; set; }
+
+
+    public Int32 BudgetID;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            GridData = await ProductService.GetProductsDefinitions();
+
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener productos: " + ex.Message;
+        }
+    }
+
+    [Parameter]
+    public EventCallback<String> RefreshBudgetDetails { get; set; }
+
+
+    private async Task OnItemAdded(Int32 ProductID)
+    {
+        BudgetDetails b = new BudgetDetails();
+        Product product;
+
+        //Obtengo el detalle del producto a ser insertado
+        product = await ProductService.GetProductDetails(ProductID);
+
+        //Configuro el detalle del presupuesto
+        b.id_presupuesto = BudgetID;
+        b.id_descuento = 1;
+        b.cantidad = 1;
+        b.total = product.precio;
+
+        b.id_producto = product.id_producto;
+        b.precio = product.precio;
+
+
+        await BudgetDetailsService.SaveBudgetDetails(b);
+
+        //Refresh Budget Details Grid
+        await RefreshBudgetDetails.InvokeAsync("Sync");
+
+    }
+
+    public async void OnCommandClicked(CommandClickEventArgs<Product> args)
+    {
+        var item = args.RowData;
+        await OnItemAdded(item.id_producto);
+    }
+
+
+
+}
+
+

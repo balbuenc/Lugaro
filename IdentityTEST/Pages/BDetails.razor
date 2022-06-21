@@ -4,6 +4,7 @@
 @using Interfaces
 @using CoreERP.UI.Tools
 
+
 @inject IBudgetDetailsService BudgetDetailsService
 @inject IProductService ProductService
 @inject IDiscountService DiscountService
@@ -39,6 +40,7 @@
 @using System.Text;
 
 @inject IJSRuntime Js
+
 
 
 <style>
@@ -135,7 +137,7 @@
     <div class="col-md-12 control-section">
         <div class="content-wrapper">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <div class="jumbotron py-1">
                         <div class="d-flex align-items-stretch flex-column flex-md-row">
                             <img src="@imagePath" style="object-fit: contain;" width="154">
@@ -195,35 +197,9 @@
 
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-7">
                     <div class="row">
-                        <SfGrid ID="discountLimits" @ref="GridDiscounts" AllowSorting="true" DataSource="@discountLimits">
-                            <GridEditSettings AllowAdding="true" AllowEditing="true" Mode="EditMode.Normal"></GridEditSettings>
-                            <GridEvents OnActionBegin="OnDiscountLimitsBeginHandler" TValue="DiscountLimit"></GridEvents>
-                            <GridColumns>
-                                <GridColumn Field=@nameof(DiscountLimit.id_limite_descuento) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true">
-                                    <EditTemplate>
-                                        <SfNumericTextBox @bind-Value="@((context as DiscountLimit).id_limite_descuento)" Enabled="false" Placeholder="Límite actual" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
-                                    </EditTemplate>
-                                </GridColumn>
-                                <GridColumn Field=@nameof(DiscountLimit.marca) HeaderText="Marca" Width="10">
-                                    <EditTemplate>
-                                        <SfTextBox @bind-Value="@((context as DiscountLimit).marca)" Enabled="false" Placeholder="Marca" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                    </EditTemplate>
-                                </GridColumn>
-                                <GridColumn Field=@nameof(DiscountLimit.limite) HeaderText="Límite" Width="10">
-                                    <EditTemplate>
-                                        <SfNumericTextBox @bind-Value="@((context as DiscountLimit).limite)" Enabled="false" Placeholder="Límite" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
-                                    </EditTemplate>
-                                </GridColumn>
-                                <GridColumn Field=@nameof(DiscountLimit.limite_actual) HeaderText="%Desc." Width="10">
-                                    <EditTemplate>
-                                        <SfNumericTextBox @bind-Value="@((context as DiscountLimit).limite_actual)" Enabled="true" Placeholder="Límite actual" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
-                                    </EditTemplate>
-                                </GridColumn>
-
-                            </GridColumns>
-                        </SfGrid>
+                        <CompactItemSearchComponent @ref="@compactItemSearch" RefreshBudgetDetails="RefreshBudgetDetails"></CompactItemSearchComponent>
                     </div>
 
                 </div>
@@ -290,7 +266,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <SfGrid ID="Grid" @ref="Grid" Width="100%" DataSource="@GridData" Toolbar="@ToolbarItems" AllowTextWrap="true">
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="BudgetDetails"></GridEvents>
                         <GridPageSettings PageSize="@PageSize"></GridPageSettings>
@@ -404,6 +380,36 @@
                         </GridColumns>
                     </SfGrid>
                 </div>
+                <div class="col-md-3">
+                    <SfGrid ID="discountLimits" @ref="GridDiscounts" AllowSorting="true" DataSource="@discountLimits">
+                        <GridEditSettings AllowAdding="true" AllowEditing="true" Mode="EditMode.Normal"></GridEditSettings>
+                        <GridEvents OnActionBegin="OnDiscountLimitsBeginHandler" TValue="DiscountLimit"></GridEvents>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(DiscountLimit.id_limite_descuento) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true">
+                                <EditTemplate>
+                                    <SfNumericTextBox @bind-Value="@((context as DiscountLimit).id_limite_descuento)" Enabled="false" Placeholder="Límite actual" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                </EditTemplate>
+                            </GridColumn>
+                            <GridColumn Field=@nameof(DiscountLimit.marca) HeaderText="Marca" Width="10">
+                                <EditTemplate>
+                                    <SfTextBox @bind-Value="@((context as DiscountLimit).marca)" Enabled="false" Placeholder="Marca" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                </EditTemplate>
+                            </GridColumn>
+                            <GridColumn Field=@nameof(DiscountLimit.limite) HeaderText="Límite" Width="10">
+                                <EditTemplate>
+                                    <SfNumericTextBox @bind-Value="@((context as DiscountLimit).limite)" Enabled="false" Placeholder="Límite" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                </EditTemplate>
+                            </GridColumn>
+                            <GridColumn Field=@nameof(DiscountLimit.limite_actual) HeaderText="%Desc." Width="10">
+                                <EditTemplate>
+                                    <SfNumericTextBox @bind-Value="@((context as DiscountLimit).limite_actual)" Enabled="true" Placeholder="Límite actual" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
+                                </EditTemplate>
+                            </GridColumn>
+
+                        </GridColumns>
+                    </SfGrid>
+
+                </div>
             </div>
         </div>
     </div>
@@ -466,7 +472,7 @@
                         <SfTextBox Placeholder="Motivo" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@MotivoAnulacion"></SfTextBox>
                     </div>
                 </div>
-               
+
             </Content>
         </DialogTemplates>
         <DialogButtons>
@@ -575,7 +581,8 @@
     SfGrid<BudgetDetails> Grid { get; set; }
     SfGrid<DiscountLimit> GridDiscounts { get; set; }
 
-    ItemSearchComponent itemSearch { get; set; }
+    ItemSearchComponent itemSearch { get; set; } = new ItemSearchComponent();
+    CompactItemSearchComponent compactItemSearch { get; set; } = new CompactItemSearchComponent();
 
     private bool IsVisible { get; set; } = false;
 
@@ -633,6 +640,8 @@
         this.IsCancelInvoiceVisible = false;
     }
 
+
+
     private async void OnItemAdded()
     {
         List<Product> addedItems = itemSearch.products;
@@ -664,6 +673,12 @@
         //Cierro el dialogo de busqueda
         IsSearchVisible = false;
 
+        RefreshBudgetDetails("Sync");
+    }
+
+
+    private async void RefreshBudgetDetails(String command)
+    {
         int id = Int32.Parse(BudgetID);
         GridData = await BudgetDetailsService.GetBudgetDetails(id);
 
@@ -672,6 +687,8 @@
         discountLimits = (await DiscountLimitService.GetDiscountLimitsByBudgetID(Int32.Parse(BudgetID))).ToList();
         GridDiscounts.Refresh();
     }
+
+
 
     private async void OnConfirmation()
     {
@@ -683,21 +700,12 @@
         await Invoice();
     }
 
+
+
     protected async Task Print()
     {
         try
         {
-
-            //Deprecated call Report API
-            //byte[] r;
-            //r = await BudgetDetailsService.GetBudgetPDF(Convert.ToInt32(BudgetID));
-
-            //String filename;
-            //filename = String.Concat("Prespuesto", BudgetID, ".pdf");
-
-            //await Js.SaveAs(filename, r.ToArray());
-
-
             //Call Reporting Service WSL
             String route;
             route = String.Concat("BudgetReport/", BudgetID);
@@ -711,6 +719,7 @@
         }
     }
 
+
     protected void ShowSearchDialog()
     {
         itemSearch.products.Clear();
@@ -718,22 +727,18 @@
         IsSearchVisible = true;
     }
 
+
     protected void ShowCancelInvoiceDialog()
     {
         IsCancelInvoiceVisible = true;
     }
 
+
+
     protected void PrintInvoice()
     {
         try
         {
-            //byte[] r;
-            //r = await PrintService.GetInvoicePDF(Convert.ToInt32(BudgetID));
-
-            //String filename;
-            //filename = String.Concat("Factura", BudgetID, ".pdf");
-
-            //await Js.SaveAs(filename, r.ToArray());
 
             //Call Reporting Service WSL
             String route;
@@ -761,13 +766,6 @@
     {
         try
         {
-            //byte[] r;
-            //r = await PrintService.GetRemissionPDF(Convert.ToInt32(BudgetID));
-
-            //String filename;
-            //filename = String.Concat("Remision", BudgetID, ".pdf");
-
-            //await Js.SaveAs(filename, r.ToArray());
 
             //Call Reporting Service WSL
             String route;
@@ -787,14 +785,6 @@
     {
         try
         {
-            //byte[] r;
-            //r = await PrintService.GetSpecialRemissionPDF(Convert.ToInt32(BudgetID));
-
-            //String filename;
-            //filename = String.Concat("RemisionEspecial", BudgetID, ".pdf");
-
-            //await Js.SaveAs(filename, r.ToArray());
-
             //Call Reporting Service WSL
             String route;
             route = String.Concat("SpecialRemissionReport/", BudgetID);
@@ -822,6 +812,7 @@
         await BudgetService.SaveBudget(header);
         Navigate();
     }
+
 
     protected async Task CancelInvoice()
     {
@@ -858,16 +849,7 @@
 
     protected async void CheckInvoiceNumber()
     {
-        //if (header.nro_presupuesto == null || header.nro_presupuesto == "")
-        //{
         OpenDialog();
-        //        return;
-        //    }
-        //else
-        //{
-        //await Invoice();
-        //}
-
     }
 
 
@@ -904,6 +886,7 @@
         }
     }
 
+
     protected async Task SpecialRemission()
     {
         if (header.motivo == "MUESTRA")
@@ -927,6 +910,7 @@
 
         Navigate();
     }
+
 
     protected async Task ModifyStock()
     {
@@ -954,6 +938,7 @@
 
         }
     }
+
 
     protected async Task ReverseStock()
     {
@@ -987,6 +972,8 @@
         try
         {
             int id = Int32.Parse(BudgetID);
+
+
 
             await AuthorizeUser(UserPermissions);
 
@@ -1037,6 +1024,9 @@
             mainLogo = await erpTools.GetSystemParam("MainLogo");
 
             imagePath = mainURL + mainLogo;
+
+            //Configure Compact Product Search
+            compactItemSearch.BudgetID = id;
 
         }
         catch (Exception ex)
