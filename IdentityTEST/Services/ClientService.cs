@@ -50,7 +50,7 @@ namespace CoreERP.UI.Services
               );
         }
 
-        public async Task SaveCient(Client client)
+        public async Task SaveClient(Client client)
         {
             var clientJson = new StringContent(JsonSerializer.Serialize(client),
                Encoding.UTF8, "application/json");

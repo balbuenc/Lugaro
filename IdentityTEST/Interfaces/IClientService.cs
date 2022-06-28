@@ -13,7 +13,7 @@ namespace CoreERP.UI.Interfaces
         Task<Client> GetClientDetails(int id);
         Task<Client> GetDefaultClientDetails();
 
-        Task SaveCient(Client client);
+        Task SaveClient(Client client);
 
 
         Task DeleteClient(int id);

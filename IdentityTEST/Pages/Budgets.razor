@@ -24,6 +24,8 @@
 @using Syncfusion.Blazor.Calendars;
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Popups
+
 
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
@@ -55,6 +57,11 @@
 
     .e-list-edit:before {
         content: "\e7a3";
+    }
+
+
+    .e-plus-icon::before {
+        content: '\e823';
     }
 </style>
 
@@ -123,8 +130,8 @@
                                         <div class="form-group col-md-3">
                                             <SfDatePicker TValue="DateTime" @bind-Value="@(budg.fecha)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
                                         </div>
-                                        <div class="form-group col-md-9">
-                                            <SfDropDownList DataSource="@clients"
+                                        <div class="form-group col-md-8">
+                                            <SfDropDownList DataSource="@clients" 
                                                             TItem="Client"
                                                             TValue="Int32?"
                                                             @bind-Value="@(budg.id_cliente)"
@@ -132,6 +139,9 @@
                                                             FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_cliente" Text="razon_social"></DropDownListFieldSettings>
                                             </SfDropDownList>
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <SfButton CssClass="e-round" IconCss="e-icons e-plus-icon" IsPrimary="true" OnClick="ShowNewClientDialog"></SfButton>
                                         </div>
                                     </div>
                                     <div class="form-row">
@@ -255,6 +265,30 @@
 
     </div>
 
+    <SfDialog Width="510px" IsModal="true" @bind-Visible="@IsNewClientVisible">
+        <DialogEvents OnOverlayClick="@OnOverlayclick">
+        </DialogEvents>
+        <DialogTemplates>
+            <Content>
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Nuevo cliente.</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <SfTextBox Placeholder="Nombre del cliente" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NewClientName"></SfTextBox>
+                    </div>
+                </div>
+
+            </Content>
+        </DialogTemplates>
+        <DialogButtons>
+            <DialogButton Content="OK" IsPrimary="true" OnClick="@NewClient" />
+            <DialogButton Content="Cancel" IsPrimary="true" OnClick="@OnOverlayclick" />
+        </DialogButtons>
+    </SfDialog>
+
 </div>
 
 
@@ -279,6 +313,9 @@
 
     public string UserName;
 
+    public bool IsNewClientVisible { get; set; } = false;
+    public string NewClientName = "";
+
     public class Motivo
     {
         public string ID { get; set; }
@@ -290,6 +327,31 @@
     new Motivo() { ID= "MUESTRA", Text= "MUESTRA" },
     new Motivo() { ID= "VENTA", Text= "VENTA" },
   };
+
+
+    private void OnOverlayclick(MouseEventArgs arg)
+    {
+        this.IsNewClientVisible = false;
+    }
+
+    public void ShowNewClientDialog()
+    {
+        this.IsNewClientVisible = true;
+    }
+
+    protected async Task NewClient()
+    {
+        // Create new Client
+        Client c = new Client();
+        c.nombres = NewClientName;
+        c.razon_social = NewClientName;
+        c.ruc = "SIN RUC";
+
+        await ClientService.SaveClient(c);
+        clients = await ClientService.GetAllClients();
+
+        this.IsNewClientVisible = false;
+    }
 
     //Authorization UserPermissions
     AuthorizationMatrix UserPermissions = new AuthorizationMatrix();
