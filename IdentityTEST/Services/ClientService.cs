@@ -50,15 +50,26 @@ namespace CoreERP.UI.Services
               );
         }
 
-        public async Task SaveClient(Client client)
+        public async Task<Int32> SaveClient(Client client)
         {
+            String id;
+
             var clientJson = new StringContent(JsonSerializer.Serialize(client),
                Encoding.UTF8, "application/json");
 
             if (client.id_cliente == 0)
-                await _httpClient.PostAsync("api/client", clientJson);
+            {
+                var response = await _httpClient.PostAsync("api/client", clientJson);
+                id = await response.Content.ReadAsStringAsync();
+            }
+                
             else
+            {
                 await _httpClient.PutAsync("api/client", clientJson);
+                id = "0";
+            }
+
+            return Convert.ToInt32(id);
         }
     }
 }

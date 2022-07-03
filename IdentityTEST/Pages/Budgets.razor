@@ -8,6 +8,7 @@
 @inject ICurrencyService CurrencyService
 @inject IInvoiceTypeService InvoiceTypeService
 
+
 @using Microsoft.AspNetCore.Http
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -25,6 +26,7 @@
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Popups
+@using System.Dynamic
 
 
 @using Microsoft.AspNetCore.Authorization
@@ -89,7 +91,7 @@
                 else
                 {
                     @*<SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>*@
-                    <SfGrid TValue="Budget" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
+                    <SfGrid TValue="Budget" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true" >
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
@@ -103,14 +105,14 @@
                             </HeaderTemplate>
                             <Template>
                                 @{
-                                    var budg = (context as Budget);
+                                    var budg = context as Budget;
                                     if (budg.fecha == t)
                                         budg.fecha = hoy;
                                 }
                                 <div>
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <SfNumericTextBox @bind-Value="@(budg.id_presupuesto)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                            <SfNumericTextBox @bind-Value="@(budg.id_presupuesto)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always" ></SfNumericTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfTextBox @bind-Value="@(budg.nro_presupuesto)" Enabled="true" Placeholder="Nro. factura" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
@@ -131,7 +133,7 @@
                                             <SfDatePicker TValue="DateTime" @bind-Value="@(budg.fecha)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
                                         </div>
                                         <div class="form-group col-md-8">
-                                            <SfDropDownList DataSource="@clients" 
+                                            <SfDropDownList DataSource="@clients" ID="ClientDropDown"
                                                             TItem="Client"
                                                             TValue="Int32?"
                                                             @bind-Value="@(budg.id_cliente)"
@@ -280,6 +282,11 @@
                         <SfTextBox Placeholder="Nombre del cliente" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NewClientName"></SfTextBox>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12">
+                        <SfTextBox Placeholder="RUC" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NewClientRUC"></SfTextBox>
+                    </div>
+                </div>
 
             </Content>
         </DialogTemplates>
@@ -315,6 +322,12 @@
 
     public bool IsNewClientVisible { get; set; } = false;
     public string NewClientName = "";
+    public string NewClientRUC = "";
+
+
+    public Int32 BudgetID;
+    public Int32 ClientDropDownValue { get; set; }
+
 
     public class Motivo
     {
@@ -336,6 +349,8 @@
 
     public void ShowNewClientDialog()
     {
+        NewClientName = "";
+        NewClientRUC = "";
         this.IsNewClientVisible = true;
     }
 
@@ -343,12 +358,29 @@
     {
         // Create new Client
         Client c = new Client();
-        c.nombres = NewClientName;
-        c.razon_social = NewClientName;
-        c.ruc = "SIN RUC";
+        c.nombres = NewClientName.ToUpper();
+        c.razon_social = NewClientName.ToUpper();
+        c.ruc = NewClientRUC;
+        c.cliente_exento = "NO";
 
-        await ClientService.SaveClient(c);
+
+        Int32 idClient = await ClientService.SaveClient(c);
+
         clients = await ClientService.GetAllClients();
+
+
+        Budget b = await BudgetService.GetBudgetDetails(BudgetID);
+        b.id_cliente = idClient;
+        await BudgetService.SaveBudget(b);
+        GridData = await BudgetService.GetAllBudgetsByUserName(UserName, UserPermissions.CanViewOnlyOwned);
+        Grid.Refresh();
+
+        await Task.Delay(200);
+
+        var IX = await Grid.GetRowIndexByPrimaryKey(BudgetID);
+        await Grid.SelectRow(IX);
+        await Grid.StartEdit();
+
 
         this.IsNewClientVisible = false;
     }
@@ -439,7 +471,7 @@
 
                 b.id_cliente = c.id_cliente;
                 b.id_moneda = 1;
-                b.motivo = "VENTA";
+                b.motivo = "MONTAJE";
                 b.id_condicion_venta = 2;
                 b.fecha = DateTime.Now;
 
@@ -447,6 +479,11 @@
 
                 Navigate(id);
             }
+            else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                BudgetID = ((Budget)Args.Data).id_presupuesto;
+            }
+
 
             return;
         }

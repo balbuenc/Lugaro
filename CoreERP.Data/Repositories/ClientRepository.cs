@@ -84,21 +84,21 @@ namespace CoreERP.Data.Repositories
             return await db.QueryFirstOrDefaultAsync<Client>(sql, new { });
         }
 
-        public async Task<bool> InsertClient(Client client)
+        public async Task<Int32> InsertClient(Client client)
         {
 
             var db = dbConnection();
-            bool output = false;
 
             var sql = @" INSERT INTO public.clientes
                         (nombres, apellidos, sexo, fecha_nacimiento, ci, ruc, direccion, telefono, email, observaciones, fecha_alta, razon_social, codigo, es_cliente_fiel, id_estado_civil, tipo_vivienda, id_nacionalidad, direccion_envio, id_barrio, id_tipo_cliente, cliente_exento)
 
-                        VALUES(@nombres,@apellidos,@sexo,@fecha_nacimiento,@ci,@ruc,@direccion,@telefono,@email,@observaciones,@fecha_alta,@razon_social,@codigo,@es_cliente_fiel,@id_estado_civil,@tipo_vivienda,@id_nacionalidad,@direccion_envio,@id_barrio,@id_tipo_cliente, @cliente_exento);";
+                        VALUES(@nombres,@apellidos,@sexo,@fecha_nacimiento,@ci,@ruc,@direccion,@telefono,@email,@observaciones,@fecha_alta,@razon_social,@codigo,@es_cliente_fiel,@id_estado_civil,@tipo_vivienda,@id_nacionalidad,@direccion_envio,@id_barrio,@id_tipo_cliente, @cliente_exento)
+                        RETURNING id_cliente;";
             try
             {
 
 
-                var result = await db.ExecuteAsync(sql, new
+                Object result = await db.ExecuteScalarAsync(sql, new
                 {
                     client.nombres,
                     client.apellidos,
@@ -124,17 +124,12 @@ namespace CoreERP.Data.Repositories
 
                 });
 
-                if (result > 0)
-                    output = true;
-                else
-                    output = false;
+                return Convert.ToInt32(result);
             }
             catch (Exception ex)
             {
-                return false;
+                return -1;
             }
-
-            return output;
         }
 
         public async Task<bool> UpdateClient(Client client)

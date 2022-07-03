@@ -13,7 +13,7 @@ namespace CoreERP.Data.Repositories
         Task<Client> GetClientDetails(int id);
         Task<Client> GetDefaultClientDetails();
 
-        Task<bool> InsertClient(Client client);
+        Task<Int32> InsertClient(Client client);
 
         Task<bool> UpdateClient(Client client);
 
