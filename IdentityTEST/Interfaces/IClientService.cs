@@ -9,6 +9,7 @@ namespace CoreERP.UI.Interfaces
     public interface IClientService
     {
         Task<IEnumerable<Client>> GetAllClients();
+        Task<IEnumerable<Client>> GetAllClientsByUserName(string userName);
 
         Task<Client> GetClientDetails(int id);
         Task<Client> GetDefaultClientDetails();

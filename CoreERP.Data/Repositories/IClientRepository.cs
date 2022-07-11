@@ -9,6 +9,7 @@ namespace CoreERP.Data.Repositories
     public interface IClientRepository
     {
         Task<IEnumerable<Client>> GetAllClients();
+        Task<IEnumerable<Client>> GetAllClientsByUserName(string userName);
 
         Task<Client> GetClientDetails(int id);
         Task<Client> GetDefaultClientDetails();

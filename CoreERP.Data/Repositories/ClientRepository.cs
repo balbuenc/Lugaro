@@ -66,6 +66,31 @@ namespace CoreERP.Data.Repositories
             }
         }
 
+        public async Task<IEnumerable<Client>> GetAllClientsByUserName(string userName)
+        {
+            try
+            {
+                var db = dbConnection();
+
+                var sql = @"SELECT c.id_cliente, c.nombres, c.apellidos, c.razon_social 
+                        ,v.usuario as vendedor
+                        from clientes c  
+                        left outer join barrios b on b.id_barrio = c.id_barrio
+                        left outer join estados_civiles ec  on ec.id_estado_civil  = c.id_estado_civil 
+                        left outer join nacionalidades n on n.id_nacionalidad = c.id_nacionalidad 
+                        left outer join tipos_clientes tc  on tc.id_tipo_cliente  = c.id_tipo_cliente
+                        left outer join funcionarios v on v.id_funcionario = c.id_funcionario 
+                        where v.usuario = @usuario
+                        order by c.nombres asc";
+
+                return await db.QueryAsync<Client>(sql, new { @usuario = userName });
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public async Task<Client> GetClientDetails(int id)
         {
             var db = dbConnection();

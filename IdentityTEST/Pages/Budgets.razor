@@ -366,7 +366,15 @@
 
         Int32 idClient = await ClientService.SaveClient(c);
 
-        clients = await ClientService.GetAllClients();
+        if(UserPermissions.CanViewOnlyOwned)
+        {
+            clients = await ClientService.GetAllClientsByUserName(UserName);
+        }
+        else
+        {
+            clients = await ClientService.GetAllClients();
+        }
+
 
 
         Budget b = await BudgetService.GetBudgetDetails(BudgetID);
@@ -437,7 +445,17 @@
             await AuthorizeUser(UserPermissions);
 
             GridData = await BudgetService.GetAllBudgetsByUserName(UserName, UserPermissions.CanViewOnlyOwned);
-            clients = await ClientService.GetAllClients();
+
+            if (UserPermissions.CanViewOnlyOwned)
+            {
+                clients = await ClientService.GetAllClientsByUserName(UserName);
+            }
+            else
+            {
+                clients = await ClientService.GetAllClients();
+            }
+
+
             employees = await EmployeeService.GetAllEmployees();
             currencies = await CurrencyService.GetAllCurrencies();
             invoiceTypes = await InvoiceTypeService.GetAllInvoiceTypes();

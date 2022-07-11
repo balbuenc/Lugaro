@@ -28,11 +28,21 @@ namespace CoreERP.API.Controllers
 
 
         [HttpGet]
+        [Route("GetAllClientsByUserName/{userName}")]
+        public async Task<IActionResult> GetAllClientsByUserName(string userName)
+        {
+            return Ok(await _clientRepository.GetAllClientsByUserName(userName));
+        }
+
+
+        [HttpGet]
         [Route("GetDefaultClientDetails")]
         public async Task<IActionResult> GetDefaultClientDetails()
         {
             return Ok(await _clientRepository.GetDefaultClientDetails());
         }
+
+
 
 
         [HttpGet("{id}")]
