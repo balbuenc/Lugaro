@@ -13,6 +13,8 @@ namespace CoreERP.Model
         public bool CanDelete { get; set; }
         public bool CanAuthorize { get; set; }
 
+        public bool CanViewAllClients { get; set; }
+
         public AuthorizationMatrix()
         {
             CanView = false;
@@ -21,6 +23,7 @@ namespace CoreERP.Model
             CanCreate = false;
             CanDelete = false;
             CanAuthorize = false;
+            CanViewAllClients = false;
         }
     }
 }

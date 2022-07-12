@@ -362,11 +362,12 @@
         c.razon_social = NewClientName.ToUpper();
         c.ruc = NewClientRUC;
         c.cliente_exento = "NO";
+        c.id_funcionario = GetEmployeeID(UserName);
 
 
         Int32 idClient = await ClientService.SaveClient(c);
 
-        if(UserPermissions.CanViewOnlyOwned)
+        if(!UserPermissions.CanViewAllClients)
         {
             clients = await ClientService.GetAllClientsByUserName(UserName);
         }
@@ -410,6 +411,7 @@
             m.CanEdit = false;
             m.CanCreate = false;
             m.CanDelete = false;
+            m.CanViewAllClients = false;
         }
 
         if (user.IsInRole("Administrators"))
@@ -420,6 +422,7 @@
             m.CanEdit = true;
             m.CanCreate = true;
             m.CanDelete = true;
+            m.CanViewAllClients = true;
         }
         else if (user.IsInRole("Sales"))
         {
@@ -428,6 +431,16 @@
             m.CanEdit = true;
             m.CanCreate = true;
             m.CanDelete = false;
+            m.CanViewAllClients = false;
+        }
+        else if (user.IsInRole("Services"))
+        {
+            m.CanView = true;
+            m.CanViewOnlyOwned = true;
+            m.CanEdit = true;
+            m.CanCreate = true;
+            m.CanDelete = true;
+            m.CanViewAllClients = true;
         }
     }
 
@@ -446,7 +459,7 @@
 
             GridData = await BudgetService.GetAllBudgetsByUserName(UserName, UserPermissions.CanViewOnlyOwned);
 
-            if (UserPermissions.CanViewOnlyOwned)
+            if (!UserPermissions.CanViewAllClients)
             {
                 clients = await ClientService.GetAllClientsByUserName(UserName);
             }

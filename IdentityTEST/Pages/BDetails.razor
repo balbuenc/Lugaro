@@ -614,6 +614,7 @@
             m.CanEdit = true;
             m.CanCreate = false;
             m.CanDelete = true;
+            m.CanViewAllClients = true;
             m.CanAuthorize = true;
         }
         else if (user.IsInRole("Sales"))
@@ -623,7 +624,18 @@
             m.CanEdit = true;
             m.CanCreate = true;
             m.CanDelete = false;
-            m.CanAuthorize = false;
+            m.CanViewAllClients = false;
+            m.CanAuthorize = true;
+        }
+        else if (user.IsInRole("Services"))
+        {
+            m.CanView = true;
+            m.CanViewOnlyOwned = true;
+            m.CanEdit = true;
+            m.CanCreate = true;
+            m.CanDelete = true;
+            m.CanViewAllClients = true;
+            m.CanAuthorize = true;
         }
     }
 
