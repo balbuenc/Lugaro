@@ -50,6 +50,7 @@ namespace CoreERP.Data.Repositories
                         ,tc.id_tipo_cliente
                         ,tc.tipo
                         ,v.usuario as vendedor
+                        ,c.id_funcionario
                         from clientes c  
                         left outer join barrios b on b.id_barrio = c.id_barrio
                         left outer join estados_civiles ec  on ec.id_estado_civil  = c.id_estado_civil 
@@ -115,9 +116,9 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
 
             var sql = @" INSERT INTO public.clientes
-                        (nombres, apellidos, sexo, fecha_nacimiento, ci, ruc, direccion, telefono, email, observaciones, fecha_alta, razon_social, codigo, es_cliente_fiel, id_estado_civil, tipo_vivienda, id_nacionalidad, direccion_envio, id_barrio, id_tipo_cliente, cliente_exento)
+                        (nombres, apellidos, sexo, fecha_nacimiento, ci, ruc, direccion, telefono, email, observaciones, fecha_alta, razon_social, codigo, es_cliente_fiel, id_estado_civil, tipo_vivienda, id_nacionalidad, direccion_envio, id_barrio, id_tipo_cliente, cliente_exento, id_funcionario)
 
-                        VALUES(@nombres,@apellidos,@sexo,@fecha_nacimiento,@ci,@ruc,@direccion,@telefono,@email,@observaciones,@fecha_alta,@razon_social,@codigo,@es_cliente_fiel,@id_estado_civil,@tipo_vivienda,@id_nacionalidad,@direccion_envio,@id_barrio,@id_tipo_cliente, @cliente_exento)
+                        VALUES(@nombres,@apellidos,@sexo,@fecha_nacimiento,@ci,@ruc,@direccion,@telefono,@email,@observaciones,@fecha_alta,@razon_social,@codigo,@es_cliente_fiel,@id_estado_civil,@tipo_vivienda,@id_nacionalidad,@direccion_envio,@id_barrio,@id_tipo_cliente, @cliente_exento, @id_funcionario)
                         RETURNING id_cliente;";
             try
             {
@@ -145,7 +146,8 @@ namespace CoreERP.Data.Repositories
                     client.direccion_envio,
                     client.id_barrio,
                     client.id_tipo_cliente,
-                    client.cliente_exento
+                    client.cliente_exento,
+                    client.id_funcionario
 
                 });
 
@@ -183,58 +185,47 @@ namespace CoreERP.Data.Repositories
                                     direccion_envio= @direccion_envio, 
                                     id_barrio= @id_barrio, 
                                     id_tipo_cliente= @id_tipo_cliente,
-                                    cliente_exento= @cliente_exento
+                                    cliente_exento= @cliente_exento,
+                                    id_funcionario= @id_funcionario
                         where id_cliente = @id_cliente;";
 
-            //if (client.id_barrio == 0)
-            //{
-            //    client.id_barrio = new int();
-            //}
+          
 
-            //if (client.id_estado_civil == 0)
-            //{
-            //    client.id_estado_civil = new int();
-            //}
-
-            //if (client.id_nacionalidad == 0)
-            //{
-            //    client.id_nacionalidad = new int();
-            //}
-
-            //if (client.id_tipo_cliente == 0)
-            //{
-            //    client.id_tipo_cliente = new int();
-            //}
-
-
-
-            var result = await db.ExecuteAsync(sql, new
+            try
             {
-                client.nombres,
-                client.apellidos,
-                client.sexo,
-                client.fecha_nacimiento,
-                client.ci,
-                client.ruc,
-                client.direccion,
-                client.telefono,
-                client.email,
-                client.observaciones,
-                client.fecha_alta,
-                client.razon_social,
-                client.codigo,
-                client.es_cliente_fiel,
-                id_estado_civil = client.id_estado_civil == 0 ? (int?)null : client.id_estado_civil,
-                client.tipo_vivienda,
-                id_nacionalidad = client.id_nacionalidad == 0 ? (int?)null : client.id_nacionalidad,
-                client.direccion_envio,
-                id_barrio = client.id_barrio == 0 ? (int?)null : client.id_barrio,
-                id_tipo_cliente = client.id_tipo_cliente == 0 ? (int?)null : client.id_tipo_cliente,
-                client.id_cliente,
-                client.cliente_exento
-            });
+                var result = await db.ExecuteAsync(sql, new
+                {
+                    client.nombres,
+                    client.apellidos,
+                    client.sexo,
+                    client.fecha_nacimiento,
+                    client.ci,
+                    client.ruc,
+                    client.direccion,
+                    client.telefono,
+                    client.email,
+                    client.observaciones,
+                    client.fecha_alta,
+                    client.razon_social,
+                    client.codigo,
+                    client.es_cliente_fiel,
+                    id_estado_civil = client.id_estado_civil == 0 ? (int?)null : client.id_estado_civil,
+                    client.tipo_vivienda,
+                    id_nacionalidad = client.id_nacionalidad == 0 ? (int?)null : client.id_nacionalidad,
+                    client.direccion_envio,
+                    id_barrio = client.id_barrio == 0 ? (int?)null : client.id_barrio,
+                    id_tipo_cliente = client.id_tipo_cliente == 0 ? (int?)null : client.id_tipo_cliente,
+                    client.id_cliente,
+                    client.cliente_exento,
+                    client.id_funcionario
+                });
 
-            return result > 0;
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

@@ -8,8 +8,14 @@
 @inject IClientTypeService ClientTypeService
 @inject ICivilStatusService CivilStatusService
 @inject NavigationManager NavigationManager
+@inject IEmployeeService EmployeeService
 
 @attribute [Authorize]
+
+
+
+@using Microsoft.AspNetCore.Http
+
 
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Data
@@ -23,6 +29,9 @@
 @using Syncfusion.Blazor.Buttons
 
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 
 <div class="container-fluid">
@@ -144,6 +153,14 @@
                                                 <DropDownListFieldSettings Text="Text" Value="Text"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
+                                        <div class="form-group col-md-3">
+                                            @if (user.IsInRole("Administrators"))
+                                            {
+                                                <SfDropDownList TValue="Int32" TItem="Employee" @bind-Value="@(cli.id_funcionario)" Placeholder="Vendedor" DataSource="@employees" FloatLabelType="FloatLabelType.Always">
+                                                    <DropDownListFieldSettings Text="usuario" Value="id_funcionario"></DropDownListFieldSettings>
+                                                </SfDropDownList>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </Template>
@@ -219,12 +236,15 @@
     public IEnumerable<Nationality> nationalitys { get; set; }
     public IEnumerable<ClientType> clientTypes { get; set; }
     public IEnumerable<CivilStatus> civilStatus { get; set; }
+    public IEnumerable<Employee> employees { get; set; }
+
 
     public bool EditDialogVisibility { get; set; } = false;
     public bool DeleteRecordConfirmVisibility { get; set; } = false;
 
     public Int32 ID = 0;
 
+    System.Security.Claims.ClaimsPrincipal user;
 
     SfToast ToastObj;
 
@@ -252,6 +272,8 @@
     SfGrid<Client> Grid { get; set; }
 
     private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
+
+    public string UserName;
 
     public class Sexo
     {
@@ -281,15 +303,40 @@
     };
 
 
+    public Int32 GetEmployeeID(string username)
+    {
+        int id;
+        try
+        {
+            id = employees.First(c => c.usuario == username).id_funcionario;
+            return id;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener ID de usuario : " + ex.Message;
+            return 1;
+        }
+    }
+
+
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            user = authState.User;
+
+            string[] subs = user.Identity.Name.Split("@");
+            UserName = subs[0];
+
+
             GridData = await ClientService.GetAllClients();
             neighborhoods = await NeighborhoodService.GetAllNeighborhoods();
             nationalitys = await NationalityService.GetAllNationalitys();
             clientTypes = await ClientTypeService.GetAllClientTypes();
             civilStatus = await CivilStatusService.GetAllCivilStatus();
+            employees = await EmployeeService.GetAllEmployees();
         }
         catch (Exception ex)
         {
@@ -339,10 +386,16 @@
 
     protected async Task SaveClient(Client client)
     {
-        if (client.cliente_exento == "")
+        if (client.cliente_exento == null)
         {
             client.cliente_exento = "NO";
         }
+
+        if(client.id_funcionario == 0)
+        {
+            client.id_funcionario = GetEmployeeID(UserName);
+        }
+
 
         await ClientService.SaveClient(client);
         Grid.Refresh();
