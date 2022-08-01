@@ -39,7 +39,7 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
             var sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta, p.obra, p.motivo, c2.cliente_exento
                         ,v.estado as estado_venta,
-                        (select sum(pd.precio)  from presupuesto_detalles pd where pd.id_presupuesto = p.id_presupuesto) as total
+                        (select sum(pd.total)  from presupuesto_detalles pd where pd.id_presupuesto = p.id_presupuesto) as total
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
