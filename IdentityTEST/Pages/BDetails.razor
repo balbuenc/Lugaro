@@ -209,6 +209,7 @@
                     @if (!this.IsPrintable)
                     {
                         <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="Print">Imprimir presupuesto</SfButton>
+                        <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="PrintDiscountless">Imprimir sin descuentos</SfButton>
                     }
 
                     @if (Estado.ToUpper() == "GENERADO")
@@ -731,6 +732,24 @@
         }
     }
 
+    protected async Task PrintDiscountless()
+    {
+        try
+        {
+            //Call Reporting Service WSL
+            String route;
+            route = String.Concat("BudgetDiscountlessReport/", BudgetID);
+
+            await Js.InvokeAsync<object>("open", route, "_blank");
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+
 
     protected void ShowSearchDialog()
     {
@@ -828,23 +847,31 @@
 
     protected async Task CancelInvoice()
     {
-        // Obtengo la factura actual del presupuesto y la cancel Cancelo la factura
-        Sale s;
-        s = await SaleService.GetSaleDetailsByInvoice(header.nro_presupuesto);
+        try
+        {
+            // Obtengo la factura actual del presupuesto y la cancel Cancelo la factura
+            Sale s;
+            s = await SaleService.GetSaleDetailsByInvoice(header.nro_presupuesto);
 
-        s.estado = "ANULADO";
-        s.motivo_anulacion = MotivoAnulacion;
+            s.estado = "ANULADO";
+            s.motivo_anulacion = MotivoAnulacion;
 
-        await SaleService.UpdateSale(s);
+            await SaleService.UpdateSale(s);
 
-        //Elimino las cuotas de la venta
-        await QuotaService.DeleteQuotaBySaleId(s.id_venta);
+            //Elimino las cuotas de la venta
+            await QuotaService.DeleteQuotaBySaleId(s.id_venta);
 
 
-        //registro el estado del presupuesto como Aprobado y Quito el Nro de Factura
-        header.estado = "APROBADO";
-        header.nro_presupuesto = "";
-        await BudgetService.SaveBudget(header);
+            //registro el estado del presupuesto como Aprobado y Quito el Nro de Factura
+            header.estado = "APROBADO";
+            header.nro_presupuesto = "";
+            await BudgetService.SaveBudget(header);
+
+        }
+        catch (Exception e)
+        {
+            Navigate();
+        }
 
         //Revierto el Stock a su estado original en el caso quee sea necesario
         try
