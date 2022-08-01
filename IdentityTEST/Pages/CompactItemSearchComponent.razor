@@ -3,6 +3,7 @@
 @using Interfaces
 @inject IProductService ProductService
 @inject IBudgetDetailsService BudgetDetailsService
+@inject IBudgetService BudgetService 
 
 @attribute [Authorize]
 @using Syncfusion.Blazor
@@ -103,6 +104,11 @@
         BudgetDetails b = new BudgetDetails();
         Product product;
 
+        Budget p = await BudgetService.GetBudgetDetails(BudgetID);
+
+        if (p.estado_venta == "FACTURADO")
+            return;
+
         //Obtengo el detalle del producto a ser insertado
         product = await ProductService.GetProductDetails(ProductID);
 
@@ -123,7 +129,7 @@
 
     }
 
-   
+
 
     public async void RecordDoubleClickHandler(RecordDoubleClickEventArgs<Product> args)
     {

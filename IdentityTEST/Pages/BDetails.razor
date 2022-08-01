@@ -263,12 +263,12 @@
                     <h6><b>Detalles del presupuesto</b></h6>
                 </div>
                 <div class="col-md-4" style="vertical-align:middle; text-align:right">
-                    <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="ShowSearchDialog">Agregar producto</SfButton>
+                    <SfButton Disabled="@addProductBtnDisabled" CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="ShowSearchDialog">Agregar producto</SfButton>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-9">
-                    <SfGrid ID="Grid" @ref="Grid" Width="100%" DataSource="@GridData" Toolbar="@ToolbarItems" AllowTextWrap="true">
+                    <SfGrid ID="Grid" @ref="Grid" Width="100%" DataSource="@GridData" Toolbar="@ToolbarItems" AllowTextWrap="true" EditSettings="@gridEditSettings"  >
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="BudgetDetails"></GridEvents>
                         <GridPageSettings PageSize="@PageSize"></GridPageSettings>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal">
@@ -587,6 +587,10 @@
 
     private bool IsVisible { get; set; } = false;
 
+    private GridEditSettings gridEditSettings = new GridEditSettings();
+    private bool addProductBtnDisabled = false;
+  
+
 
     //Authorization UserPermissions
     AuthorizationMatrix UserPermissions = new AuthorizationMatrix();
@@ -639,6 +643,101 @@
             m.CanAuthorize = true;
         }
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            int id = Int32.Parse(BudgetID);
+
+
+
+            await AuthorizeUser(UserPermissions);
+
+            GridData = await BudgetDetailsService.GetBudgetDetails(id);
+            header = await BudgetService.GetBudgetDetails(id);
+
+            discountLimits = (await DiscountLimitService.GetDiscountLimitsByBudgetID(id)).ToList();
+
+            //Load header data
+            Titulo = "Detalle de prespuesto ID. " + BudgetID;
+            Cliente = header.cliente;
+            Fecha = header.fecha.ToShortDateString();
+            FechaFactura = DateTime.Now;
+            NroPresupuesto = header.nro_presupuesto;
+            Moneda = header.moneda;
+            Cotizacion = header.cotizacion.ToString();
+            Estado = header.estado;
+            Vendedor = header.vendedor;
+            Condicion = header.condicion;
+            Exento = header.cliente_exento;
+            Motivo = header.motivo;
+
+            if (header.estado_venta == null)
+                EstadoFacturacion = "PENDIENTE";
+            else
+                EstadoFacturacion = header.estado_venta;
+
+            //Verify if prinatable layout
+            if (IsPrintable)
+            {
+                ToolbarItems = null;
+            }
+
+            //Set the Number format by the Currency
+            if (Moneda == "Dolar")
+            {
+                format = "N2";
+            }
+            else
+            {
+                format = "N0";
+            }
+
+            erpTools = new SystemTools();
+
+            //Get System configuration
+            mainURL = await erpTools.GetSystemParam("BaseURL");
+            mainLogo = await erpTools.GetSystemParam("MainLogo");
+
+            imagePath = mainURL + mainLogo;
+
+            //Configure Compact Product Search
+            compactItemSearch.BudgetID = id;
+
+        
+
+            //Set Details Grid default state 
+            if (EstadoFacturacion == "FACTURADO")
+            {
+                gridEditSettings.AllowAdding = false;
+                gridEditSettings.AllowDeleting = false;
+                gridEditSettings.AllowEditing = false;
+                gridEditSettings.AllowEditOnDblClick = false;
+
+           
+
+
+                addProductBtnDisabled = true;
+            }
+            else
+            {
+                gridEditSettings.AllowAdding = true;
+                gridEditSettings.AllowDeleting = true;
+                gridEditSettings.AllowEditing = true;
+                gridEditSettings.AllowEditOnDblClick = true;
+
+
+                addProductBtnDisabled = false;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener detalles del presupuesto: " + ex.Message;
+        }
+    }
+
 
     private void OpenDialog()
     {
@@ -1006,73 +1105,6 @@
 
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            int id = Int32.Parse(BudgetID);
-
-
-
-            await AuthorizeUser(UserPermissions);
-
-            GridData = await BudgetDetailsService.GetBudgetDetails(id);
-            header = await BudgetService.GetBudgetDetails(id);
-
-            discountLimits = (await DiscountLimitService.GetDiscountLimitsByBudgetID(id)).ToList();
-
-            //Load header data
-            Titulo = "Detalle de prespuesto ID. " + BudgetID;
-            Cliente = header.cliente;
-            Fecha = header.fecha.ToShortDateString();
-            FechaFactura = DateTime.Now;
-            NroPresupuesto = header.nro_presupuesto;
-            Moneda = header.moneda;
-            Cotizacion = header.cotizacion.ToString();
-            Estado = header.estado;
-            Vendedor = header.vendedor;
-            Condicion = header.condicion;
-            Exento = header.cliente_exento;
-            Motivo = header.motivo;
-
-            if (header.estado_venta == null)
-                EstadoFacturacion = "PENDIENTE";
-            else
-                EstadoFacturacion = header.estado_venta;
-
-            //Verify if prinatable layout
-            if (IsPrintable)
-            {
-                ToolbarItems = null;
-            }
-
-            //Set the Number format by the Currency
-            if (Moneda == "Dolar")
-            {
-                format = "N2";
-            }
-            else
-            {
-                format = "N0";
-            }
-
-            erpTools = new SystemTools();
-
-            //Get System configuration
-            mainURL = await erpTools.GetSystemParam("BaseURL");
-            mainLogo = await erpTools.GetSystemParam("MainLogo");
-
-            imagePath = mainURL + mainLogo;
-
-            //Configure Compact Product Search
-            compactItemSearch.BudgetID = id;
-
-        }
-        catch (Exception ex)
-        {
-            Message = "Error al obtener detalles del presupuesto: " + ex.Message;
-        }
-    }
 
 
 
