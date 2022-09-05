@@ -28,6 +28,9 @@
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 
+
+@inject IJSRuntime Js
+
 <style>
     .e-list-settings:before {
         content: "\e679";
@@ -66,9 +69,18 @@
 
 
     <div class="col-lg-12" style="padding:1px; height:50px">
-        <div class="content-wrapper">
-            <div class="alert alert-title" role="banner"><b>Informe de presupuestos</b></div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8" role="banner"><b>Informe de presupuestos</b></div>
+            </div>
+            <div class="row">
+                <div class="col-md-4" style="vertical-align:middle; text-align:right">
+                    <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="Print">Tablero financiero</SfButton>
+                </div>
+            </div>
+
         </div>
+
     </div>
 
 
@@ -82,7 +94,7 @@
                 else
                 {
                     <SfGrid TValue="Budget" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
-                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler" ></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
 
@@ -212,7 +224,22 @@
         }
     }
 
+    protected void Print()
+    {
+        try
+        {
+            //Call Reporting Service WSL
+            String route = "FinancialDashboard";
 
+
+            Js.InvokeAsync<object>("open", route, "_blank");
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
 
     private async Task OnBeginHandler(ActionEventArgs<Budget> Args)
     {

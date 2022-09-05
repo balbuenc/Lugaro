@@ -707,7 +707,8 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\cbalbuena\\.nuget\\packages\\": {}
+    "C:\\Users\\cbalbuena\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
@@ -718,6 +719,9 @@
       "packagesPath": "C:\\Users\\cbalbuena\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Data\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
         "C:\\Users\\cbalbuena\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -731,7 +735,6 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
           "projectReferences": {
             "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
               "projectPath": "C:\\Users\\cbalbuena\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj"
@@ -747,7 +750,6 @@
     },
     "frameworks": {
       "netcoreapp3.1": {
-        "targetAlias": "netcoreapp3.1",
         "dependencies": {
           "Dapper": {
             "target": "Package",
@@ -781,7 +783,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.409\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
       }
     }
   }
