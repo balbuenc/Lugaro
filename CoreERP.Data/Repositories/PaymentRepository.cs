@@ -187,7 +187,7 @@ namespace CoreERP.Data.Repositories
 
                 var result = await db.ExecuteAsync(sql, new
                 {
-                  
+
                     payment.nro_orden_pago,
                     payment.fecha_orden,
                     payment.id_compra,
@@ -203,6 +203,8 @@ namespace CoreERP.Data.Repositories
 
                 }
                 );
+
+
 
                 return result > 0;
             }
@@ -240,6 +242,37 @@ namespace CoreERP.Data.Repositories
                     payment.id_moneda,
                 }
                 );
+
+                if (payment.estado == "PAGADO")
+                {
+
+                    //Insert payment details
+                    var sql_payment = @"INSERT INTO public.cuentas_detalles
+                                    (id_cuenta, fecha, id_funcionario, tipo, monto, concepto, beneficiario, nro_comprobante, detalle)
+                                    VALUES(@id_cuenta, @fecha, @id_funcionario, @tipo, @monto, @concepto, @beneficiario, @nro_comprobante, @detalle);";
+
+
+                    int id_cuenta = 0;
+                    if (payment.id_moneda == 3)
+                        id_cuenta = 7;
+                    else if (payment.id_moneda == 1)
+                        id_cuenta = 5;
+
+                    var result_payment = await db.ExecuteAsync(sql_payment, new
+                    {
+                        @id_cuenta = id_cuenta,
+                        @fecha = DateTime.Now,
+                        @id_funcionario = payment.id_funcionario,
+                        @tipo = "Débito",
+                        @monto = payment.monto_pagado,
+                        @concepto = "PAGO DE COMPRA",
+                        @beneficiario = "",
+                        @nro_comprobante = payment.nro_comprobante,
+                        @detalle = "ASIENTO AUTOMATICO DE ORDEN DE COMPRA"
+
+                    }
+                   );
+                }
 
                 return result > 0;
             }

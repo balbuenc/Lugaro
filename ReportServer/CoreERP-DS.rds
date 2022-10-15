@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="CoreERP-DS">
+  <ConnectionProperties>
+    <Extension>ODBC</Extension>
+    <ConnectString>Driver=PostgreSQL Unicode;server=10.150.160.102;port=5432;database=enigma</ConnectString>
+  </ConnectionProperties>
+  <DataSourceID>88f941d8-80d5-4efb-8a81-de70dfe46524</DataSourceID>
+</RptDataSource>
