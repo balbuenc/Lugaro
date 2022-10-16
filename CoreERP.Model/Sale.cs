@@ -21,5 +21,7 @@ namespace CoreERP.Model
         public string moneda { get; set; }
 
         public string motivo_anulacion { get; set; }
+
+        public int id_timbrado { get; set; }
     }
 }

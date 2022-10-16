@@ -47,7 +47,7 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = @"select v.id_venta, v.fecha, v.factura, v.condicion, v.estado, p.fecha as fecha_presupuesto, v.importe , f.usuario as vendedor, c2.razon_social as cliente, m.moneda , v.motivo_anulacion
+                var sql = @"select v.id_venta, v.fecha, v.factura, v.condicion, v.estado, p.fecha as fecha_presupuesto, v.importe , f.usuario as vendedor, c2.razon_social as cliente, m.moneda , v.motivo_anulacion, v.id_timbrado
                             from ventas v
                             inner join presupuestos p on p.id_presupuesto = v.id_presupuesto 
                             inner join funcionarios f on f.id_funcionario = p.id_funcionario 
@@ -110,8 +110,8 @@ namespace CoreERP.Data.Repositories
                 //            VALUES(@id_credito, @venta, @monto_capital, @monto_interes, @vencimiento, @fecha_pago, @multa, @mora, @id_venta, @estado);";
 
                 var sql = @"INSERT INTO public.ventas
-                            (id_credito, venta, monto_capital, monto_interes, vencimiento, fecha_pago, multa, mora, id_venta, estado)
-                            VALUES(@id_credito, @venta, @monto_capital, @monto_interes, @vencimiento, @fecha_pago, @multa, @mora, @id_venta, @estado);";
+                            (id_credito, venta, monto_capital, monto_interes, vencimiento, fecha_pago, multa, mora, id_venta, estado, id_timbrado)
+                            VALUES(@id_credito, @venta, @monto_capital, @monto_interes, @vencimiento, @fecha_pago, @multa, @mora, @id_venta, @estado, @id_timbrado);";
 
                 var result = await db.ExecuteAsync(sql, new
                 {
@@ -119,7 +119,8 @@ namespace CoreERP.Data.Repositories
                     venta.factura,
                     venta.fecha,
                     venta.importe,
-                    venta.estado
+                    venta.estado,
+                    venta.id_timbrado
                 }
                 );
 

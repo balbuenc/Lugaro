@@ -14,6 +14,7 @@
 @inject IQuotaService QuotaService
 @inject ISaleService SaleService
 @inject IDiscountLimitService DiscountLimitService
+@inject IStampService StampService 
 
 
 @using Microsoft.AspNetCore.Http
@@ -119,6 +120,10 @@
 
     .e-btn-icon.e-icons.e-close-icon.e-icon-left:before {
         content: '\e825';
+    }
+
+    .e-btn-icon.e-icons.e-search-icon.e-icon-left:before {
+        content: '\e97d';
     }
 
     .e-grid .e-headercelldiv,
@@ -445,9 +450,8 @@
                         <SfTextBox Placeholder="Nro. Factura" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NroPresupuesto"></SfTextBox>
                     </div>
                     <div class="col-2">
-                        <SfButton CssClass="e-success e-flat" @onclick="@OnItemAdded">
-                            <span class="e-btn-icon e-icons e-ok-icon e-icon-left"></span>
-                         
+                        <SfButton CssClass="e-success e-flat" @onclick="@GetNextInvoiceNumber">
+                            <span class="e-btn-icon e-icons e-search-icon e-icon-left"></span> Obtener número factura.
                         </SfButton>
                     </div>
 
@@ -585,6 +589,7 @@
     public List<DiscountLimit> discountLimits = new List<DiscountLimit>();
 
     public Budget header { get; set; }
+    public Stamp stamp { get; set; }
 
     SfGrid<BudgetDetails> Grid { get; set; }
     SfGrid<DiscountLimit> GridDiscounts { get; set; }
@@ -663,6 +668,7 @@
 
             GridData = await BudgetDetailsService.GetBudgetDetails(id);
             header = await BudgetService.GetBudgetDetails(id);
+            stamp = await StampService.GetStampDetails(1);
 
             discountLimits = (await DiscountLimitService.GetDiscountLimitsByBudgetID(id)).ToList();
 
@@ -759,11 +765,11 @@
         this.IsCancelInvoiceVisible = false;
     }
 
-    private async void GetNextInvoiceNumber()
+    private  async Task GetNextInvoiceNumber()
     {
-        {
-
-        } }
+        stamp = await StampService.GetNextInvoiceNumber(1);
+        NroPresupuesto = stamp.punto_emision + "-" + stamp.nro_factura.ToString();
+    }
 
     private async void OnItemAdded()
     {
