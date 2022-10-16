@@ -219,6 +219,10 @@ namespace CoreERP.UI
         creditNoteDetailsService => { creditNoteDetailsService.BaseAddress = new Uri(apiurl); }
         );
 
+            services.AddHttpClient<IStampService, StampService>(
+       stampService => { stampService.BaseAddress = new Uri(apiurl); }
+       );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -268,7 +268,7 @@
             </div>
             <div class="row">
                 <div class="col-md-9">
-                    <SfGrid ID="Grid" @ref="Grid" Width="100%" DataSource="@GridData" Toolbar="@ToolbarItems" AllowTextWrap="true" EditSettings="@gridEditSettings"  >
+                    <SfGrid ID="Grid" @ref="Grid" Width="100%" DataSource="@GridData" Toolbar="@ToolbarItems" AllowTextWrap="true" EditSettings="@gridEditSettings">
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="BudgetDetails"></GridEvents>
                         <GridPageSettings PageSize="@PageSize"></GridPageSettings>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal">
@@ -444,6 +444,13 @@
                     <div class="col-6">
                         <SfTextBox Placeholder="Nro. Factura" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NroPresupuesto"></SfTextBox>
                     </div>
+                    <div class="col-2">
+                        <SfButton CssClass="e-success e-flat" @onclick="@OnItemAdded">
+                            <span class="e-btn-icon e-icons e-ok-icon e-icon-left"></span>
+                         
+                        </SfButton>
+                    </div>
+
                 </div>
                 <div class="row">
                     <div class="col-6">
@@ -589,7 +596,7 @@
 
     private GridEditSettings gridEditSettings = new GridEditSettings();
     private bool addProductBtnDisabled = false;
-  
+
 
 
     //Authorization UserPermissions
@@ -705,9 +712,9 @@
             //Configure Compact Product Search
             compactItemSearch.BudgetID = id;
 
-        
 
-            //Set Details Grid default state 
+
+            //Set Details Grid default state
             if (EstadoFacturacion == "FACTURADO")
             {
                 gridEditSettings.AllowAdding = false;
@@ -715,7 +722,7 @@
                 gridEditSettings.AllowEditing = false;
                 gridEditSettings.AllowEditOnDblClick = false;
 
-           
+
 
 
                 addProductBtnDisabled = true;
@@ -752,7 +759,11 @@
         this.IsCancelInvoiceVisible = false;
     }
 
+    private async void GetNextInvoiceNumber()
+    {
+        {
 
+        } }
 
     private async void OnItemAdded()
     {
@@ -804,6 +815,9 @@
 
     private async void OnConfirmation()
     {
+        if (NroPresupuesto == null || NroPresupuesto == "")
+            return;
+
         header.nro_presupuesto = NroPresupuesto;
         header.fecha_factura = FechaFactura;
 
