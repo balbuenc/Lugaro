@@ -24,14 +24,29 @@ namespace CoreERP.Data.Repositories
 
         public async Task<bool> DeleteBudget(int id)
         {
-            var db = dbConnection();
+            try
+            {
+                var db = dbConnection();
 
-            var sql = @"DELETE from presupuestos
+                //Delete Budget details before the Budget Header
+                var sql_delete_details = @"delete from presupuesto_detalles where id_presupuesto = @Id";
+
+                
+                await db.ExecuteAsync(sql_delete_details, new { Id = id });
+
+                //Delete Budget Header 
+                var sql = @"DELETE from presupuestos
                         WHERE id_presupuesto = @Id ";
 
-            var result = await db.ExecuteAsync(sql, new { Id = id });
-
-            return result > 0;
+                
+                var result = await db.ExecuteAsync(sql, new { Id = id });
+             
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task<IEnumerable<Budget>> GetAllBudgets()
@@ -57,7 +72,7 @@ namespace CoreERP.Data.Repositories
             string sql;
 
             if (!canViewOnlyOwned)
-            { 
+            {
                 sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta, p.obra, p.motivo, c2.cliente_exento
                         ,v.estado as estado_venta
                         from presupuestos p
@@ -82,7 +97,7 @@ namespace CoreERP.Data.Repositories
                         order by p.id_presupuesto desc";
             }
 
-            return await db.QueryAsync<Budget>(sql, new { user = userName});
+            return await db.QueryAsync<Budget>(sql, new { user = userName });
         }
 
         public async Task<Budget> GetBudgetDetails(int id)

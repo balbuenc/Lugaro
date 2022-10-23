@@ -79,9 +79,11 @@ namespace CoreERP.API.Controllers
             if (id == 0)
                 return BadRequest();
 
-            await _BudgetRepository.DeleteBudget(id);
-
-            return NoContent(); //success
+            var result = await _BudgetRepository.DeleteBudget(id);
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
         }
     }
 }

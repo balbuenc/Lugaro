@@ -19,9 +19,9 @@ namespace CoreERP.UI.Services
             _httpClient = httpClient;
         }
 
-        public async Task DeleteBudget(int id)
+        public async Task<HttpResponseMessage> DeleteBudget(int id)
         {
-            await _httpClient.DeleteAsync($"api/budget/{id}");
+           return  await _httpClient.DeleteAsync($"api/budget/{id}");
         }
 
         public async Task<IEnumerable<Budget>> GetAllBudgets()

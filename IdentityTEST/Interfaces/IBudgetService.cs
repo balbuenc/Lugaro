@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace CoreERP.UI.Interfaces
@@ -17,6 +18,6 @@ namespace CoreERP.UI.Interfaces
         Task<Int32> SaveBudget(Budget budget);
 
 
-        Task DeleteBudget(int id);
+        Task<HttpResponseMessage> DeleteBudget(int id);
     }
 }
