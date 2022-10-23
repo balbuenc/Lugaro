@@ -116,7 +116,7 @@
                                             <SfNumericTextBox @bind-Value="@(budg.id_presupuesto)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(budg.nro_presupuesto)" Enabled="true" Placeholder="Nro. factura" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                            <SfTextBox @bind-Value="@(budg.nro_presupuesto)" Enabled="false" Placeholder="Nro. factura" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@currencies"
@@ -198,12 +198,12 @@
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn HeaderText="Editar" Width="10">
+                            <GridColumn HeaderText=".." Width="10">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-list-edit", CssClass = "e-flat" })"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
-                            <GridColumn HeaderText="Eliminar" Width="10">
+                            <GridColumn HeaderText=".." Width="10">
                                 <Template>
                                     @{
                                         var budg = (context as Budget);
@@ -213,12 +213,12 @@
                             </GridColumn>
                             <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="15" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.estado_venta) HeaderText="Est. facturación" Visible="true" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.estado_venta) HeaderText="Est. fact." Visible="true" Width="20"></GridColumn>
                             <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="20" Visible="true"></GridColumn>
                             <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
                             <GridColumn Field=@nameof(Budget.moneda) HeaderText="Mon." Width="15" Visible="false"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.estado) Width="30" HeaderText="Est. venta">
+                            <GridColumn Field=@nameof(Budget.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.estado) Width="25" HeaderText="Est. venta">
                                 <Template>
                                     @{
                                         var budg = (context as Budget);
