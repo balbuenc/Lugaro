@@ -212,16 +212,20 @@ namespace CoreERP.UI
            );
 
             services.AddHttpClient<ICreditNoteService, CreditNoteService>(
-          creditNoteService => { creditNoteService.BaseAddress = new Uri(apiurl); }
+                creditNoteService => { creditNoteService.BaseAddress = new Uri(apiurl); }
           );
 
             services.AddHttpClient<ICreditNoteDetailsService, CreditNoteDetailsService>(
-        creditNoteDetailsService => { creditNoteDetailsService.BaseAddress = new Uri(apiurl); }
+                creditNoteDetailsService => { creditNoteDetailsService.BaseAddress = new Uri(apiurl); }
         );
 
             services.AddHttpClient<IStampService, StampService>(
-       stampService => { stampService.BaseAddress = new Uri(apiurl); }
+                stampService => { stampService.BaseAddress = new Uri(apiurl); }
        );
+
+            services.AddHttpClient<IAccountPlanService, AccountPlanService>(
+                accountPlanService => { accountPlanService.BaseAddress = new Uri(apiurl); }
+        );
 
         }
 

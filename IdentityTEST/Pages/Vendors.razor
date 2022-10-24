@@ -3,6 +3,7 @@
 @using Interfaces
 @inject IVendorService VendorService
 @inject ICountryService CountryService
+@inject IAccountPlanService AccountPlanService
 
 @attribute [Authorize]
 @using Syncfusion.Blazor
@@ -37,7 +38,7 @@
                 }
                 else
                 {
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems"  DataSource="@GridData"  AllowExcelExport="true">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true">
 
                         <GridEvents OnActionBegin="OnBeginHandler" TValue="Vendor"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
@@ -55,26 +56,28 @@
                                 }
                                 <div>
                                     <div class="form-row">
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-2">
 
                                             <SfNumericTextBox @bind-Value="@(vend.id_proveedor)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
-                                        <div class="form-group col-md-9">
-
+                                        <div class="form-group col-md-7">
                                             <SfTextBox @bind-Value="@(vend.proveedor)" Enabled="true" Placeholder="Proveedor" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(vend.ruc)" Enabled="true" Placeholder="RUC" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
                                         </div>
                                     </div>
                                     <div class="form-row">
-                                        <div class="form-group col-md-12">
-
+                                        <div class="form-group col-md-6">
+                                            <SfTextBox @bind-Value="@(vend.direccion)" Enabled="true" Placeholder="Dirección" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-6">
                                             <SfTextBox @bind-Value="@(vend.descripcion)" Enabled="true" Placeholder="Descripción" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
                                         </div>
-
                                     </div>
 
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-
                                             <SfDropDownList DataSource="@countries"
                                                             TItem="Country"
                                                             TValue="Int32"
@@ -85,9 +88,16 @@
                                             </SfDropDownList>
                                         </div>
 
-
                                     </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
 
+                                            <SfDropDownList TValue="Int32?" TItem="AccountPlan" @bind-Value="@(vend.id_plan_cuenta)" Placeholder="Cta. Cont." DataSource="@accountPlans" FloatLabelType="FloatLabelType.Always">
+                                                <DropDownListFieldSettings Text="denominacion" Value="id_plan_cuenta"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+
+                                        </div>
+                                    </div>
                                 </div>
                             </Template>
                         </GridEditSettings>
@@ -95,10 +105,12 @@
                             <GridColumn Field=@nameof(Vendor.id_proveedor) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
 
                             <GridColumn Field=@nameof(Vendor.proveedor) HeaderText="Proveedor" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Vendor.ruc) HeaderText="Ruc" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Vendor.direccion) HeaderText="Dirección" Width="40"></GridColumn>
                             <GridColumn Field=@nameof(Vendor.descripcion) HeaderText="Descripción" Width="20"></GridColumn>
 
                             <GridColumn Field=@nameof(Vendor.pais) HeaderText="Pais" Width="30"></GridColumn>
-
+                            <GridColumn Field="@nameof(Vendor.cuenta_contable)" HeaderText="Cta. Cont." Width="20"></GridColumn>
 
 
                         </GridColumns>
@@ -121,7 +133,7 @@
 
     public IEnumerable<Vendor> GridData { get; set; }
     public IEnumerable<Country> countries { get; set; }
-  
+    public IEnumerable<AccountPlan> accountPlans { get; set; }
 
 
 
@@ -137,7 +149,7 @@
         {
             GridData = await VendorService.GetAllVendors();
             countries = await CountryService.GetAllCountries();
-           
+            accountPlans = await AccountPlanService.GetAllAccountPlans();
 
         }
         catch (Exception ex)

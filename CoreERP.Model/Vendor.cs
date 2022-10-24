@@ -12,5 +12,10 @@ namespace CoreERP.Model
         public int id_pais { get; set; }
 
         public string pais { get; set; }
+
+        public string ruc { get; set; }
+        public string direccion { get; set; }
+        public int? id_plan_cuenta { get; set; }
+        public string cuenta_contable { get; set; }
     }
 }

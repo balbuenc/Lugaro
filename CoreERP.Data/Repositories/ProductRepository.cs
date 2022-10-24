@@ -50,12 +50,13 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = @"select *, o.origen, m.marca, pro.proveedor , m2.moneda 
+                var sql = @"select *, o.origen, m.marca, pro.proveedor , m2.moneda, pc.cuenta as cuenta_contable
                         from productos p
                         left outer join origenes o on o.id_origen = p.id_origen
                         left outer join marcas m on m.id_marca = p.id_marca
                         left outer join proveedores pro on pro.id_proveedor = p.id_proveedor
-                        left outer join monedas m2 on m2.id_moneda = p.id_moneda ";
+                        left outer join monedas m2 on m2.id_moneda = p.id_moneda
+                        left outer join plan_cuentas pc on pc.id_plan_cuenta = p.id_plan_cuenta  ";
 
                 var result = await db.QueryAsync<Product>(sql, new { });
 
@@ -101,11 +102,12 @@ namespace CoreERP.Data.Repositories
         public async Task<Product> GetProductDetails(int id)
         {
             var db = dbConnection();
-            var sql = @"select p.*, o.origen, m.marca, pro.proveedor 
+            var sql = @"select p.*, o.origen, m.marca, pro.proveedor, pc.cuenta as cuenta_contable 
                         from productos p
                         left outer join origenes o on o.id_origen = p.id_origen
                         left outer join marcas m on m.id_marca = p.id_marca
                         left outer join proveedores pro on pro.id_proveedor = p.id_proveedor 
+                        left outer join plan_cuentas pc on pc.id_plan_cuenta = p.id_plan_cuenta
                         where id_producto = @Id";
 
 
@@ -117,8 +119,8 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
 
             var sql = @"INSERT INTO public.productos
-                        (id_origen, producto, codigo, id_marca, descripcion, id_proveedor, costo, precio, dias_garantia, id_moneda, imagen)
-                        values(@id_origen, @producto, @codigo, @id_marca, @descripcion, @id_proveedor, @costo, @precio, @dias_garantia, @id_moneda, @imagen)";
+                        (id_origen, producto, codigo, id_marca, descripcion, id_proveedor, costo, precio, dias_garantia, id_moneda, imagen, id_plan_cuenta)
+                        values(@id_origen, @producto, @codigo, @id_marca, @descripcion, @id_proveedor, @costo, @precio, @dias_garantia, @id_moneda, @imagen, @id_plan_cuenta)";
 
             var result = await db.ExecuteAsync(sql, new
             {
@@ -132,7 +134,8 @@ namespace CoreERP.Data.Repositories
                 product.precio,
                 product.dias_garantia,
                 product.id_moneda,
-                product.imagen
+                product.imagen,
+                product.id_plan_cuenta
             }
             );
 
@@ -146,7 +149,7 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var sql = @"UPDATE public.productos
-                        SET id_origen=@id_origen, producto=@producto, codigo=@codigo, id_marca=@id_marca, descripcion=@descripcion, id_proveedor=@id_proveedor, costo=@costo, precio=@precio, dias_garantia=@dias_garantia, id_moneda=@id_moneda,imagen=@imagen
+                        SET id_origen=@id_origen, producto=@producto, codigo=@codigo, id_marca=@id_marca, descripcion=@descripcion, id_proveedor=@id_proveedor, costo=@costo, precio=@precio, dias_garantia=@dias_garantia, id_moneda=@id_moneda,imagen=@imagen, id_plan_cuenta=@id_plan_cuenta
                         WHERE id_producto=@id_producto;
                         ;";
 
@@ -163,7 +166,8 @@ namespace CoreERP.Data.Repositories
                     product.precio,
                     product.dias_garantia,
                     product.id_moneda,
-                    product.imagen
+                    product.imagen,
+                    product.id_plan_cuenta
                 }
                 );
 

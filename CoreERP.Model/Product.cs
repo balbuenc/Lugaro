@@ -31,5 +31,8 @@ namespace CoreERP.Model
         public int id_deposito { get; set; }
         public string deposito { get; set; }
         public int cantidad { get; set; }
+
+        public int? id_plan_cuenta { get; set; }
+        public string cuenta_contable { get; set; }
     }
 }

@@ -9,6 +9,7 @@
 @inject ICivilStatusService CivilStatusService
 @inject NavigationManager NavigationManager
 @inject IEmployeeService EmployeeService
+@inject IAccountPlanService AccountPlanService  
 
 @attribute [Authorize]
 
@@ -161,6 +162,14 @@
                                                 </SfDropDownList>
                                             }
                                         </div>
+                                        <div class="form-group col-md-6">
+                                            @if (user.IsInRole("Administrators"))
+                                            {
+                                                <SfDropDownList TValue="Int32?" TItem="AccountPlan" @bind-Value="@(cli.id_plan_cuenta)" Placeholder="Cta. Cont." DataSource="@accountPlans" FloatLabelType="FloatLabelType.Always">
+                                                    <DropDownListFieldSettings Text="denominacion" Value="id_plan_cuenta"></DropDownListFieldSettings>
+                                                </SfDropDownList>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </Template>
@@ -177,7 +186,7 @@
                             <GridColumn Field=@nameof(Client.cliente_exento) HeaderText="Exento" Width="15"></GridColumn>
                             <GridColumn Field="@nameof(Client.telefono)" HeaderText="Telefono" Width="20"></GridColumn>
                             <GridColumn Field="@nameof(Client.vendedor)" HeaderText="Vendedor" Width="20"></GridColumn>
-
+                            <GridColumn Field="@nameof(Client.cuenta_contable)" HeaderText="Cta. Cont." Width="20"></GridColumn>
                         </GridColumns>
                     </SfGrid>
                 }
@@ -237,6 +246,7 @@
     public IEnumerable<ClientType> clientTypes { get; set; }
     public IEnumerable<CivilStatus> civilStatus { get; set; }
     public IEnumerable<Employee> employees { get; set; }
+    public IEnumerable<AccountPlan> accountPlans { get; set; }
 
 
     public bool EditDialogVisibility { get; set; } = false;
@@ -337,6 +347,8 @@
             clientTypes = await ClientTypeService.GetAllClientTypes();
             civilStatus = await CivilStatusService.GetAllCivilStatus();
             employees = await EmployeeService.GetAllEmployees();
+            accountPlans = await AccountPlanService.GetAllAccountPlans();
+
         }
         catch (Exception ex)
         {

@@ -51,12 +51,15 @@ namespace CoreERP.Data.Repositories
                         ,tc.tipo
                         ,v.usuario as vendedor
                         ,c.id_funcionario
+                        ,pc.cuenta as cuenta_contable
+                        ,c.id_plan_cuenta
                         from clientes c  
                         left outer join barrios b on b.id_barrio = c.id_barrio
                         left outer join estados_civiles ec  on ec.id_estado_civil  = c.id_estado_civil 
                         left outer join nacionalidades n on n.id_nacionalidad = c.id_nacionalidad 
                         left outer join tipos_clientes tc  on tc.id_tipo_cliente  = c.id_tipo_cliente
                         left outer join funcionarios v on v.id_funcionario = c.id_funcionario 
+                        left outer join plan_cuentas pc on pc.id_plan_cuenta = c.id_plan_cuenta 
                         order by c.nombres asc";
 
                 return await db.QueryAsync<Client>(sql, new { });
@@ -116,9 +119,9 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
 
             var sql = @" INSERT INTO public.clientes
-                        (nombres, apellidos, sexo, fecha_nacimiento, ci, ruc, direccion, telefono, email, observaciones, fecha_alta, razon_social, codigo, es_cliente_fiel, id_estado_civil, tipo_vivienda, id_nacionalidad, direccion_envio, id_barrio, id_tipo_cliente, cliente_exento, id_funcionario)
+                        (nombres, apellidos, sexo, fecha_nacimiento, ci, ruc, direccion, telefono, email, observaciones, fecha_alta, razon_social, codigo, es_cliente_fiel, id_estado_civil, tipo_vivienda, id_nacionalidad, direccion_envio, id_barrio, id_tipo_cliente, cliente_exento, id_funcionario, id_plan_cuenta)
 
-                        VALUES(@nombres,@apellidos,@sexo,@fecha_nacimiento,@ci,@ruc,@direccion,@telefono,@email,@observaciones,@fecha_alta,@razon_social,@codigo,@es_cliente_fiel,@id_estado_civil,@tipo_vivienda,@id_nacionalidad,@direccion_envio,@id_barrio,@id_tipo_cliente, @cliente_exento, @id_funcionario)
+                        VALUES(@nombres,@apellidos,@sexo,@fecha_nacimiento,@ci,@ruc,@direccion,@telefono,@email,@observaciones,@fecha_alta,@razon_social,@codigo,@es_cliente_fiel,@id_estado_civil,@tipo_vivienda,@id_nacionalidad,@direccion_envio,@id_barrio,@id_tipo_cliente, @cliente_exento, @id_funcionario , @id_plan_cuenta)
                         RETURNING id_cliente;";
             try
             {
@@ -147,8 +150,8 @@ namespace CoreERP.Data.Repositories
                     client.id_barrio,
                     client.id_tipo_cliente,
                     client.cliente_exento,
-                    client.id_funcionario
-
+                    client.id_funcionario,
+                   client.id_plan_cuenta
                 });
 
                 return Convert.ToInt32(result);
@@ -186,7 +189,8 @@ namespace CoreERP.Data.Repositories
                                     id_barrio= @id_barrio, 
                                     id_tipo_cliente= @id_tipo_cliente,
                                     cliente_exento= @cliente_exento,
-                                    id_funcionario= @id_funcionario
+                                    id_funcionario= @id_funcionario,
+                                    id_plan_cuenta=@id_plan_cuenta
                         where id_cliente = @id_cliente;";
 
           
@@ -217,7 +221,8 @@ namespace CoreERP.Data.Repositories
                     id_tipo_cliente = client.id_tipo_cliente == 0 ? (int?)null : client.id_tipo_cliente,
                     client.id_cliente,
                     client.cliente_exento,
-                    client.id_funcionario
+                    client.id_funcionario,
+                    id_plan_cuenta = client.id_plan_cuenta == 0 ? (int?)null : client.id_plan_cuenta
                 });
 
                 return result > 0;

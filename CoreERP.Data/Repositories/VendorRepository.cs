@@ -37,9 +37,10 @@ namespace CoreERP.Data.Repositories
         public async Task<IEnumerable<Vendor>> GetAllVendors()
         {
             var db = dbConnection();
-            var sql = @"select p.id_proveedor , p.proveedor , p.descripcion, p.id_pais , p2.pais 
+            var sql = @"select p.* , p2.pais, pc.cuenta as cuenta_contable
                         from proveedores p
                         left outer join paises p2 on p2.id_pais = p.id_pais 
+                        left outer join plan_cuentas pc on pc.id_plan_cuenta = p.id_plan_cuenta 
                         order by p.proveedor";
 
 
@@ -60,14 +61,17 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
 
             var sql = @"INSERT INTO public.proveedores
-                        (proveedor, descripcion, id_pais)
-                        VALUES(@proveedor, @descripcion, @id_pais);";
+                        (proveedor, descripcion, id_pais, ruc, direccion, id_plan_cuenta)
+                        VALUES(@proveedor, @descripcion, @id_pais, @ruc, @direccion, @id_plan_cuenta);";
 
             var result = await db.ExecuteAsync(sql, new
             {
                 vendor.proveedor,
                 vendor.descripcion,
-                vendor.id_pais
+                vendor.id_pais,
+                vendor.ruc,
+                vendor.direccion,
+                vendor.id_plan_cuenta
             }
             );
 
@@ -79,7 +83,7 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
 
             var sql = @"UPDATE public.proveedores 
-                        SET proveedor=@proveedor, descripcion=@descripcion, id_pais=@id_pais
+                        SET proveedor=@proveedor, descripcion=@descripcion, id_pais=@id_pais, ruc=@ruc, direccion=@direccion, id_plan_cuenta=@id_plan_cuenta
                         WHERE id_proveedor=@id_proveedor;";
 
             var result = await db.ExecuteAsync(sql, new
@@ -87,7 +91,10 @@ namespace CoreERP.Data.Repositories
                 vendor.id_proveedor,
                 vendor.proveedor,
                 vendor.id_pais,
-                vendor.descripcion
+                vendor.descripcion,
+                vendor.ruc,
+                vendor.direccion,
+                vendor.id_plan_cuenta
             }
             );
 
