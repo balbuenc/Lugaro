@@ -75,19 +75,51 @@
     <span class="error">@ErrorDetails</span>
 
 
-    <div class="col-lg-12" style="padding:1px; height:50px">
+    <div class="col-lg-12" style="padding:1px; height:40px">
         <div class="content-wrapper">
-            <div class="alert alert-title" role="banner"><b>Presupuestos</b></div>
+            <div class="alert alert-info" role="banner"><b>Facturación consolidada  (Varios presupuestos por factura)</b></div>
         </div>
     </div>
-
 
     <div class="col-lg-12 control-section">
         <div class="content-wrapper">
             <div class="row">
                 @if (GridData == null)
                 {
-                    <div class="alert alert-warning" role="alert"><p><em>Cargando datos...</em></p></div>
+                    <div class="alert alert-warning" role="alert"><p><em>Cargando datos de facturación ...</em></p></div>
+                }
+                else
+                {
+                    <SfGrid TValue="Budget" ID="ApprovedGrid" @ref="ApprovedGrid" AllowPaging="true" DataSource="@approvedBudgets" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
+
+                        <GridPageSettings PageSize="3"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.moneda) HeaderText="Moneda" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.cantidad) HeaderText="Cant. presupuestos" Visible="true" Width="30"></GridColumn>
+                        </GridColumns>
+                    </SfGrid>
+                }
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-12" style="padding:1px; height:40px">
+        <div class="content-wrapper">
+            <div class="alert alert-title" role="banner"><b>Presupuestos</b></div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 control-section">
+        <div class="content-wrapper">
+            <div class="row">
+                @if (GridData == null)
+                {
+                    <div class="alert alert-warning" role="alert"><p><em>Cargando presupuestos ...</em></p></div>
                 }
                 else
                 {
@@ -353,11 +385,13 @@
     public IEnumerable<Employee> employees { get; set; }
     public IEnumerable<Currency> currencies { get; set; }
     public IEnumerable<InvoiceType> invoiceTypes { get; set; }
+    public IEnumerable<Budget> approvedBudgets { get; set; }
 
     public DateTime hoy = DateTime.Today;
     public DateTime t;
 
     SfGrid<Budget> Grid { get; set; }
+    SfGrid<Budget> ApprovedGrid { get; set; }
 
     private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
 
@@ -534,6 +568,7 @@
             await AuthorizeUser(UserPermissions);
 
             GridData = await BudgetService.GetAllBudgetsByUserName(UserName, UserPermissions.CanViewOnlyOwned);
+            approvedBudgets = await BudgetService.GetAllApprovedBudgetsByUserName(UserName, UserPermissions.CanViewOnlyOwned);
 
             if (!UserPermissions.CanViewAllClients)
             {

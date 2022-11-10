@@ -66,6 +66,44 @@ namespace CoreERP.Data.Repositories
             return await db.QueryAsync<Budget>(sql, new { });
         }
 
+        public async Task<IEnumerable<Budget>> GetAllApprovedBudgetsByUserName(string userName, bool canViewOnlyOwned)
+        {
+            var db = dbConnection();
+            string sql;
+
+            if (!canViewOnlyOwned)
+            {
+                sql = @"select p.id_cliente, c2.razon_social as cliente, m2.moneda,cv.condicion, count(p.id_presupuesto) as cantidad
+                        from presupuestos p
+                        left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
+                        left outer join clientes c2 on c2.id_cliente = p.id_cliente
+                        left outer join monedas m2 on m2.id_moneda = p.id_moneda 
+                        left outer join condicion_venta cv on cv.id_condicion_venta  = p.id_condicion_venta 
+                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto and v.estado != 'ANULADO'
+                        where p.estado = 'APROBADO'
+                        and v.estado is null 
+                        group by p.id_cliente, p.id_moneda,  cliente, m2.moneda,cv.condicion having count(p.id_presupuesto) > 1
+                        order by 2";
+            }
+            else
+            {
+                sql = @"select p.id_cliente, c2.razon_social as cliente, m2.moneda,cv.condicion, count(p.id_presupuesto) as cantidad
+                        from presupuestos p
+                        left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
+                        left outer join clientes c2 on c2.id_cliente = p.id_cliente
+                        left outer join monedas m2 on m2.id_moneda = p.id_moneda 
+                        left outer join condicion_venta cv on cv.id_condicion_venta  = p.id_condicion_venta 
+                        left outer join ventas v on v.id_presupuesto = p.id_presupuesto and v.estado != 'ANULADO'
+                        where p.estado = 'APROBADO'
+                        and v.estado is null 
+                        and f2.usuario =  @user 
+                        group by p.id_cliente, p.id_moneda,  cliente, m2.moneda,cv.condicion having count(p.id_presupuesto) > 1
+                        order by 2";
+            }
+
+            return await db.QueryAsync<Budget>(sql, new { user = userName });
+        }
+
         public async Task<IEnumerable<Budget>> GetAllBudgetsByUserName(string userName, bool canViewOnlyOwned)
         {
             var db = dbConnection();
