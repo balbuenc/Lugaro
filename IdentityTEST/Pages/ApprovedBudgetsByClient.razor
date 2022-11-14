@@ -1,0 +1,452 @@
+﻿@page "/ApprovedBudgetsByClient/{ClientID}"
+@using Model
+@using Interfaces
+@inject IBudgetService BudgetService
+@inject IClientService ClientService
+@inject IStampService StampService
+
+
+@using Syncfusion.Blazor.Notifications
+
+@using Microsoft.AspNetCore.Http
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+@attribute [Authorize(Roles = "Administrators, Sales,Services")]
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Grids
+@using System.Collections.ObjectModel
+@inject NavigationManager NavigationManager
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs;
+@using Syncfusion.Blazor.Calendars;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Popups
+@using System.Dynamic
+
+
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+<style>
+    .e-list-settings:before {
+        content: "\e679";
+    }
+
+    .e-list-print:before {
+        content: "\e743";
+    }
+
+    .e-list-save:before {
+        content: "\e74d";
+    }
+
+    .e-list-saveas:before {
+        content: "\e72b";
+    }
+
+    .e-list-delete:before {
+        content: "\e33e";
+    }
+
+    .e-list-undo:before {
+        content: "\e752";
+    }
+
+    .e-list-edit:before {
+        content: "\e7a3";
+    }
+
+
+    .e-plus-icon::before {
+        content: '\e823';
+    }
+</style>
+
+
+
+<div class="container-fluid">
+    <p>@Message</p>
+    <span class="error">@ErrorDetails</span>
+
+
+    <div class="col-lg-12" style="padding:1px; height:40px">
+        <div class="content-wrapper">
+            <div class="alert alert-info" role="banner"><b>Facturación consolidada  (Varios presupuestos por factura)</b></div>
+        </div>
+    </div>
+
+
+
+    <div class="col-lg-12 control-section">
+        <div class="content-wrapper">
+            <div class="row">
+                @if (GridData == null)
+                {
+                    <div class="alert alert-warning" role="alert"><p><em>Cargando presupuestos ...</em></p></div>
+                }
+                else
+                {
+
+                    <SfGrid TValue="Budget" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true" AllowSelection="true">
+                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
+                        <GridPageSettings PageSize="30"></GridPageSettings>
+
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+
+                        <GridSelectionSettings CheckboxOnly="true" PersistSelection="true"></GridSelectionSettings>
+                        <GridColumns>
+                            <GridColumn Type="ColumnType.CheckBox" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="15" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.estado_venta) HeaderText="Est. fact." Visible="true" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="20" Visible="true"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.moneda) HeaderText="Mon." Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.estado) Width="25" HeaderText="Est. venta">
+                                <Template>
+                                    @{
+                                        var budg = (context as Budget);
+                                        if (budg.estado != null)
+                                        {
+                                            if (budg.estado.ToUpper() == "GENERADO")
+                                            {
+                                                <h6><span class="badge bg-primary">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "PENDIENTE")
+                                            {
+                                                <h6><span class="badge bg-secondary">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "APROBADO")
+                                            {
+                                                <h6><span class="badge bg-success">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "FACTURADO")
+                                            {
+                                                <h6><span class="badge bg-danger">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "REMITIDO")
+                                            {
+                                                <h6><span class="badge bg-warning text-dark">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "PRESTAMO")
+                                            {
+                                                <h6><span class="badge bg-secondary">@budg.estado</span></h6>
+                                            }
+                                            else if (budg.estado.ToUpper() == "IMPORTADO")
+                                            {
+                                                <h6><span class="badge bg-light text-dark">@budg.estado</span></h6>
+                                            }
+                                            else
+                                            {
+                                                <h6><span class="badge bg-light bg-dark">@budg.estado</span></h6>
+                                            }
+
+                                        }
+                                    }
+                                </Template>
+                            </GridColumn>
+                            <GridColumn Field=@nameof(Budget.direccion_entrega) HeaderText="Entregar en" Visible="false" Width="25"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.contacto) HeaderText="Contacto" Visible="false" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.obra) HeaderText="Obra" Visible="false" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Visible="true" Width="20"></GridColumn>
+
+                        </GridColumns>
+                    </SfGrid>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="CheckInvoiceNumber"><b>Facturar</b></SfButton>
+
+    <SfDialog Width="510px" IsModal="true" @bind-Visible="@IsVisible">
+        <DialogEvents OnOverlayClick="@OnOverlayclick">
+        </DialogEvents>
+        <DialogTemplates>
+            <Content>
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Datos de la factura. </h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <SfTextBox Placeholder="Nro. Factura" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NroPresupuesto"></SfTextBox>
+                    </div>
+                    <div class="col-2">
+                        <SfButton CssClass="e-success e-flat" @onclick="@GetNextInvoiceNumber">
+                            <span class="e-btn-icon e-icons e-search-icon e-icon-left"></span> Obtener número factura.
+                        </SfButton>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <SfDatePicker TValue="DateTime" Placeholder="Fecha emisión" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@FechaFactura"></SfDatePicker>
+                    </div>
+                </div>
+            </Content>
+        </DialogTemplates>
+        <DialogButtons>
+            <DialogButton Content="OK" IsPrimary="true" OnClick="@OnConfirmation" />
+            <DialogButton Content="Cancel" IsPrimary="true" OnClick="@OnOverlayclick" />
+        </DialogButtons>
+    </SfDialog>
+
+</div>
+
+
+@code {
+
+    [Parameter]
+    public string ClientID { get; set; }
+
+    public string Message { get; set; }
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
+
+    public string ErrorDetails = "";
+
+    public IEnumerable<Budget> GridData { get; set; }
+
+    public IEnumerable<Employee> employees { get; set; }
+
+    private bool IsVisible { get; set; } = false;
+    public string NroPresupuesto = "";
+    public DateTime FechaFactura;
+
+
+    public DateTime hoy = DateTime.Today;
+    public DateTime t;
+
+    SfGrid<Budget> Grid { get; set; }
+    SfGrid<Budget> ApprovedGrid { get; set; }
+
+    private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
+
+    public string UserName;
+
+
+
+    public Int32 BudgetID;
+    public Stamp stamp { get; set; }
+
+
+
+    //Authorization UserPermissions
+    AuthorizationMatrix UserPermissions = new AuthorizationMatrix();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private async Task AuthorizeUser(AuthorizationMatrix m)
+    {
+        var user = (await authenticationStateTask).User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            m.CanView = false;
+            m.CanViewOnlyOwned = true;
+            m.CanEdit = false;
+            m.CanCreate = false;
+            m.CanDelete = false;
+            m.CanViewAllClients = false;
+        }
+
+        if (user.IsInRole("Administrators"))
+        {
+            // Perform an action only available to users in the 'admin' role.
+            m.CanView = true;
+            m.CanViewOnlyOwned = false;
+            m.CanEdit = true;
+            m.CanCreate = true;
+            m.CanDelete = true;
+            m.CanViewAllClients = true;
+        }
+        else if (user.IsInRole("Sales"))
+        {
+            m.CanView = true;
+            m.CanViewOnlyOwned = true;
+            m.CanEdit = true;
+            m.CanCreate = true;
+            m.CanDelete = true;
+            m.CanViewAllClients = false;
+        }
+        else if (user.IsInRole("Services"))
+        {
+            m.CanView = true;
+            m.CanViewOnlyOwned = true;
+            m.CanEdit = true;
+            m.CanCreate = true;
+            m.CanDelete = true;
+            m.CanViewAllClients = true;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            string[] subs = user.Identity.Name.Split("@");
+            UserName = subs[0];
+
+            await AuthorizeUser(UserPermissions);
+
+            stamp = await StampService.GetStampDetails(1);
+            FechaFactura = DateTime.Now;
+
+            GridData = await BudgetService.GetAllApprovedBudgetsByClientID(UserName, UserPermissions.CanViewOnlyOwned, Convert.ToInt32(ClientID));
+
+
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener presupuestos [OnInitializedAsync] : " + ex.Message;
+        }
+    }
+
+
+    private void OnOverlayclick(MouseEventArgs arg)
+    {
+        this.IsVisible = false;
+    }
+
+    protected async void CheckInvoiceNumber()
+    {
+        OpenDialog();
+    }
+
+    private void OpenDialog()
+    {
+        this.IsVisible = true;
+    }
+
+    private async Task GetNextInvoiceNumber()
+    {
+        stamp = await StampService.GetNextInvoiceNumber(1);
+        NroPresupuesto = stamp.punto_emision + "-" + stamp.nro_factura.ToString();
+    }
+
+    private async void OnConfirmation()
+    {
+        if (NroPresupuesto == null || NroPresupuesto == "")
+            return;
+
+        //header.nro_presupuesto = NroPresupuesto;
+        //header.fecha_factura = FechaFactura;
+
+        //await BudgetService.SaveBudget(header);
+        //// CheckInvoiceNumber();
+        //await Invoice();
+    }
+
+
+
+
+    private async Task OnBeginHandler(ActionEventArgs<Budget> Args)
+    {
+        try
+        {
+            if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+                await SaveBudget((Budget)Args.Data);
+            }
+            else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                BudgetID = ((Budget)Args.Data).id_presupuesto;
+            }
+
+
+            return;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener presupuestos [OnBeginHandler]: " + ex.Message + " Inner.: " + ex.InnerException;
+            throw ex;
+        }
+    }
+
+
+
+
+    protected async Task<Int32> SaveBudget(Budget budget)
+    {
+        try
+        {
+            budget.id_funcionario = GetEmployeeID(UserName);
+            int id = await BudgetService.SaveBudget(budget);
+            return id;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al registrar presupuesto: " + ex.Message;
+            throw ex;
+        }
+    }
+
+    protected async Task<bool> DeleteBudget(int id)
+    {
+        var result = await BudgetService.DeleteBudget(id);
+        return result.IsSuccessStatusCode;
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.FileName = "Presupuestos.xlsx";
+            await this.Grid.ExcelExport(ExcelProperties);
+        }
+
+    }
+
+    public Int32 GetEmployeeID(string username)
+    {
+        int id;
+        try
+        {
+            id = employees.First(c => c.usuario == username).id_funcionario;
+            return id;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener ID de usuario : " + ex.Message;
+            return 1;
+        }
+    }
+
+    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<Budget> args)
+    {
+        Navigate(((Budget)args.RowData));
+    }
+
+    public void ApprovedRecordDoubleClickHandler(RecordDoubleClickEventArgs<Budget> args)
+    {
+        Navigate(((Budget)args.RowData));
+    }
+
+    private void Navigate(Budget budget)
+    {
+        NavigationManager.NavigateTo($"/BudgetDetails/{budget.id_presupuesto}");
+    }
+
+    private void Navigate(int id)
+    {
+        NavigationManager.NavigateTo($"/BudgetDetails/{id}");
+    }
+
+
+}
+
+

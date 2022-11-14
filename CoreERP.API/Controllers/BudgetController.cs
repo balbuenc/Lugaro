@@ -39,6 +39,13 @@ namespace CoreERP.API.Controllers
             return Ok(await _BudgetRepository.GetAllApprovedBudgetsByUserName(userName, canViewOnlyOwned));
         }
 
+        [HttpGet]
+        [Route("GetAllApprovedBudgetsByClientID/{userName}/{canViewOnlyOwned}/{clientID}")]
+        public async Task<IActionResult> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clientID)
+        {
+            return Ok(await _BudgetRepository.GetAllApprovedBudgetsByClientID(userName, canViewOnlyOwned, clientID));
+        }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBudgetDetails(int id)

@@ -165,7 +165,7 @@
                                         <div class="form-group col-md-6">
                                             @if (user.IsInRole("Administrators"))
                                             {
-                                                <SfDropDownList TValue="Int32?" TItem="AccountPlan" @bind-Value="@(cli.id_plan_cuenta)" Placeholder="Cta. Cont." DataSource="@accountPlans" FloatLabelType="FloatLabelType.Always">
+                                                <SfDropDownList TValue="Int32?" TItem="AccountPlan" @bind-Value="@(cli.id_plan_cuenta)" Placeholder="Cta. Cont." DataSource="@accountPlans" FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                     <DropDownListFieldSettings Text="denominacion" Value="id_plan_cuenta"></DropDownListFieldSettings>
                                                 </SfDropDownList>
                                             }
@@ -410,8 +410,15 @@
 
 
         await ClientService.SaveClient(client);
+
+        await Refresh();
+
+    }
+
+    private async Task Refresh()
+    {
+        GridData = await ClientService.GetAllClients();
         Grid.Refresh();
-        //ReloadPage();
     }
 
     protected async Task DeleteClient(int id)

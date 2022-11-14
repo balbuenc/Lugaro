@@ -90,17 +90,17 @@
                 }
                 else
                 {
-                    <SfGrid TValue="Budget" ID="ApprovedGrid" @ref="ApprovedGrid" AllowPaging="true" DataSource="@approvedBudgets" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
-
-                        <GridPageSettings PageSize="3"></GridPageSettings>
-                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-                        <GridColumns>
-                            <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.moneda) HeaderText="Moneda" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.cantidad) HeaderText="Cant. presupuestos" Visible="true" Width="30"></GridColumn>
-                        </GridColumns>
-                    </SfGrid>
+            <SfGrid TValue="Budget" ID="ApprovedGrid" @ref="ApprovedGrid" AllowPaging="true" DataSource="@approvedBudgets" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true" Toolbar="@ApprovedToolbarItems">
+                <GridEvents TValue="Budget" OnRecordDoubleClick="ApprovedRecordDoubleClickHandler"></GridEvents>
+                <GridPageSettings PageSize="3"></GridPageSettings>
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                <GridColumns>
+                    <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
+                    <GridColumn Field=@nameof(Budget.moneda) HeaderText="Moneda" Width="30"></GridColumn>
+                    <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Width="30"></GridColumn>
+                    <GridColumn Field=@nameof(Budget.cantidad) HeaderText="Cant. presupuestos" Visible="true" Width="30"></GridColumn>
+                </GridColumns>
+            </SfGrid>
                 }
 
             </div>
@@ -128,7 +128,6 @@
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-
                         <GridEditSettings AllowAdding="@UserPermissions.CanCreate" AllowEditing="@UserPermissions.CanEdit" AllowDeleting="@UserPermissions.CanDelete" Mode="EditMode.Dialog" Dialog="DialogParams">
                             <HeaderTemplate>
                                 @{
@@ -328,7 +327,6 @@
                         <SfTextBox Placeholder="RUC" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NewClientRUC"></SfTextBox>
                     </div>
                 </div>
-
             </Content>
         </DialogTemplates>
         <DialogButtons>
@@ -378,6 +376,7 @@
 
     public string Message { get; set; }
     public string[] ToolbarItems = new string[] { "Add", "Edit", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
+    public string[] ApprovedToolbarItems = new string[] { "Search" };
     public string ErrorDetails = "";
 
     public IEnumerable<Budget> GridData { get; set; }
@@ -729,6 +728,12 @@
     public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<Budget> args)
     {
         Navigate(((Budget)args.RowData));
+    }
+
+    public void ApprovedRecordDoubleClickHandler(RecordDoubleClickEventArgs<Budget> args)
+    {
+        Budget b = ((Budget)args.RowData);
+        NavigationManager.NavigateTo($"/ApprovedBudgetsByClient/{b.id_cliente}");
     }
 
     private void Navigate(Budget budget)

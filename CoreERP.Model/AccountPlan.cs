@@ -9,8 +9,14 @@ namespace CoreERP.Model
         public int id_plan_cuenta { get; set; }
         public string cuenta { get; set; }
         public string descripcion { get; set; }
-        public string tipo { get; set; }
+     
         public int imputable { get; set; }
         public string denominacion { get; set; }
+
+        public int impositivo { get; set; }
+
+        public int con_costo { get; set; }
+
+        public int nivel { get; set; }
     }
 }

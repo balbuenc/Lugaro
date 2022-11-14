@@ -13,6 +13,7 @@ namespace CoreERP.UI.Interfaces
 
         Task<IEnumerable<Budget>> GetAllBudgetsByUserName(string userName, bool canViewOnlyOwned);
         Task<IEnumerable<Budget>> GetAllApprovedBudgetsByUserName(string userName, bool canViewOnlyOwned);
+        Task<IEnumerable<Budget>> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clienID);
 
         Task<Budget> GetBudgetDetails(int id);
 

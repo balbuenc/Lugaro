@@ -46,7 +46,7 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = @"select  pc.id_plan_cuenta, pc.cuenta, pc.descripcion, pc.tipo, pc.imputable , pc.cuenta  || ' (' || upper( pc.descripcion) || ')' as denominacion
+                var sql = @"select  pc.id_plan_cuenta, pc.cuenta, pc.descripcion, pc.imputable , pc.cuenta  || ' (' || upper( pc.descripcion) || ')' as denominacion, pc.impositivo, pc.con_costo, pc.nivel
                             from plan_cuentas pc
                             where pc.imputable = true
                             order by pc.cuenta   ";
@@ -84,15 +84,18 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"INSERT INTO public.plan_cuentas
-                            (cuenta, descripcion, tipo)
-                            VALUES(@cuenta, @descripcion, @tipo);
-                            ;";
+                                        (cuenta, descripcion, imputable, impositivo, con_costo, nivel)
+                                        VALUES(@cuenta, @descripcion, @imputable, @impositivo, @con_costo, @nivel);
+                                        ";
 
                 var result = await db.ExecuteAsync(sql, new
                 {
                     accountPlan.cuenta,
                     accountPlan.descripcion,
-                    accountPlan.tipo
+                    accountPlan.imputable,
+                    accountPlan.impositivo,
+                    accountPlan.con_costo,
+                    accountPlan.nivel
                 }
                 );
 
@@ -111,16 +114,18 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"UPDATE public.plan_cuentas
-                            SET cuenta=@cuenta, descripcion=@descripcion, tipo=@tipo
-                            WHERE id_plan_cuenta=@id_plan_cuenta;
-                            ";
+                            SET cuenta=@cuenta, descripcion=@descripcion, imputable=@imputable, impositivo=@impositivo, con_costo=@con_costo, nivel=@nivel
+                            WHERE id_plan_cuenta=@id_plan_cuenta;";
 
                 var result = await db.ExecuteAsync(sql, new
                 {
                     accountPlan.id_plan_cuenta,
                     accountPlan.cuenta,
                     accountPlan.descripcion,
-                    accountPlan.tipo
+                    accountPlan.imputable,
+                    accountPlan.impositivo,
+                    accountPlan.con_costo,
+                    accountPlan.nivel
                 }
                 );
 
