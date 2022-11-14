@@ -4,7 +4,9 @@
 @inject IBudgetService BudgetService
 @inject IClientService ClientService
 @inject IStampService StampService
-
+@inject IQuotaService QuotaService
+@inject IStockService StockService
+@inject ISaleService SaleService
 
 @using Syncfusion.Blazor.Notifications
 
@@ -218,9 +220,13 @@
     public IEnumerable<Employee> employees { get; set; }
 
     private bool IsVisible { get; set; } = false;
+
+    public Budget header { get; set; }
     public string NroPresupuesto = "";
     public DateTime FechaFactura;
-
+    public List<double> SelectedRowIndexes { get; set; }
+    public double[] BudGetIDValue { get; set; }
+    public string SelectedValue;
 
     public DateTime hoy = DateTime.Today;
     public DateTime t;
@@ -323,10 +329,10 @@
 
     protected async void CheckInvoiceNumber()
     {
-        OpenDialog();
+        await OpenDialog();
     }
 
-    private void OpenDialog()
+    private async Task OpenDialog()
     {
         this.IsVisible = true;
     }
@@ -342,12 +348,59 @@
         if (NroPresupuesto == null || NroPresupuesto == "")
             return;
 
-        //header.nro_presupuesto = NroPresupuesto;
-        //header.fecha_factura = FechaFactura;
+        SelectedRowIndexes = await this.Grid.GetSelectedRowIndexes();
+        BudGetIDValue = SelectedRowIndexes.ToArray();
+        foreach (var data in BudGetIDValue)
+        {
+            Budget item = GridData.ElementAt(Convert.ToInt32(data));
+            Int32 i = item.id_presupuesto;
+        }
+    }
 
-        //await BudgetService.SaveBudget(header);
-        //// CheckInvoiceNumber();
-        //await Invoice();
+
+
+    private async Task InvoiceBudget(Int32 id)
+    {
+        header = await BudgetService.GetBudgetDetails(id);
+
+        header.nro_presupuesto = NroPresupuesto;
+        header.fecha_factura = FechaFactura;
+
+        await BudgetService.SaveBudget(header);
+
+        await Invoice();
+    }
+
+    protected async Task Invoice()
+    {
+        try
+        {
+            //create Sale based on Budget
+            Sale s;
+            s = await SaleService.SaveSale(header);
+
+
+            // Generate Quota for the Sale
+            await QuotaService.SaveQuota(s);
+
+
+            //if (header.motivo == "MONTAJE")
+            //{
+            //    //Discount Stock of products
+            //    await ModifyStock();
+            //}
+
+            //Save Budget header
+            //header.estado = "FACTURADO";
+            //await BudgetService.SaveBudget(header);
+
+
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
 
