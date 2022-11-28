@@ -48,10 +48,10 @@ namespace CoreERP.UI.Services
                  );
         }
 
-        public async Task<IEnumerable<Budget>> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clientID)
+        public async Task<IEnumerable<Budget>> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clientID, String condicionVenta, String motivo)
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<Budget>>(
-                 await _httpClient.GetStreamAsync($"api/budget/GetAllApprovedBudgetsByClientID/{userName}/{canViewOnlyOwned}/{clientID}"),
+                 await _httpClient.GetStreamAsync($"api/budget/GetAllApprovedBudgetsByClientID/{userName}/{canViewOnlyOwned}/{clientID}/{condicionVenta}/{motivo}"),
                  new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                  );
         }

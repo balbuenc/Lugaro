@@ -11,7 +11,7 @@ namespace CoreERP.Data.Repositories
         Task<IEnumerable<Budget>> GetAllBudgets();
         Task<IEnumerable<Budget>> GetAllBudgetsByUserName(string userName, bool CanViewOnlyOwned);
         Task<IEnumerable<Budget>> GetAllApprovedBudgetsByUserName(string userName, bool canViewOnlyOwned);
-        Task<IEnumerable<Budget>> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clienID);
+        Task<IEnumerable<Budget>> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clienID, String condicionVenta, String motivo);
 
         Task<Budget> GetBudgetDetails(int id);
 

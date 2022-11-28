@@ -40,10 +40,10 @@ namespace CoreERP.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllApprovedBudgetsByClientID/{userName}/{canViewOnlyOwned}/{clientID}")]
-        public async Task<IActionResult> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clientID)
+        [Route("GetAllApprovedBudgetsByClientID/{userName}/{canViewOnlyOwned}/{clientID}/{condicionVenta}/{motivo}")]
+        public async Task<IActionResult> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clientID, String condicionVenta, String motivo)
         {
-            return Ok(await _BudgetRepository.GetAllApprovedBudgetsByClientID(userName, canViewOnlyOwned, clientID));
+            return Ok(await _BudgetRepository.GetAllApprovedBudgetsByClientID(userName, canViewOnlyOwned, clientID, condicionVenta, motivo));
         }
 
 

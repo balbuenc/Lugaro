@@ -98,6 +98,7 @@
                     <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
                     <GridColumn Field=@nameof(Budget.moneda) HeaderText="Moneda" Width="30"></GridColumn>
                     <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Width="30"></GridColumn>
+                    <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Width="30"></GridColumn>
                     <GridColumn Field=@nameof(Budget.cantidad) HeaderText="Cant. presupuestos" Visible="true" Width="30"></GridColumn>
                 </GridColumns>
             </SfGrid>
@@ -242,14 +243,14 @@
                                     }
                                 </Template>
                             </GridColumn>
-                            <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="15" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.estado_venta) HeaderText="Est. fact." Visible="true" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="20" Visible="true"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="20" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#" Visible="true" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.estado_venta) HeaderText="Facturación" Visible="true" Width="35"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="30" Visible="true"></GridColumn>
                             <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
                             <GridColumn Field=@nameof(Budget.moneda) HeaderText="Mon." Width="15" Visible="false"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.estado) Width="25" HeaderText="Est. venta">
+                            <GridColumn Field=@nameof(Budget.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="25"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.estado) Width="30" HeaderText="Est. venta">
                                 <Template>
                                     @{
                                         var budg = (context as Budget);
@@ -296,7 +297,7 @@
                             <GridColumn Field=@nameof(Budget.contacto) HeaderText="Contacto" Visible="false" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Visible="false" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Budget.obra) HeaderText="Obra" Visible="false" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Visible="true" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Visible="true" Width="30"></GridColumn>
 
                         </GridColumns>
                     </SfGrid>
@@ -733,7 +734,7 @@
     public void ApprovedRecordDoubleClickHandler(RecordDoubleClickEventArgs<Budget> args)
     {
         Budget b = ((Budget)args.RowData);
-        NavigationManager.NavigateTo($"/ApprovedBudgetsByClient/{b.id_cliente}");
+        NavigationManager.NavigateTo($"/ApprovedBudgetsByClient/{b.id_cliente}/{b.condicion}/{b.motivo}");
     }
 
     private void Navigate(Budget budget)

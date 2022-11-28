@@ -73,7 +73,7 @@ namespace CoreERP.Data.Repositories
 
             if (!canViewOnlyOwned)
             {
-                sql = @"select p.id_cliente, c2.razon_social as cliente, m2.moneda,cv.condicion, count(p.id_presupuesto) as cantidad
+                sql = @"select p.id_cliente, c2.razon_social as cliente, m2.moneda,cv.condicion,  p.motivo ,count(p.id_presupuesto) as cantidad
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
@@ -82,12 +82,12 @@ namespace CoreERP.Data.Repositories
                         left outer join ventas v on v.id_presupuesto = p.id_presupuesto and v.estado != 'ANULADO'
                         where p.estado = 'APROBADO'
                         and v.estado is null 
-                        group by p.id_cliente, p.id_moneda,  cliente, m2.moneda,cv.condicion having count(p.id_presupuesto) > 1
+                        group by p.id_cliente, p.id_moneda,  cliente, m2.moneda,cv.condicion, p.motivo having count(p.id_presupuesto) > 1
                         order by 2";
             }
             else
             {
-                sql = @"select p.id_cliente, c2.razon_social as cliente, m2.moneda,cv.condicion, count(p.id_presupuesto) as cantidad
+                sql = @"select p.id_cliente, c2.razon_social as cliente, m2.moneda,cv.condicion, p.motivo ,count(p.id_presupuesto) as cantidad
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
@@ -97,7 +97,7 @@ namespace CoreERP.Data.Repositories
                         where p.estado = 'APROBADO'
                         and v.estado is null 
                         and f2.usuario =  @user 
-                        group by p.id_cliente, p.id_moneda,  cliente, m2.moneda,cv.condicion having count(p.id_presupuesto) > 1
+                        group by p.id_cliente, p.id_moneda,  cliente, m2.moneda,cv.condicion, p.motivo having count(p.id_presupuesto) > 1
                         order by 2";
             }
 
@@ -105,7 +105,7 @@ namespace CoreERP.Data.Repositories
         }
 
 
-        public async Task<IEnumerable<Budget>> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clienID)
+        public async Task<IEnumerable<Budget>> GetAllApprovedBudgetsByClientID(string userName, bool canViewOnlyOwned, Int32 clienID, String condicionVenta, String motivo)
         {
             var db = dbConnection();
             string sql;
@@ -123,6 +123,8 @@ namespace CoreERP.Data.Repositories
                         where p.estado = 'APROBADO'
                         and v.estado is null 
                         and p.id_cliente  = @id
+                        and cv.condicion = @condicion 
+                        and p.motivo = @motivo
                         order by 2";
             }
             else
@@ -139,10 +141,12 @@ namespace CoreERP.Data.Repositories
                         and v.estado is null 
                         and p.id_cliente  = @id
                         and f2.usuario =  @user
+                        and cv.condicion = @condicion
+                        and p.motivo = @motivo
                         order by 2";
             }
 
-            return await db.QueryAsync<Budget>(sql, new { user = userName, id = clienID });
+            return await db.QueryAsync<Budget>(sql, new { user = userName, id = clienID, condicion = condicionVenta, motivo = motivo });
         }
 
 
