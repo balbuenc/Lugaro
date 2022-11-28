@@ -78,6 +78,19 @@
 
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(vend.telefono)" Enabled="true" Placeholder="Teléfono" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(vend.email)" Enabled="true" Placeholder="Email" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(vend.contacto)" Enabled="true" Placeholder="Contacto" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@countries"
                                                             TItem="Country"
                                                             TValue="Int32"
@@ -102,15 +115,18 @@
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn Field=@nameof(Vendor.id_proveedor) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Vendor.id_proveedor) HeaderText="ID" TextAlign="TextAlign.Center" Width="15" IsPrimaryKey="true"></GridColumn>
 
-                            <GridColumn Field=@nameof(Vendor.proveedor) HeaderText="Proveedor" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Vendor.ruc) HeaderText="Ruc" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Vendor.proveedor) HeaderText="Proveedor" Width="40"></GridColumn>
+                            <GridColumn Field=@nameof(Vendor.ruc) HeaderText="Ruc" Width="25"></GridColumn>
                             <GridColumn Field=@nameof(Vendor.direccion) HeaderText="Dirección" Width="40"></GridColumn>
-                            <GridColumn Field=@nameof(Vendor.descripcion) HeaderText="Descripción" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Vendor.telefono) HeaderText="Tel." Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Vendor.email) HeaderText="Email" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Vendor.contacto) HeaderText="Contacto" Width="40"></GridColumn>
+                            <GridColumn Field=@nameof(Vendor.descripcion) HeaderText="Descripción" Width="40"></GridColumn>
 
                             <GridColumn Field=@nameof(Vendor.pais) HeaderText="Pais" Width="30"></GridColumn>
-                            <GridColumn Field="@nameof(Vendor.cuenta_contable)" HeaderText="Cta. Cont." Width="20"></GridColumn>
+                            <GridColumn Field="@nameof(Vendor.cuenta_contable)" HeaderText="Cta. Cont." Width="30"></GridColumn>
 
 
                         </GridColumns>

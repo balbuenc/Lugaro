@@ -17,5 +17,9 @@ namespace CoreERP.Model
         public string direccion { get; set; }
         public int? id_plan_cuenta { get; set; }
         public string cuenta_contable { get; set; }
+
+        public string telefono { get; set; }
+        public string email { get; set; }
+        public string contacto { get; set; }
     }
 }

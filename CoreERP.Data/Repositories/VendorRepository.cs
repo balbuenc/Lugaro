@@ -61,8 +61,8 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
 
             var sql = @"INSERT INTO public.proveedores
-                        (proveedor, descripcion, id_pais, ruc, direccion, id_plan_cuenta)
-                        VALUES(@proveedor, @descripcion, @id_pais, @ruc, @direccion, @id_plan_cuenta);";
+                        (proveedor, descripcion, id_pais, ruc, direccion, id_plan_cuenta, telefono, email, contacto)
+                        VALUES(@proveedor, @descripcion, @id_pais, @ruc, @direccion, @id_plan_cuenta, @telefono, @email, @contacto);";
 
             var result = await db.ExecuteAsync(sql, new
             {
@@ -71,7 +71,10 @@ namespace CoreERP.Data.Repositories
                 vendor.id_pais,
                 vendor.ruc,
                 vendor.direccion,
-                vendor.id_plan_cuenta
+                vendor.id_plan_cuenta,
+                vendor.telefono,
+                vendor.email,
+                vendor.contacto
             }
             );
 
@@ -83,7 +86,7 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
 
             var sql = @"UPDATE public.proveedores 
-                        SET proveedor=@proveedor, descripcion=@descripcion, id_pais=@id_pais, ruc=@ruc, direccion=@direccion, id_plan_cuenta=@id_plan_cuenta
+                        SET proveedor=@proveedor, descripcion=@descripcion, id_pais=@id_pais, ruc=@ruc, direccion=@direccion, id_plan_cuenta=@id_plan_cuenta,telefono=@telefono, email=@email, contacto=@contacto
                         WHERE id_proveedor=@id_proveedor;";
 
             var result = await db.ExecuteAsync(sql, new
@@ -94,7 +97,10 @@ namespace CoreERP.Data.Repositories
                 vendor.descripcion,
                 vendor.ruc,
                 vendor.direccion,
-                vendor.id_plan_cuenta
+                vendor.id_plan_cuenta,
+                vendor.telefono,
+                vendor.email,
+                vendor.contacto
             }
             );
 

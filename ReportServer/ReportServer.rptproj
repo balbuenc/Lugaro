@@ -54,6 +54,7 @@
   <ItemGroup>
     <Report Include="CajaChica.rdl" />
     <Report Include="Factura.rdl" />
+    <Report Include="FacturaPorNumero.rdl" />
     <Report Include="Factura_DS.rdl" />
     <Report Include="FinancialDashboard.rdl" />
     <Report Include="OrdenCompra.rdl" />

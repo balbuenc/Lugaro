@@ -1,0 +1,160 @@
+﻿@page "/InvoiceReportByNumber/{InvoiceNumber}"
+@layout ReportLayout
+
+
+@using Microsoft.AspNetCore.Http
+
+@using ServiceReference;
+@using System.ServiceModel;
+@using CoreERP.UI.Tools;
+
+
+@attribute [Authorize]
+
+@using System.ServiceModel.Channels;
+@using System.ServiceModel.Description;
+@using System.ServiceModel.Dispatcher;
+
+@using System.IO;
+
+<div class="control-section">
+
+    @if (!string.IsNullOrEmpty(pdfContent))
+    {
+        <embed src="@pdfContent" width="1024px" height="2100px" />
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public string InvoiceNumber { get; set; }
+    public string filename { get; set; }
+    public string DocumentPath { get; set; }
+
+    SfPdfViewerServer Viewer;
+    string pdfContent = "";
+    byte[] array;
+
+    public SystemTools erpTools;
+    public string ReportExecution2005EndPointUrl;
+    public string ReportPath;
+
+
+  
+    public string SsrsServiceAccountActiveDirectoryUserName;
+    public string SsrsServiceAccountActiveDirectoryPassword;
+    public string SsrsServiceAccountActiveDirectoryDomain;
+  
+    const string ReportWidth = "8.5in";
+    const string ReportHeight = "11in";
+    const string ReportFormat = "PDF";  // Other options include WORDOPENXML and EXCELOPENXML
+    const string HistoryId = null;
+
+
+    internal class ReportingServicesEndpointBehavior : IEndpointBehavior
+    {
+        public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters) { }
+
+        public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
+        {
+            clientRuntime.ClientMessageInspectors.Add(new ReportingServicesExecutionInspector());
+        }
+
+        public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher) { }
+
+        public void Validate(ServiceEndpoint endpoint) { }
+    }
+
+    internal class ReportingServicesExecutionInspector : IClientMessageInspector
+    {
+        private MessageHeaders headers;
+
+        public void AfterReceiveReply(ref Message reply, object correlationState)
+        {
+            var index = reply.Headers.FindHeader("ExecutionHeader", "http://schemas.microsoft.com/sqlserver/2005/06/30/reporting/reportingservices");
+            if (index >= 0 && headers == null)
+            {
+                headers = new MessageHeaders(MessageVersion.Soap11);
+                headers.CopyHeaderFrom(reply, reply.Headers.FindHeader("ExecutionHeader", "http://schemas.microsoft.com/sqlserver/2005/06/30/reporting/reportingservices"));
+            }
+        }
+
+        public object BeforeSendRequest(ref Message request, IClientChannel channel)
+        {
+            if (headers != null)
+                request.Headers.CopyHeadersFrom(headers);
+
+            return Guid.NewGuid(); //https://msdn.microsoft.com/en-us/library/system.servicemodel.dispatcher.iclientmessageinspector.beforesendrequest(v=vs.110).aspx#Anchor_0
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Get Report Server System configuration
+        erpTools = new SystemTools();
+
+        ReportExecution2005EndPointUrl = await erpTools.GetSystemParam("ReportExecution2005EndPointUrl");
+        SsrsServiceAccountActiveDirectoryUserName = await erpTools.GetSystemParam("SsrsServiceAccountActiveDirectoryUserName");
+        SsrsServiceAccountActiveDirectoryPassword = await erpTools.GetSystemParam("SsrsServiceAccountActiveDirectoryPassword");
+        SsrsServiceAccountActiveDirectoryDomain = await erpTools.GetSystemParam("SsrsServiceAccountActiveDirectoryDomain");
+        ReportPath = await erpTools.GetSystemParam("ReportPath");
+        ReportPath += "/FacturaPorNumero";
+
+
+        array = await RenderReport(ReportPath, null, null);
+
+        pdfContent = "data:application/pdf;base64,";
+        pdfContent += System.Convert.ToBase64String(array);
+        StateHasChanged();
+    }
+
+
+    public async Task<byte[]> RenderReport(string report, IDictionary<string, object> parameters, string exportFormat = null)
+    {
+        //My binding setup, since ASP.NET Core apps don't use a web.config file
+        var binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportCredentialOnly);
+        binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Ntlm;
+        binding.MaxReceivedMessageSize = 10485760; //I wanted a 10MB size limit on response to allow for larger PDFs
+
+        //Create the execution service SOAP Client
+        var rsExec = new ReportExecutionServiceSoapClient(binding, new EndpointAddress(ReportExecution2005EndPointUrl));
+
+        //Setup access credentials. I use windows credentials, yours may differ
+        var clientCredentials = new System.Net.NetworkCredential(
+            SsrsServiceAccountActiveDirectoryUserName,
+            SsrsServiceAccountActiveDirectoryPassword,
+            SsrsServiceAccountActiveDirectoryDomain);
+        rsExec.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Impersonation;
+        rsExec.ClientCredentials.Windows.ClientCredential = clientCredentials;
+
+        //This handles the problem of "Missing session identifier"
+        rsExec.Endpoint.EndpointBehaviors.Add(new ReportingServicesEndpointBehavior());
+
+        //Load the report
+        TrustedUserHeader trustedHeader = null;
+        var taskLoadReport = await rsExec.LoadReportAsync(trustedHeader, ReportPath, HistoryId);
+
+        //Set the parameteres asked for by the report
+        ServiceReference.ParameterValue[] reportParam = new ServiceReference.ParameterValue[] {
+                new ServiceReference.ParameterValue { Name = "nro_presupuesto", Value = InvoiceNumber }
+        };
+
+        await rsExec.SetExecutionParametersAsync(null, null, reportParam, "en-us");
+
+
+        //run the report
+        const string deviceInfo = @"<DeviceInfo><Toolbar>False</Toolbar></DeviceInfo>";
+        var renderRequest = new RenderRequest(taskLoadReport.ExecutionHeader, trustedHeader, ReportFormat, deviceInfo);
+
+        var response = await rsExec.RenderAsync(renderRequest);
+
+
+
+        //spit out the result
+        return response.Result;
+    }
+
+
+
+}
