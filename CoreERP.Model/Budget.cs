@@ -44,5 +44,9 @@ namespace CoreERP.Model
         public decimal Total { get; set; }
 
         public int cantidad { get; set; }
+
+        public int dias_devolucion { get; set; }
+
+        public DateTime fecha_devolucion { get; set; }
     }
 }

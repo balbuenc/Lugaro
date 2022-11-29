@@ -90,18 +90,18 @@
                 }
                 else
                 {
-            <SfGrid TValue="Budget" ID="ApprovedGrid" @ref="ApprovedGrid" AllowPaging="true" DataSource="@approvedBudgets" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true" Toolbar="@ApprovedToolbarItems">
-                <GridEvents TValue="Budget" OnRecordDoubleClick="ApprovedRecordDoubleClickHandler"></GridEvents>
-                <GridPageSettings PageSize="3"></GridPageSettings>
-                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-                <GridColumns>
-                    <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
-                    <GridColumn Field=@nameof(Budget.moneda) HeaderText="Moneda" Width="30"></GridColumn>
-                    <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Width="30"></GridColumn>
-                    <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Width="30"></GridColumn>
-                    <GridColumn Field=@nameof(Budget.cantidad) HeaderText="Cant. presupuestos" Visible="true" Width="30"></GridColumn>
-                </GridColumns>
-            </SfGrid>
+                    <SfGrid TValue="Budget" ID="ApprovedGrid" @ref="ApprovedGrid" AllowPaging="true" DataSource="@approvedBudgets" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true" Toolbar="@ApprovedToolbarItems">
+                        <GridEvents TValue="Budget" OnRecordDoubleClick="ApprovedRecordDoubleClickHandler"></GridEvents>
+                        <GridPageSettings PageSize="3"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.moneda) HeaderText="Moneda" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.cantidad) HeaderText="Cant. presupuestos" Visible="true" Width="30"></GridColumn>
+                        </GridColumns>
+                    </SfGrid>
                 }
 
             </div>
@@ -218,11 +218,14 @@
                                         </div>
                                     </div>
                                     <div class="form-row">
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-5">
                                             <SfTextBox @bind-Value="@(budg.contacto)" Enabled="true" Placeholder="Contacto" FloatLabelType="FloatLabelType.Always"></SfTextBox>
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-5">
                                             <SfTextBox @bind-Value="@(budg.direccion_entrega)" Enabled="true" Placeholder="Dirección de entrega" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <SfNumericTextBox @bind-Value="@(budg.dias_devolucion)" Enabled="true" Placeholder="Días devolución" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
                                     </div>
 
@@ -286,7 +289,7 @@
                                             }
                                             else
                                             {
-                                                <h6><span class="badge bg-light bg-dark">@budg.estado</span></h6>
+                                                <h6><span class="badge bg-danger">@budg.estado</span></h6>
                                             }
 
                                         }
@@ -298,6 +301,31 @@
                             <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Visible="false" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Budget.obra) HeaderText="Obra" Visible="false" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Visible="true" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.fecha_devolucion) HeaderText="Devol." Visible="true" Format="dd/MM/yyyy" Width="30">
+                                <Template>
+                                    @{
+                                        var budg = (context as Budget);
+                                        if (budg.estado != null)
+                                        {
+                                            if (budg.motivo.ToUpper() == "MUESTRA")
+                                            {
+                                                if (budg.fecha.AddDays(budg.dias_devolucion) < DateTime.Now)
+                                                {
+                                                    <h6><span class="badge bg-warning text-dark">@budg.fecha_devolucion.ToShortDateString()</span></h6>
+                                                }
+                                                else
+                                                {
+                                                    <h6><span class="badge bg-danger">@budg.fecha_devolucion.ToShortDateString()</span></h6>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <p></p>
+                                            }
+                                        }
+                                    }
+                                </Template>
+                            </GridColumn>
 
                         </GridColumns>
                     </SfGrid>

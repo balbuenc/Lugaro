@@ -36,9 +36,10 @@ namespace CoreERP.Data.Repositories
         public async Task<IEnumerable<Employee>> GetAllEmployees()
         {
             var db = dbConnection();
-            var sql = @"select f.*, c.cargo 
+            var sql = @"select f.*, c.cargo, r2.rol , r2.can_approve, r2.can_insert, r2.can_update, r2.can_delete  
                         from funcionarios f
                         left outer join cargos c on f.id_cargo = c.id_cargo
+                        left outer join roles r2 on r2.id_rol = f.id_rol
                         order by f.apellidos, f.nombres asc";
 
             return await db.QueryAsync<Employee>(sql, new { });

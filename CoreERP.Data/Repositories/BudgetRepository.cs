@@ -54,7 +54,9 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
             var sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta, p.obra, p.motivo, c2.cliente_exento
                         ,v.estado as estado_venta,
-                        (select sum(pd.total)  from presupuesto_detalles pd where pd.id_presupuesto = p.id_presupuesto) as total
+                        (select sum(pd.total)  from presupuesto_detalles pd where pd.id_presupuesto = p.id_presupuesto) as total,
+                        p.dias_devolucion,
+                        p.fecha  + p.dias_devolucion as fecha_devolucion
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
@@ -159,6 +161,8 @@ namespace CoreERP.Data.Repositories
             {
                 sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta, p.obra, p.motivo, c2.cliente_exento
                         ,v.estado as estado_venta
+                        ,p.dias_devolucion,
+                        p.fecha  + p.dias_devolucion as fecha_devolucion
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
@@ -171,6 +175,8 @@ namespace CoreERP.Data.Repositories
             {
                 sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta, p.obra, p.motivo, c2.cliente_exento
                         ,v.estado as estado_venta
+                        ,p.dias_devolucion,
+                        p.fecha  + p.dias_devolucion as fecha_devolucion
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
@@ -189,6 +195,8 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
             var sql = @"select p.id_presupuesto, p.nro_presupuesto , p.fecha, p.estado, p.id_cliente, p.id_moneda, p.cotizacion, f2.usuario as vendedor, c2.razon_social as cliente, m2.moneda, p.forma_pago, p.plazo_entrega, p.observaciones, p.contacto, p.direccion_entrega, cv.condicion, p.id_condicion_venta,p.id_funcionario, p.obra, p.motivo, c2.cliente_exento
                         ,v.estado as estado_venta
+                        ,p.dias_devolucion,
+                        p.fecha  + p.dias_devolucion as fecha_devolucion
                         from presupuestos p
                         left outer join funcionarios f2 on f2.id_funcionario = p.id_funcionario
                         left outer join clientes c2 on c2.id_cliente = p.id_cliente
@@ -219,8 +227,8 @@ namespace CoreERP.Data.Repositories
 
                 budget.cotizacion = resulCotizacion.cotizacion;
 
-                var sql = @"INSERT INTO public.presupuestos (id_cliente, id_funcionario, fecha, estado, nro_presupuesto,id_moneda,cotizacion,plazo_entrega,forma_pago,observaciones,contacto,direccion_entrega,id_condicion_venta,obra,motivo) 
-                            VALUES(@id_cliente, @id_funcionario, @fecha, @estado, @nro_presupuesto,@id_moneda,@cotizacion,@plazo_entrega,@forma_pago,@observaciones,@contacto,@direccion_entrega,@id_condicion_venta,@obra,@motivo)
+                var sql = @"INSERT INTO public.presupuestos (id_cliente, id_funcionario, fecha, estado, nro_presupuesto,id_moneda,cotizacion,plazo_entrega,forma_pago,observaciones,contacto,direccion_entrega,id_condicion_venta,obra,motivo, dias_devolucion) 
+                            VALUES(@id_cliente, @id_funcionario, @fecha, @estado, @nro_presupuesto,@id_moneda,@cotizacion,@plazo_entrega,@forma_pago,@observaciones,@contacto,@direccion_entrega,@id_condicion_venta,@obra,@motivo, @dias_devolucion)
                             RETURNING id_presupuesto;";
 
 
@@ -242,7 +250,8 @@ namespace CoreERP.Data.Repositories
                     budget.direccion_entrega,
                     budget.id_condicion_venta,
                     budget.obra,
-                    budget.motivo
+                    budget.motivo,
+                    budget.dias_devolucion
                 }
                 );
 
@@ -261,7 +270,7 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"UPDATE public.presupuestos
-                        SET id_cliente=@id_cliente,  fecha=@fecha, estado=@estado, nro_presupuesto=@nro_presupuesto, id_moneda=@id_moneda,plazo_entrega=@plazo_entrega,forma_pago=@forma_pago,observaciones=@observaciones,contacto=@contacto,direccion_entrega=@direccion_entrega,id_condicion_venta=@id_condicion_venta,obra=@obra,motivo=@motivo
+                        SET id_cliente=@id_cliente,  fecha=@fecha, estado=@estado, nro_presupuesto=@nro_presupuesto, id_moneda=@id_moneda,plazo_entrega=@plazo_entrega,forma_pago=@forma_pago,observaciones=@observaciones,contacto=@contacto,direccion_entrega=@direccion_entrega,id_condicion_venta=@id_condicion_venta,obra=@obra,motivo=@motivo,dias_devolucion=@dias_devolucion
                         WHERE id_presupuesto=@id_presupuesto;
                         ";
 
@@ -280,7 +289,8 @@ namespace CoreERP.Data.Repositories
                     budget.direccion_entrega,
                     budget.id_condicion_venta,
                     budget.obra,
-                    budget.motivo
+                    budget.motivo,
+                    budget.dias_devolucion
                 }
                 );
 
