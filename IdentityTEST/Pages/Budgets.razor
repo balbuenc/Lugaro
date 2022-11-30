@@ -309,9 +309,9 @@
                                         {
                                             if (budg.motivo.ToUpper() == "MUESTRA")
                                             {
-                                                if (budg.fecha.AddDays(budg.dias_devolucion) < DateTime.Now)
+                                                if (budg.fecha.AddDays(budg.dias_devolucion) >= DateTime.Now)
                                                 {
-                                                    <h6><span class="badge bg-warning text-dark">@budg.fecha_devolucion.ToShortDateString()</span></h6>
+                                                    <h6><span class="badge bg-warning">@budg.fecha_devolucion.ToShortDateString()</span></h6>
                                                 }
                                                 else
                                                 {
