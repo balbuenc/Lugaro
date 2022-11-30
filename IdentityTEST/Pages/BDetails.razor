@@ -143,7 +143,7 @@
         <div class="content-wrapper">
             <div class="row">
                 <div class="col-md-5">
-                    <div class="jumbotron py-1">
+                    <div class="jumbotron py-1" style="font-size:small">
                         <div class="d-flex align-items-stretch flex-column flex-md-row">
                             <img src="@imagePath" style="object-fit: contain;" width="154">
                             <div class="ml-4 d-sm-none d-md-block"></div>
@@ -430,9 +430,12 @@
                         <h5>La devolución se realizó con éxito. </h5>
                     </div>
                 </div>
-
             </Content>
         </DialogTemplates>
+        <DialogButtons>
+            <DialogButton Content="OK" IsPrimary="true" OnClick="@OnOverlayclick" />
+            
+        </DialogButtons>
     </SfDialog>
 
     <SfDialog Width="510px" IsModal="true" @bind-Visible="@IsVisible">
@@ -1100,18 +1103,37 @@
     }
 
 
+    //Funcion que revierte Stock de los productos en el caso de una devoluion o Anulacion de factura
     protected async Task ReverseStock()
     {
         Stock s;
-        for (int i = 0; i < GridData.Count(); i++)
+        try
         {
-            BudgetDetails item = GridData.ElementAt(i);
-            s = await StockService.GetStockDetails(item.id_producto);
+            for (int i = 0; i < GridData.Count(); i++)
+            {
+                BudgetDetails item = GridData.ElementAt(i);
+                s = await StockService.GetStockDetails(item.id_producto);
 
-            s.cantidad = s.cantidad + item.cantidad;
-            await StockService.SaveStock(s);
-
+                s.cantidad = s.cantidad + item.cantidad;
+                await StockService.SaveStock(s);
+            }
         }
+        catch(Exception ex)
+        {
+           
+        }
+
+
+        //Seteo los dias de devolucion en CERO
+        if(Estado == "PRESTAMO")
+        {
+            header.dias_devolucion = 0;
+            header.estado = "DEVUELTO";
+            await BudgetService.SaveBudget(header);
+        }
+
+
+
 
         IsRepositionVisible = true;
     }
