@@ -14,7 +14,7 @@
 @inject IQuotaService QuotaService
 @inject ISaleService SaleService
 @inject IDiscountLimitService DiscountLimitService
-@inject IStampService StampService 
+@inject IStampService StampService
 
 
 @using Microsoft.AspNetCore.Http
@@ -434,7 +434,7 @@
         </DialogTemplates>
         <DialogButtons>
             <DialogButton Content="OK" IsPrimary="true" OnClick="@OnOverlayclick" />
-            
+
         </DialogButtons>
     </SfDialog>
 
@@ -768,7 +768,7 @@
         this.IsCancelInvoiceVisible = false;
     }
 
-    private  async Task GetNextInvoiceNumber()
+    private async Task GetNextInvoiceNumber()
     {
         stamp = await StampService.GetNextInvoiceNumber(1);
         NroPresupuesto = stamp.punto_emision + "-" + stamp.nro_factura.ToString();
@@ -973,7 +973,7 @@
     {
         try
         {
-            // Obtengo la factura actual del presupuesto y la cancel Cancelo la factura
+            // Obtengo la factura actual del presupuesto y Cancelo la factura
             Sale s;
             s = await SaleService.GetSaleDetailsByInvoice(header.nro_presupuesto);
 
@@ -985,16 +985,27 @@
             //Elimino las cuotas de la venta
             await QuotaService.DeleteQuotaBySaleId(s.id_venta);
 
+        }
+        catch (Exception e)
+        {
+            Message = "Error al ANULAR factura Nro.: " + NroPresupuesto + ", " + e.Message;
+            IsMessageVisible = true;
+            return;
+        }
 
+        //Modifico el estado del prespuesto
+        try
+        {
             //registro el estado del presupuesto como Aprobado y Quito el Nro de Factura
             header.estado = "APROBADO";
             header.nro_presupuesto = "";
             await BudgetService.SaveBudget(header);
-
         }
         catch (Exception e)
         {
-            Navigate();
+            Message = "Error al modificar Presupueto: " + NroPresupuesto + ", " + e.Message;
+            IsMessageVisible = true;
+            return;
         }
 
         //Revierto el Stock a su estado original en el caso quee sea necesario
@@ -1002,9 +1013,12 @@
         {
             await ReverseStock();
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            Navigate();
+            IsCancelInvoiceVisible = false;
+            Message = "Error al revertir Stock por ANULACION.: Se ANULÓ la factura, Se generaron errores en la reversión de los productos.  " + NroPresupuesto + ", \n" + e.Message;
+            IsMessageVisible = true;
+            return;
         }
 
         Navigate();
@@ -1118,20 +1132,25 @@
                 await StockService.SaveStock(s);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-           
+            throw ex;
         }
 
-
-        //Seteo los dias de devolucion en CERO
-        if(Estado == "PRESTAMO")
+        try
         {
-            header.dias_devolucion = 0;
-            header.estado = "DEVUELTO";
-            await BudgetService.SaveBudget(header);
+            //Seteo los dias de devolucion en CERO
+            if (Estado == "PRESTAMO")
+            {
+                header.dias_devolucion = 0;
+                header.estado = "DEVUELTO";
+                await BudgetService.SaveBudget(header);
+            }
         }
-
+        catch (Exception ex)
+        {
+            throw ex;
+        }
 
 
 

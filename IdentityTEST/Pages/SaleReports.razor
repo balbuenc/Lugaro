@@ -85,16 +85,16 @@
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
 
                         <GridColumns>
-                            <GridColumn Field=@nameof(Sale.id_venta) HeaderText="ID" Width="15" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.factura) HeaderText="#Fact." Visible="true" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.vendedor) HeaderText="Usuario" Width="20" Visible="true"></GridColumn>
+                          
+                            <GridColumn Field=@nameof(Sale.factura) HeaderText="#Fact." Visible="true" Width="30" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.vendedor) HeaderText="Usuario" Width="30" Visible="true"></GridColumn>
                             <GridColumn Field=@nameof(Sale.cliente) HeaderText="Cliente" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.estado) HeaderText="Estado" Width="22"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.condicion) HeaderText="Condición" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.moneda) HeaderText="Mon." Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.importe) HeaderText="Importe" Format="N2" Visible="true" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.motivo_anulacion) HeaderText="Motivo" Width="25"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.estado) HeaderText="Estado" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.condicion) HeaderText="Condición" Width="35"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.moneda) HeaderText="Mon." Width="25"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.importe) HeaderText="Importe" Format="N2" Visible="true" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.motivo_anulacion) HeaderText="Motivo" Width="30"></GridColumn>
                         </GridColumns>
                     </SfGrid>
                 }
@@ -202,7 +202,7 @@
         }
         catch (Exception ex)
         {
-            Message = "Error al obtener presupuestos [OnBeginHandler]: " + ex.Message + " Inner.: " + ex.InnerException;
+            Message = "Error al obtener facturas [OnBeginHandler]: " + ex.Message + " Inner.: " + ex.InnerException;
             throw ex;
         }
     }
@@ -256,10 +256,6 @@
             return 1;
         }
     }
-
-
-
-
 
 
 }
