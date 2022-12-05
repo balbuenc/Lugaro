@@ -1,0 +1,59 @@
+﻿@page "/AddUSer/{userName}"
+
+@using Model
+@using Interfaces
+@inject IEmployeeService EmployeeService
+
+@attribute [Authorize]
+@using System.Collections.ObjectModel
+@using Syncfusion.Blazor.Inputs
+@using System.IO
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+
+@inject NavigationManager NavigationManager
+
+<div class="container-fluid">
+    <p>@Message</p>
+
+    <div class="col-lg-12" style="padding:1px; height:50px">
+        <div class="content-wrapper">
+            <div class="alert alert-primary" role="banner"><b>Se esta registrando el usuario</b></div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    public string Message { get; set; }
+
+    [Parameter]
+    public string userName { get; set; }
+
+    
+
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        try
+        {
+            Employee e = new Employee();
+
+            e.usuario = userName;
+            e.id_cargo = 6;
+
+
+            await EmployeeService.SaveEmployee(e);
+
+            NavigationManager.NavigateTo($"/Employee");
+
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al registrar usuario: " + ex.Message;
+        }
+    }
+}
+
