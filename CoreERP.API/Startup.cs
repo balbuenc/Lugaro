@@ -76,6 +76,7 @@ namespace CoreERP.API
             services.AddScoped<IStampRepository, StampRepository>();
             services.AddScoped<IAccountPlanRepository, AccountPlanRepository>();
             services.AddScoped<IEnterpriseRepository, EnterpriseRepository>();
+            services.AddScoped<IDailyBookRepository, DailyBookRepository>();
 
             services.AddControllers();
 

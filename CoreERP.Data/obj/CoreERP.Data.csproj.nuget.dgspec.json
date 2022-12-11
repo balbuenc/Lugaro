@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj": {}
+    "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj": {}
   },
   "projects": {
-    "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj": {
+    "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
+        "projectUniqueName": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
         "projectName": "CoreERP.Data",
-        "projectPath": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
-        "packagesPath": "C:\\Users\\balbu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Data\\obj\\",
+        "projectPath": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Data\\CoreERP.Data.csproj",
+        "packagesPath": "C:\\Users\\cbalb\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Data\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\balbu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\cbalb\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -28,8 +28,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
-                "projectPath": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj"
+              "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
+                "projectPath": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj"
               }
             }
           }
@@ -67,7 +67,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -76,21 +77,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.219\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
+    "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
+        "projectUniqueName": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
         "projectName": "CoreERP.Model",
-        "projectPath": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
-        "packagesPath": "C:\\Users\\balbu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Model\\obj\\",
+        "projectPath": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
+        "packagesPath": "C:\\Users\\cbalb\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Model\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\balbu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\cbalb\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -121,7 +122,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -130,7 +132,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.219\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

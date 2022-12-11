@@ -1,8 +1,8 @@
-﻿@page "/SaleReports"
+﻿@page "/DailyBooks"
 @using Model
 @using Interfaces
 
-@inject ISaleService SaleService
+@inject IDailyBookService DailyBookService
 @inject IEmployeeService EmployeeService
 
 
@@ -65,7 +65,7 @@
 
     <div class="col-lg-12" style="padding:1px; height:50px">
         <div class="content-wrapper">
-            <div class="alert alert-title" role="banner"><b>FACTURAS VENTAS</b></div>
+            <div class="alert alert-title" role="banner"><b>MOVIMIENTOS</b></div>
         </div>
     </div>
 
@@ -79,22 +79,23 @@
                 }
                 else
                 {
-                    <SfGrid TValue="Sale" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
-                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Sale" OnToolbarClick="ToolbarClickHandler"></GridEvents>
+                    <SfGrid TValue="DailyBook" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
+                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="DailyBook" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
-                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
                         <GridColumns>
+
+                             <GridColumn Field=@nameof(DailyBook.asiento_numero) HeaderText="#" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(DailyBook.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(DailyBook.cuenta) HeaderText="Cuenta" Width="30" Visible="true"></GridColumn>
+                            <GridColumn Field=@nameof(DailyBook.descripcion) HeaderText="Descripcion" Width="50"></GridColumn>
+                           
+                      
+                           
+                            <GridColumn Field=@nameof(DailyBook.debe) HeaderText="Debe" Format="N2" Visible="true" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(DailyBook.haber) HeaderText="Haber" Format="N2" Visible="true" Width="30"></GridColumn>
                           
-                            <GridColumn Field=@nameof(Sale.factura) HeaderText="#Fact." Visible="true" Width="30" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.vendedor) HeaderText="Usuario" Width="30" Visible="true"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.cliente) HeaderText="Cliente" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.estado) HeaderText="Estado" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.condicion) HeaderText="Condición" Width="35"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.moneda) HeaderText="Mon." Width="25"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.importe) HeaderText="Importe" Format="N2" Visible="true" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.motivo_anulacion) HeaderText="Motivo" Width="30"></GridColumn>
                         </GridColumns>
                     </SfGrid>
                 }
@@ -108,19 +109,19 @@
 
 
 @code {
-    //public IEnumerable<Sale> clients { get; set; }
+    //public IEnumerable<DailyBook> clients { get; set; }
     public string Message { get; set; }
     public string[] ToolbarItems = new string[] { "ExcelExport", "Search", "ColumnChooser" };
     public string ErrorDetails = "";
 
-    public IEnumerable<Sale> GridData { get; set; }
+    public IEnumerable<DailyBook> GridData { get; set; }
 
     public IEnumerable<Employee> employees { get; set; }
 
 
 
 
-    SfGrid<Sale> Grid { get; set; }
+    SfGrid<DailyBook> Grid { get; set; }
 
     private DialogSettings DialogParams = new DialogSettings { Width = "850px", EnableResize = true, AllowDragging = true };
 
@@ -156,7 +157,7 @@
             m.CanCreate = true;
             m.CanDelete = true;
         }
-        else if (user.IsInRole("Sales"))
+        else if (user.IsInRole("DailyBooks"))
         {
             m.CanView = true;
             m.CanViewOnlyOwned = true;
@@ -179,7 +180,7 @@
 
             await AuthorizeUser(UserPermissions);
 
-            GridData = await SaleService.GetAllSales();
+            GridData = await DailyBookService.GetAllDailyBooks();
 
             employees = await EmployeeService.GetAllEmployees();
 
@@ -194,7 +195,7 @@
 
 
 
-    private async Task OnBeginHandler(ActionEventArgs<Sale> Args)
+    private async Task OnBeginHandler(ActionEventArgs<DailyBook> Args)
     {
         try
         {
@@ -202,16 +203,16 @@
         }
         catch (Exception ex)
         {
-            Message = "Error al obtener facturas [OnBeginHandler]: " + ex.Message + " Inner.: " + ex.InnerException;
+            Message = "Error al obtener detalle del libro diario [OnBeginHandler]: " + ex.Message + " Inner.: " + ex.InnerException;
             throw ex;
         }
     }
 
-    private async Task ActionCompletedHandler(ActionEventArgs<Sale> Args)
+    private async Task ActionCompletedHandler(ActionEventArgs<DailyBook> Args)
     {
         if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save || Args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
         {
-            GridData = await SaleService.GetAllSales();
+            GridData = await DailyBookService.GetAllDailyBooks();
             Grid.Refresh();
         }
 
@@ -228,10 +229,10 @@
             ExcelExportProperties ExcelProperties = new ExcelExportProperties();
             ExcelTheme Theme = new ExcelTheme();
             ExcelStyle ThemeStyle = new ExcelStyle()
-            {
-                FontName = "Segoe UI",
-                FontSize = 12
-            };
+                {
+                    FontName = "Segoe UI",
+                    FontSize = 12
+                };
             Theme.Header = ThemeStyle;
             Theme.Record = ThemeStyle;
             Theme.Caption = ThemeStyle;

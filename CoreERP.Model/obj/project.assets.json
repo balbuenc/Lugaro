@@ -8,19 +8,19 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\balbu\\.nuget\\packages\\": {}
+    "C:\\Users\\cbalb\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
+      "projectUniqueName": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
       "projectName": "CoreERP.Model",
-      "projectPath": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
-      "packagesPath": "C:\\Users\\balbu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\balbu\\source\\repos\\Lugaro\\CoreERP.Model\\obj\\",
+      "projectPath": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Model\\CoreERP.Model.csproj",
+      "packagesPath": "C:\\Users\\cbalb\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\cbalb\\source\\repos\\Lugaro\\CoreERP.Model\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\balbu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\cbalb\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -51,7 +51,8 @@
           "net47",
           "net471",
           "net472",
-          "net48"
+          "net48",
+          "net481"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -60,7 +61,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.219\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }
