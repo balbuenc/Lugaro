@@ -48,5 +48,10 @@ namespace CoreERP.UI.Services
             else
                 await _httpClient.PutAsync("api/DailyBook", clientJson);
         }
+
+        public async Task GenerateDailyBook(string factura)
+        { 
+                await _httpClient.PostAsync($"api/DailyBook/GenerateDailyBook/{factura}",null);
+        }
     }
 }

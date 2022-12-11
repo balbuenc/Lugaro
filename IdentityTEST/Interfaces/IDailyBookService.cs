@@ -14,5 +14,7 @@ namespace CoreERP.UI.Interfaces
 
 
         Task DeleteDailyBook(int id);
+
+        Task GenerateDailyBook(string factura);
     }
 }

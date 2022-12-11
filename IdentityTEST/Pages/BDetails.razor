@@ -15,6 +15,7 @@
 @inject ISaleService SaleService
 @inject IDiscountLimitService DiscountLimitService
 @inject IStampService StampService
+@inject IDailyBookService DailyBookService
 
 
 @using Microsoft.AspNetCore.Http
@@ -833,6 +834,10 @@
         await BudgetService.SaveBudget(header);
         // CheckInvoiceNumber();
         await Invoice();
+
+        //Genero el asiento en el libro diario para la factura generada
+        await DailyBookService.GenerateDailyBook(NroPresupuesto);
+
     }
 
 
@@ -1049,6 +1054,8 @@
                 //Discount Stock of products
                 await ModifyStock();
             }
+
+            
 
             //Save Budget header
             //header.estado = "FACTURADO";

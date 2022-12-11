@@ -48,7 +48,8 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
                 var sql = @"select  ld.asiento_numero, pc.cuenta, pc.descripcion , ld.fecha, ld.debe, ld.haber 
                             from libro_diario ld 
-                            inner join plan_cuentas pc on pc.id_plan_cuenta = ld.id_plan_cuenta  ";
+                            inner join plan_cuentas pc on pc.id_plan_cuenta = ld.id_plan_cuenta 
+                            order by 1 desc";
 
                 var result = await db.QueryAsync<DailyBook>(sql, new { });
 
