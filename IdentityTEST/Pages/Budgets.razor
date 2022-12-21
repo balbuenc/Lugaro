@@ -66,7 +66,10 @@
     .e-plus-icon::before {
         content: '\e823';
     }
+
 </style>
+
+
 
 
 
@@ -152,11 +155,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@currencies"
-                                                            TItem="Currency"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(budg.id_moneda)"
-                                                            Placeholder="Moneda"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="Currency"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(budg.id_moneda)"
+                                                        Placeholder="Moneda"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -167,11 +170,11 @@
                                         </div>
                                         <div class="form-group col-md-8">
                                             <SfDropDownList DataSource="@clients" ID="ClientDropDown"
-                                                            TItem="Client"
-                                                            TValue="Int32?"
-                                                            @bind-Value="@(budg.id_cliente)"
-                                                            Placeholder="Cliente"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="Client"
+                                                        TValue="Int32?"
+                                                        @bind-Value="@(budg.id_cliente)"
+                                                        Placeholder="Cliente"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_cliente" Text="razon_social"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -188,11 +191,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@invoiceTypes"
-                                                            TItem="InvoiceType"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(budg.id_condicion_venta)"
-                                                            Placeholder="Tipo factura"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="InvoiceType"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(budg.id_condicion_venta)"
+                                                        Placeholder="Tipo factura"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_condicion_venta" Text="condicion"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -208,11 +211,11 @@
                                         </div>
                                         <div class="form-group col-md-6">
                                             <SfDropDownList DataSource="@LocalMotivo"
-                                                            TItem="Motivo"
-                                                            TValue="string"
-                                                            @bind-Value="@(budg.motivo)"
-                                                            Placeholder="Motivo"
-                                                            FloatLabelType="FloatLabelType.Always">
+                                                        TItem="Motivo"
+                                                        TValue="string"
+                                                        @bind-Value="@(budg.motivo)"
+                                                        Placeholder="Motivo"
+                                                        FloatLabelType="FloatLabelType.Always">
                                                 <DropDownListFieldSettings Value="ID" Text="Text"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -265,7 +268,7 @@
                                             }
                                             else if (budg.estado.ToUpper() == "PENDIENTE")
                                             {
-                                                <h6><span class="badge bg-secondary">@budg.estado</span></h6>
+                                                <h6><span class="badge bg-warning">@budg.estado</span></h6>
                                             }
                                             else if (budg.estado.ToUpper() == "APROBADO")
                                             {
@@ -273,19 +276,19 @@
                                             }
                                             else if (budg.estado.ToUpper() == "FACTURADO")
                                             {
-                                                <h6><span class="badge bg-danger">@budg.estado</span></h6>
+                                                <h6><span class="badge bg-info">@budg.estado</span></h6>
                                             }
                                             else if (budg.estado.ToUpper() == "REMITIDO")
                                             {
-                                                <h6><span class="badge bg-warning text-dark">@budg.estado</span></h6>
+                                                <h6><span class="badge" style="background-color:darkcyan">@budg.estado</span></h6>
                                             }
                                             else if (budg.estado.ToUpper() == "PRESTAMO")
                                             {
-                                                <h6><span class="badge bg-secondary">@budg.estado</span></h6>
+                                                <h6><span class="badge bg-warning">@budg.estado</span></h6>
                                             }
                                             else if (budg.estado.ToUpper() == "IMPORTADO")
                                             {
-                                                <h6><span class="badge bg-light text-dark">@budg.estado</span></h6>
+                                                <h6><span class="badge bg-secondary">@budg.estado</span></h6>
                                             }
                                             else
                                             {
@@ -329,6 +332,31 @@
 
                         </GridColumns>
                     </SfGrid>
+
+                    <style>
+
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color:white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+                        
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>

@@ -690,6 +690,12 @@
 
     }
 
+    private async Task RefreshStock()
+    {
+        destinations = await StockService.GetTransferDestinations(originStock.id_stock);
+        DestinationGrid.Refresh();
+    }
+
     public void OnDestinationCommandClicked(CommandClickEventArgs<Stock> args)
     {
         var item = args.RowData;
@@ -719,6 +725,9 @@
             Task.Run(async () => await TransferService.SaveTransfer(t));
 
             isVisibleTransferDialog = false;
+
+
+            Task.Run(async () => await RefreshStock());
         }
 
     }
