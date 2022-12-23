@@ -304,6 +304,22 @@
                             <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Visible="false" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Budget.obra) HeaderText="Obra" Visible="false" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Visible="true" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.Total) HeaderText="Total" Visible="true" Width="25" TextAlign="TextAlign.Right">
+                                <Template>
+                                    @{
+                                        var budg = (context as Budget);
+                                        if (budg.moneda == "Guaraní")
+                                        {
+                                            <b>@budg.Total.ToString("N0")</b>
+                                        }
+                                        else
+                                        {
+                                            <b>@budg.Total.ToString("N2")</b>
+                                        }
+                                    
+                                    }
+                                </Template>
+                            </GridColumn>
                             <GridColumn Field=@nameof(Budget.fecha_devolucion) HeaderText="Devol." Visible="true" Format="dd/MM/yyyy" Width="30">
                                 <Template>
                                     @{
@@ -338,14 +354,14 @@
                         h6,
                         .h6 {
                             font-size: 140%;
-                            color:white;
+                            color: white;
                         }
 
                         .e-grid th.e-headercell {
                             background-color: lightgray;
                         }
 
-                        
+
 
                         .e-grid tr.e-row.e-row {
                             background-color: whitesmoke;

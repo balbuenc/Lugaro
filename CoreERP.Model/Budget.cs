@@ -48,5 +48,7 @@ namespace CoreERP.Model
         public int dias_devolucion { get; set; }
 
         public DateTime fecha_devolucion { get; set; }
+
+        public bool marcado { get; set; }
     }
 }

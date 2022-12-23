@@ -26,6 +26,8 @@
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 
+@inject IJSRuntime Js
+
 <style>
     .e-list-settings:before {
         content: "\e679";
@@ -54,6 +56,10 @@
     .e-list-edit:before {
         content: "\e7a3";
     }
+
+    .e-list-printpdf:before {
+        content: "\e240"
+    }
 </style>
 
 
@@ -80,11 +86,16 @@
                 else
                 {
                     <SfGrid TValue="Sale" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
-                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Sale" OnToolbarClick="ToolbarClickHandler"></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Sale" OnToolbarClick="ToolbarClickHandler" CommandClicked="OnCommandClicked"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
 
                         <GridColumns>
+                            <GridColumn HeaderText="*" Width="15">
+                                <GridCommandColumns>
+                                    <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
+                                </GridCommandColumns>
+                            </GridColumn>
                           
                             <GridColumn Field=@nameof(Sale.factura) HeaderText="#Fact." Visible="true" Width="30" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Sale.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="30"></GridColumn>
@@ -93,10 +104,45 @@
                             <GridColumn Field=@nameof(Sale.estado) HeaderText="Estado" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(Sale.condicion) HeaderText="Condición" Width="35"></GridColumn>
                             <GridColumn Field=@nameof(Sale.moneda) HeaderText="Mon." Width="25"></GridColumn>
-                            <GridColumn Field=@nameof(Sale.importe) HeaderText="Importe" Format="N2" Visible="true" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Sale.importe) HeaderText="Importe" Visible="true" Width="30" TextAlign="TextAlign.Right">
+                                <Template>
+                                    @{
+                                        var sal = (context as Sale);
+                                        if (sal.moneda == "Guaraní")
+                                        {
+                                            <b>@sal.importe.ToString("N0")</b>
+                                        }
+                                        else
+                                        {
+                                            <b>@sal.importe.ToString("N2")</b>
+                                        }
+
+                                    }
+                                </Template>
+                            </GridColumn>
                             <GridColumn Field=@nameof(Sale.motivo_anulacion) HeaderText="Motivo" Width="30"></GridColumn>
                         </GridColumns>
                     </SfGrid>
+
+                    <style>
+
+                      
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -254,6 +300,46 @@
         {
             Message = "Error al obtener ID de usuario : " + ex.Message;
             return 1;
+        }
+    }
+
+    public async void OnCommandClicked(CommandClickEventArgs<Sale> args)
+    {
+        var item = args.RowData;
+        var command = args.CommandColumn;
+
+        if (command.Title == "Imprimir")
+        {
+            Print(item.factura, item.moneda);
+        }
+    }
+
+    protected void Print(String factura, String Moneda)
+    {
+        try
+        {
+
+            //Call Reporting Service WSL
+            String route;
+
+            if (Moneda == "Dolar")
+            {
+                route = String.Concat("DolarInvoiceReport/", factura);
+            }
+            else
+            {
+                //route = String.Concat("InvoiceReport/", BudgetID);
+                route = String.Concat("InvoiceReportByNumber/", factura);
+
+            }
+
+
+            Js.InvokeAsync<object>("open", route, "_blank");
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
         }
     }
 

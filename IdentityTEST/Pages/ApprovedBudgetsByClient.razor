@@ -7,7 +7,7 @@
 @inject IQuotaService QuotaService
 @inject IStockService StockService
 @inject ISaleService SaleService
-@inject IBudgetDetailsService BudgetDetailsService 
+@inject IBudgetDetailsService BudgetDetailsService
 
 @using Syncfusion.Blazor.Notifications
 
@@ -95,14 +95,29 @@
                 {
 
                     <SfGrid TValue="Budget" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true" AllowSelection="true">
-                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler" OnRecordDoubleClick="RecordDoubleClickHandler" RowSelected="GetSelectedRecords" RowDeselected="GetDeselectedRecords"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
 
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
                         <GridSelectionSettings CheckboxOnly="true" PersistSelection="true"></GridSelectionSettings>
+                        <GridAggregates>
+                            <GridAggregate>
+                                <GridAggregateColumns>
+                                    <GridAggregateColumn Field=@nameof(Budget.Total) Type="AggregateType.Custom" Format="C2">
+                                        <FooterTemplate>
+                                            @{
+                                                <div>
+                                                    <b>Total: @GetWeightedAggregate()</b>
+                                                </div>
+                                            }
+                                        </FooterTemplate>
+                                    </GridAggregateColumn>
+                                </GridAggregateColumns>
+                            </GridAggregate>
+                        </GridAggregates>
                         <GridColumns>
-                            <GridColumn Type="ColumnType.CheckBox" Width="10"></GridColumn>
+                            <GridColumn Type="ColumnType.CheckBox" Field=@nameof(Budget.marcado) Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="20" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="false" Width="20"></GridColumn>
                             <GridColumn Field=@nameof(Budget.estado_venta) HeaderText="Est. fact." Visible="false" Width="30"></GridColumn>
@@ -158,9 +173,41 @@
                             <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Width="30"></GridColumn>
                             <GridColumn Field=@nameof(Budget.obra) HeaderText="Obra" Visible="false" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Visible="true" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.Total) HeaderText="Total" Visible="true" Width="25" TextAlign="TextAlign.Right">
+                                <Template>
+                                    @{
+                                        var budg = (context as Budget);
+                                        if (budg.moneda == "Guaraní")
+                                        {
+                                            <b>@budg.Total.ToString("N0")</b>
+                                        }
+                                        else
+                                        {
+                                            <b>@budg.Total.ToString("N2")</b>
+                                        }
+
+                                    }
+                                </Template>
+                            </GridColumn>
 
                         </GridColumns>
                     </SfGrid>
+
+                    <style>
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -250,6 +297,9 @@
 
     public Int32 BudgetID;
     public Stamp stamp { get; set; }
+
+    public List<Budget> budgets = new List<Budget>();
+    public decimal TotalValue { get; set; }
 
 
 
@@ -524,6 +574,37 @@
         }
     }
 
+    public string GetWeightedAggregate()
+    {
+        return TotalValue.ToString("N2");
+
+    }
+
+    public async Task getSelectedBudgetSum()
+    {
+        TotalValue = 0;
+        SelectedRowIndexes = await this.Grid.GetSelectedRowIndexes();
+        BudGetIDValue = SelectedRowIndexes.ToArray();
+        foreach (var data in BudGetIDValue)
+        {
+            Budget item = GridData.ElementAt(Convert.ToInt32(data));
+            TotalValue += item.Total;
+
+        }
+    }
+
+    public async Task GetDeselectedRecords(RowDeselectEventArgs<Budget> args)
+    {
+        await getSelectedBudgetSum();
+        StateHasChanged();
+    }
+
+    public async Task GetSelectedRecords(RowSelectEventArgs<Budget> args)
+    {
+        await getSelectedBudgetSum();
+        StateHasChanged();
+    }
+
     public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<Budget> args)
     {
         Navigate(((Budget)args.RowData));
@@ -549,6 +630,8 @@
     {
         NavigationManager.NavigateTo($"/Budgets");
     }
+
+
 
 }
 

@@ -17,6 +17,8 @@ namespace CoreERP.Model
         [Required(AllowEmptyStrings = false, ErrorMessage = "El campo Nro. Nota debe tener un valor.")]
         public string nro_nota { get; set; }
 
+        public string factura { get; set; }
+
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "El campo Motivo debe tener un valor.")]
         public string motivo { get; set; }

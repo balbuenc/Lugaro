@@ -9,7 +9,7 @@ namespace CoreERP.Model
     {
         public int id_nota_credito_detalle { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "El campo Factura debe tener un valor.")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "El campo ID debe tener un valor.")]
         public int id_venta { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "El campo detalle debe tener un valor.")]
