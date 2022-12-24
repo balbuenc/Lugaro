@@ -3,3 +3,5 @@
 ################################################################################
 
 /CoreERP.Data/obj/Debug/netcoreapp3.1
+/CoreERP.Model/obj/Debug/netcoreapp3.1
+/CoreERP.API/obj/Debug/netcoreapp3.1

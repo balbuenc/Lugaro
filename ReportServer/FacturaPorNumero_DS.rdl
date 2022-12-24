@@ -15,11 +15,11 @@
         <DataSourceName>VentasDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="?">
-            <Value>=Parameters!id_presupuesto.Value</Value>
+            <Value>=Parameters!nro_presupuesto.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>select * from public.v_impresion_presupuestos
-where id_presupuesto = ?</CommandText>
+        <CommandText>select * from public.v_impresion_facturas
+where nro_presupuesto = ?</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -131,8 +131,16 @@ where id_presupuesto = ?</CommandText>
           <DataField>monto_total</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="total_factura">
+          <DataField>total_factura</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="obra">
           <DataField>obra</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="monto_total_factura">
+          <DataField>monto_total_factura</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="motivo">
@@ -150,6 +158,10 @@ where id_presupuesto = ?</CommandText>
         <Field Name="monto_total_dolares">
           <DataField>monto_total_dolares</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="fecha_facturacion">
+          <DataField>fecha_facturacion</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
       </Fields>
       <rd:DataSetInfo>
@@ -973,9 +985,9 @@ where id_presupuesto = ?</CommandText>
     </ReportSection>
   </ReportSections>
   <ReportParameters>
-    <ReportParameter Name="id_presupuesto">
+    <ReportParameter Name="nro_presupuesto">
       <DataType>String</DataType>
-      <Prompt>ID</Prompt>
+      <Prompt>nro_presupuesto</Prompt>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
@@ -986,7 +998,7 @@ where id_presupuesto = ?</CommandText>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>id_presupuesto</ParameterName>
+          <ParameterName>nro_presupuesto</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
