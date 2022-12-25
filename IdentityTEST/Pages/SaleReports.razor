@@ -96,7 +96,7 @@
                                     <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
-                          
+
                             <GridColumn Field=@nameof(Sale.factura) HeaderText="#Fact." Visible="true" Width="30" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Sale.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(Sale.vendedor) HeaderText="Usuario" Width="30" Visible="true"></GridColumn>
@@ -125,8 +125,6 @@
                     </SfGrid>
 
                     <style>
-
-                      
                         .e-grid th.e-headercell {
                             background-color: lightgray;
                         }
@@ -274,10 +272,10 @@
             ExcelExportProperties ExcelProperties = new ExcelExportProperties();
             ExcelTheme Theme = new ExcelTheme();
             ExcelStyle ThemeStyle = new ExcelStyle()
-            {
-                FontName = "Segoe UI",
-                FontSize = 12
-            };
+                {
+                    FontName = "Segoe UI",
+                    FontSize = 12
+                };
             Theme.Header = ThemeStyle;
             Theme.Record = ThemeStyle;
             Theme.Caption = ThemeStyle;
@@ -310,11 +308,11 @@
 
         if (command.Title == "Imprimir")
         {
-            Print(item.factura, item.moneda);
+            await Print(item.factura, item.moneda);
         }
     }
 
-    protected void Print(String factura, String Moneda)
+    protected async Task Print(String factura, String Moneda)
     {
         try
         {
@@ -328,13 +326,10 @@
             }
             else
             {
-                //route = String.Concat("InvoiceReport/", BudgetID);
                 route = String.Concat("InvoiceReportByNumber/", factura);
-
             }
 
-
-            Js.InvokeAsync<object>("open", route, "_blank");
+            await Js.InvokeAsync<object>("open", route, "_blank");
 
         }
         catch (Exception ex)

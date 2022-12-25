@@ -175,7 +175,7 @@
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn Field=@nameof(Client.id_cliente) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Client.id_cliente) HeaderText="ID" TextAlign="TextAlign.Center" Width="15" IsPrimaryKey="true"></GridColumn>
 
                             <GridColumn Field=@nameof(Client.nombres) HeaderText="Nombres" Width="20"></GridColumn>
                             <GridColumn Field=@nameof(Client.apellidos) HeaderText="Apellidos" Width="20"></GridColumn>
@@ -189,6 +189,19 @@
                             <GridColumn Field="@nameof(Client.cuenta_contable)" HeaderText="Cta. Cont." Width="20"></GridColumn>
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>

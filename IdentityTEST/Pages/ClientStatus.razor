@@ -1,0 +1,241 @@
+﻿@page "/ClientStatus"
+@using Syncfusion.Blazor.Grids
+@using Model
+@using Interfaces
+@inject IClientInvoiceService ClientInvoiceService
+@inject IClientService ClientService
+
+@attribute [Authorize]
+@using System.Collections.ObjectModel
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.DropDowns
+@using System.IO
+@using Syncfusion.Blazor.Buttons
+
+@inject IJSRuntime Js
+
+<style>
+    .e-plus-icon::before {
+        content: '\e823';
+    }
+</style>
+
+<div class="container-fluid">
+    <p>@Message</p>
+
+    <div class="col-lg-12" style="padding:1px; height:50px">
+        <div class="content-wrapper">
+            <div class="alert alert-title" role="banner"><b>Estado de cuenta</b></div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 control-section">
+        <div class="content-wrapper">
+            <div class="row">
+                <div class="col-md-1">
+                    <b>Cliente: </b>
+                </div>
+                <div class="col-md-5">
+                    <SfDropDownList DataSource="@clients" ID="ClientDropDown"
+                                    TItem="Client"
+                                    TValue="Int32?"
+                                    Placeholder="Seleccione un cliente"
+                                    FloatLabelType="FloatLabelType.Never" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                        <DropDownListFieldSettings Value="id_cliente" Text="razon_social"></DropDownListFieldSettings>
+                        <DropDownListEvents TItem="Client" TValue="Int32?" ValueChange="@OnValueChange"></DropDownListEvents>
+                    </SfDropDownList>
+                </div>
+                <div class="col-md-2">
+                    <SfButton CssClass="e-outline" @onclick="@Print">
+                        Imprimir
+                    </SfButton>
+                </div>
+            </div>
+            <div class="row">
+                @if (GridData == null)
+                {
+                    <div class="alert alert-warning" role="alert"><p><em>Cargando datos...</em></p></div>
+                }
+                else
+                {
+                    <SfGrid TValue="ClientInvoice" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@GridData">
+                        <GridPageSettings PageSize="20"></GridPageSettings>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(ClientInvoice.factura) HeaderText="#Factura" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(ClientInvoice.condicion) HeaderText="Cond." Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(ClientInvoice.importe) HeaderText="Importe" Width="25" Format="N2" TextAlign="TextAlign.Right">
+                                <Template>
+                                    @{
+                                        var clientInvoice = (context as ClientInvoice);
+                                        if (clientInvoice.moneda == "Guaraní")
+                                        {
+                                            <b>@clientInvoice.importe.ToString("N0")</b>
+                                        }
+                                        else
+                                        {
+                                            <b>@clientInvoice.importe.ToString("N2")</b>
+                                        }
+
+                                    }
+                                </Template>
+                            </GridColumn>
+                            <GridColumn Field=@nameof(ClientInvoice.moneda) HeaderText="Moneda" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(ClientInvoice.vencimiento) HeaderText="Venc." Width="25" Format="dd/MM/yyy"></GridColumn>
+                            <GridColumn Field=@nameof(ClientInvoice.estado) HeaderText="Estado" Width="30"></GridColumn>
+                        </GridColumns>
+                    </SfGrid>
+                    <style>
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
+                }
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <b>Total PYG</b>
+                </div>
+                <div class="col-md-2" style="text-align:left">
+                    <p>Saldo:</p>
+                </div>
+                <div class="col-md-2" style="text-align:right">
+                    <b>@SaldoTotalPYG.ToString("N0")</b>
+                </div>
+                <div class="col-md-2" style="text-align:left">
+                    <p>Cobrado:</p>
+                </div>
+                <div class="col-md-2" style="text-align:right">
+                    <b>@PagoTotalPYG.ToString("N0")</b>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <b>Total USD</b>
+                </div>
+                <div class="col-md-2" style="text-align:left">
+                    <p>Saldo:</p>
+                </div>
+                <div class="col-md-2" style="text-align:right">
+                    <b>@SaldoTotalUSD.ToString("N2")</b>
+                </div>
+                <div class="col-md-2" style="text-align:left">
+                    <p>Cobrado:</p>
+                </div>
+                <div class="col-md-2" style="text-align:right">
+                    <b>@PagoTotalUSD.ToString("N2")</b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@code {
+
+    public string Message { get; set; }
+    public string[] ToolbarItems = new string[] { "Search" };
+
+    public IEnumerable<ClientInvoice> GridData { get; set; }
+    public IEnumerable<Client> clients { get; set; }
+    public Int32 ClientID { get; set; }
+
+    SfGrid<ClientInvoice> Grid { get; set; }
+
+    public decimal SaldoTotalPYG { get; set; }
+    public decimal PagoTotalPYG { get; set; }
+
+    public decimal SaldoTotalUSD { get; set; }
+    public decimal PagoTotalUSD { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        try
+        {
+            ClientID = 0;
+            clients = await ClientService.GetAllClients();
+            GridData = await ClientInvoiceService.GetClientInvoiceDetails(0);
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener areas: " + ex.Message;
+        }
+    }
+
+    public async Task OnValueChange(ChangeEventArgs<Int32?, Client> args)
+    {
+        try
+        {
+            ClientID = args.ItemData.id_cliente;
+            GridData = await ClientInvoiceService.GetClientInvoiceDetails(args.ItemData.id_cliente);
+            Grid.Refresh();
+            await GetAggregateData();
+        }
+        catch (Exception ex)
+        {
+            Message = "Error al obtener areas: " + ex.Message;
+        }
+    }
+
+
+
+    public async Task GetAggregateData()
+    {
+        SaldoTotalPYG = 0;
+        PagoTotalPYG = 0;
+        SaldoTotalUSD = 0;
+        PagoTotalUSD = 0;
+
+        for (int i = 0; i < GridData.Count(); i++)
+        {
+            ClientInvoice item = GridData.ElementAt(i);
+
+            if (item.estado == "CANCELADA")
+            {
+                if (item.moneda == "Guaraní")
+                    PagoTotalPYG += item.importe;
+                else
+                    PagoTotalUSD += item.importe;
+            }
+            else if (item.estado == "PENDIENTE")
+            {
+                if (item.moneda == "Guaraní")
+                    SaldoTotalPYG += item.importe;
+                else
+                    SaldoTotalUSD += item.importe;
+            }
+
+
+        }
+    }
+
+    protected async Task Print()
+    {
+        try
+        {
+            //Call Reporting Service WSL
+            String route;
+            route = String.Concat("InvoiceReportByNumber/", ClientID.ToString());
+            await Js.InvokeAsync<object>("open", route, "_blank");
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+}
+

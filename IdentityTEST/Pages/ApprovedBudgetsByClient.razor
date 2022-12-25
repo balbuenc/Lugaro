@@ -108,7 +108,7 @@
                                         <FooterTemplate>
                                             @{
                                                 <div>
-                                                    <b>Total: @GetWeightedAggregate()</b>
+                                                    <b>Total: @GetCustomAggregate()</b>
                                                 </div>
                                             }
                                         </FooterTemplate>
@@ -574,7 +574,7 @@
         }
     }
 
-    public string GetWeightedAggregate()
+    public string GetCustomAggregate()
     {
         return TotalValue.ToString("N2");
 

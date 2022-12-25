@@ -229,7 +229,11 @@ namespace CoreERP.UI
 
             services.AddHttpClient<IDailyBookService, DailyBookService>(
              dailyBookPlanService => { dailyBookPlanService.BaseAddress = new Uri(apiurl); }
-     );
+        );
+
+            services.AddHttpClient<IClientInvoiceService, ClientInvoiceService>(
+            clientInvoiceService => { clientInvoiceService.BaseAddress = new Uri(apiurl); }
+       );
 
         }
 
