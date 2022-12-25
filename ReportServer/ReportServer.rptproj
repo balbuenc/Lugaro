@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Report Include="CajaChica.rdl" />
+    <Report Include="EstadoCuentaCliente.rdl" />
     <Report Include="Factura.rdl" />
     <Report Include="FacturaPorNumero.rdl" />
     <Report Include="FacturaPorNumero_DS.rdl" />

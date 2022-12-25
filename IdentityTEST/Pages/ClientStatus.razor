@@ -228,7 +228,7 @@
         {
             //Call Reporting Service WSL
             String route;
-            route = String.Concat("InvoiceReportByNumber/", ClientID.ToString());
+            route = String.Concat("ClientStatus/", ClientID.ToString());
             await Js.InvokeAsync<object>("open", route, "_blank");
         }
         catch (Exception ex)
