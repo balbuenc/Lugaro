@@ -34,6 +34,22 @@ namespace CoreERP.Data.Repositories
             return result > 0;
         }
 
+        public async Task<IEnumerable<Client>> GetAllClientNames()
+        {
+            try
+            {
+                var db = dbConnection();
+
+                var sql = @"select c.id_cliente , c.razon_social || ' (' || c.ruc || ')' as cliente from clientes c order by c.razon_social";
+
+                return await db.QueryAsync<Client>(sql, new { });
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public async Task<IEnumerable<Client>> GetAllClients()
         {
             try
@@ -151,7 +167,7 @@ namespace CoreERP.Data.Repositories
                     client.id_tipo_cliente,
                     client.cliente_exento,
                     client.id_funcionario,
-                   client.id_plan_cuenta
+                    client.id_plan_cuenta
                 });
 
                 return Convert.ToInt32(result);
@@ -193,7 +209,7 @@ namespace CoreERP.Data.Repositories
                                     id_plan_cuenta=@id_plan_cuenta
                         where id_cliente = @id_cliente;";
 
-          
+
 
             try
             {

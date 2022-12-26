@@ -59,6 +59,8 @@ namespace CoreERP.Model
         public int? id_plan_cuenta { get; set; }
         public string cuenta_contable { get; set; }
 
+        public string cliente { get; set; }
+
         //public virtual Neighborhood Neighborhood { get; set; }
         //public virtual CivilStatus CivilStatus { get; set; }
         //public  virtual Nationality Nationality { get; set; }

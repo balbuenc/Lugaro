@@ -21,10 +21,21 @@ namespace CoreERP.API.Controllers
         }
 
         [HttpGet]
+       
         public async Task<IActionResult> GetAllClients()
         {
             return Ok(await _clientRepository.GetAllClients());
         }
+
+
+        [HttpGet]
+        [Route("GetAllClientNames")]
+        public async Task<IActionResult> GetAllClientNames()
+        {
+            return Ok(await _clientRepository.GetAllClientNames());
+        }
+   
+
 
 
         [HttpGet]
