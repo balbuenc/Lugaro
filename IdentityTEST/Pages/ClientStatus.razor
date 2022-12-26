@@ -32,25 +32,66 @@
     <div class="col-lg-12 control-section">
         <div class="content-wrapper">
             <div class="row">
-                <div class="col-md-1">
-                    <b>Cliente: </b>
-                </div>
-                <div class="col-md-5">
-                    <SfDropDownList DataSource="@clients" ID="ClientDropDown"
-                                    TItem="Client"
-                                    TValue="Int32?"
-                                    FloatLabelType="FloatLabelType.Never" AllowFiltering="true"  FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                        <DropDownListFieldSettings Value="id_cliente" Text="cliente"></DropDownListFieldSettings>
-                        <DropDownListEvents TItem="Client" TValue="Int32?" ValueChange="@OnValueChange"></DropDownListEvents>
-                    </SfDropDownList>
-                   
-                </div>
-                <div class="col-md-2">
+                @if (GridData == null)
+                {
+                    <div class="alert alert-warning" role="alert"><p><em>Cargando datos...</em></p></div>
+                }
+                else
+                {
+                    <SfGrid TValue="Client" ID="ClientGrid" @ref="ClientGrid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@ClientGridData">
+                        <GridEvents TValue="Client" RowSelected="GetSelectedRecords"></GridEvents>
+                        <GridPageSettings PageSize="3"></GridPageSettings>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(Client.id_cliente) HeaderText="ID" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Client.cliente) HeaderText="Cliente" Width="200"></GridColumn>
+                           
+                        </GridColumns>
+                    </SfGrid>
+                }
+            </div>
+            <div class="row">
+                <div class="col-md-12"  style="text-align:right">
                     <SfButton CssClass="e-outline" @onclick="@Print">
-                        Imprimir
+                        Imprimir Estado de cuenta
                     </SfButton>
                 </div>
             </div>
+            <hr />
+            <div class="row" style="background-color:lightskyblue">
+                <div class="col-md-2">
+                    <b>Total PYG</b>
+                </div>
+                <div class="col-md-2" style="text-align:left">
+                    <p>Saldo:</p>
+                </div>
+                <div class="col-md-2" style="text-align:right">
+                    <b>@SaldoTotalPYG.ToString("N0")</b>
+                </div>
+                <div class="col-md-2" style="text-align:left">
+                    <p>Cobrado:</p>
+                </div>
+                <div class="col-md-2" style="text-align:right">
+                    <b>@PagoTotalPYG.ToString("N0")</b>
+                </div>
+            </div>
+            <div class="row" style="background-color:lightskyblue">
+                <div class="col-md-2">
+                    <b>Total USD</b>
+                </div>
+                <div class="col-md-2" style="text-align:left">
+                    <p>Saldo:</p>
+                </div>
+                <div class="col-md-2" style="text-align:right">
+                    <b>@SaldoTotalUSD.ToString("N2")</b>
+                </div>
+                <div class="col-md-2" style="text-align:left">
+                    <p>Cobrado:</p>
+                </div>
+                <div class="col-md-2" style="text-align:right">
+                    <b>@PagoTotalUSD.ToString("N2")</b>
+                </div>
+            </div>
+            <hr />
             <div class="row">
                 @if (GridData == null)
                 {
@@ -58,7 +99,7 @@
                 }
                 else
                 {
-                    <SfGrid TValue="ClientInvoice" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@GridData">
+                    <SfGrid TValue="ClientInvoice" ID="Grid" @ref="Grid" AllowPaging="true"  AllowSorting="true" DataSource="@GridData">
                         <GridPageSettings PageSize="20"></GridPageSettings>
                         <GridColumns>
                             <GridColumn Field=@nameof(ClientInvoice.factura) HeaderText="#Factura" Width="20"></GridColumn>
@@ -101,40 +142,7 @@
                     </style>
                 }
             </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <b>Total PYG</b>
-                </div>
-                <div class="col-md-2" style="text-align:left">
-                    <p>Saldo:</p>
-                </div>
-                <div class="col-md-2" style="text-align:right">
-                    <b>@SaldoTotalPYG.ToString("N0")</b>
-                </div>
-                <div class="col-md-2" style="text-align:left">
-                    <p>Cobrado:</p>
-                </div>
-                <div class="col-md-2" style="text-align:right">
-                    <b>@PagoTotalPYG.ToString("N0")</b>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <b>Total USD</b>
-                </div>
-                <div class="col-md-2" style="text-align:left">
-                    <p>Saldo:</p>
-                </div>
-                <div class="col-md-2" style="text-align:right">
-                    <b>@SaldoTotalUSD.ToString("N2")</b>
-                </div>
-                <div class="col-md-2" style="text-align:left">
-                    <p>Cobrado:</p>
-                </div>
-                <div class="col-md-2" style="text-align:right">
-                    <b>@PagoTotalUSD.ToString("N2")</b>
-                </div>
-            </div>
+         
         </div>
     </div>
 </div>
@@ -149,10 +157,13 @@
     public string[] ToolbarItems = new string[] { "Search" };
 
     public IEnumerable<ClientInvoice> GridData { get; set; }
+    public IEnumerable<Client> ClientGridData { get; set; }
+
     public List<Client> clients { get; set; }
     public Int32 ClientID { get; set; }
 
     SfGrid<ClientInvoice> Grid { get; set; }
+    SfGrid<Client> ClientGrid { get; set; }
 
     public decimal SaldoTotalPYG { get; set; }
     public decimal PagoTotalPYG { get; set; }
@@ -168,6 +179,7 @@
             ClientID = 0;
             clients = (await ClientService.GetAllClientNames()).ToList();
             GridData = await ClientInvoiceService.GetClientInvoiceDetails(ClientID);
+            ClientGridData = await ClientService.GetAllClientNames();
         }
         catch (Exception ex)
         {
@@ -188,6 +200,18 @@
         {
             Message = "Error al obtener areas: " + ex.Message;
         }
+    }
+
+    public async Task GetSelectedRecords(RowSelectEventArgs<Client> args)
+    {
+        List<Client> c = new List<Client>();
+
+        c = await this.ClientGrid.GetSelectedRecords();
+        ClientID = c[0].id_cliente;
+        GridData = await ClientInvoiceService.GetClientInvoiceDetails(ClientID);
+        Grid.Refresh();
+        await GetAggregateData();
+        StateHasChanged();
     }
 
 
