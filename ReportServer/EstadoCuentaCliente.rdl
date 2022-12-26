@@ -497,14 +497,14 @@ and id_cliente = ?</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="faturacion">
+                        <Textbox Name="facturacion">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!faturacion.Value</Value>
+                                  <Value>=Fields!facturacion.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -513,7 +513,7 @@ and id_cliente = ?</CommandText>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>faturacion</rd:DefaultName>
+                          <rd:DefaultName>facturacion</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -568,7 +568,7 @@ and id_cliente = ?</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!importe.Value</Value>
+                                  <Value>=IIf(First(Fields!moneda.Value, "PresupuestosDataSet") ="Dolar",Format(Fields!importe.Value, "N2"),Format(Fields!importe.Value, "N0"))</Value>
                                   <Style>
                                     <Format>#,0.00;(#,0.00)</Format>
                                   </Style>
@@ -645,7 +645,7 @@ and id_cliente = ?</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!importe.Value)</Value>
+                                  <Value>=IIf(First(Fields!moneda.Value, "PresupuestosDataSet") ="Dolar",Format(Sum(Fields!importe.Value), "N2"),Format(Sum(Fields!importe.Value), "N0"))</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>#,0.00;(#,0.00)</Format>
@@ -787,7 +787,7 @@ and id_cliente = ?</CommandText>
             <Top>0.95395cm</Top>
             <Left>0.4445cm</Left>
             <Height>1.8cm</Height>
-            <Width>19.05739cm</Width>
+            <Width>19.0574cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -803,21 +803,21 @@ and id_cliente = ?</CommandText>
                   <TextRun>
                     <Value>Facturas pendientes</Value>
                     <Style>
-                      <FontSize>12pt</FontSize>
+                      <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
                 <Style>
-                  <TextAlign>Center</TextAlign>
+                  <TextAlign>Left</TextAlign>
                 </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox34</rd:DefaultName>
-            <Top>0.07056cm</Top>
-            <Left>5.32553cm</Left>
+            <Top>0.10583cm</Top>
+            <Left>0.4445cm</Left>
             <Height>0.70701cm</Height>
-            <Width>9.08283cm</Width>
+            <Width>9.22183cm</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -1107,7 +1107,7 @@ and id_cliente = ?</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!faturacion.Value</Value>
+                                  <Value>=Fields!facturacion.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -1171,7 +1171,7 @@ and id_cliente = ?</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!importe.Value</Value>
+                                  <Value>=IIf(First(Fields!moneda.Value, "PagosDataSet") ="Dolar",Format(Fields!importe.Value, "N2"),Format(Fields!importe.Value, "N0"))</Value>
                                   <Style>
                                     <Format>#,0.00;(#,0.00)</Format>
                                   </Style>
@@ -1248,7 +1248,7 @@ and id_cliente = ?</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!importe.Value)</Value>
+                                  <Value>=IIf(First(Fields!moneda.Value, "PagosDataSet") ="Dolar",Format(Sum(Fields!importe.Value), "N2"),Format(Sum(Fields!importe.Value), "N0"))</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>#,0.00;(#,0.00)</Format>
@@ -1407,19 +1407,19 @@ and id_cliente = ?</CommandText>
                   <TextRun>
                     <Value>Pagos realizados</Value>
                     <Style>
-                      <FontSize>12pt</FontSize>
+                      <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
                 <Style>
-                  <TextAlign>Center</TextAlign>
+                  <TextAlign>Left</TextAlign>
                 </Style>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox34</rd:DefaultName>
-            <Top>2.9998cm</Top>
-            <Left>5.32693cm</Left>
+            <Top>3.11269cm</Top>
+            <Left>0.4445cm</Left>
             <Height>0.59411cm</Height>
             <Width>9.08283cm</Width>
             <ZIndex>3</ZIndex>
@@ -1444,7 +1444,7 @@ and id_cliente = ?</CommandText>
       <Width>20.5842cm</Width>
       <Page>
         <PageHeader>
-          <Height>4.77375cm</Height>
+          <Height>5.30292cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1488,7 +1488,7 @@ and id_cliente = ?</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox23</rd:DefaultName>
-              <Top>2.64217cm</Top>
+              <Top>2.67745cm</Top>
               <Left>0.4445cm</Left>
               <Height>0.6cm</Height>
               <Width>1.8cm</Width>
@@ -1521,8 +1521,8 @@ and id_cliente = ?</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox23</rd:DefaultName>
-              <Top>2.64217cm</Top>
-              <Left>5.30718cm</Left>
+              <Top>3.45384cm</Top>
+              <Left>0.47978cm</Left>
               <Height>0.6cm</Height>
               <Width>1.41344cm</Width>
               <ZIndex>2</ZIndex>
@@ -1555,10 +1555,10 @@ and id_cliente = ?</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>nro_presupuesto</rd:DefaultName>
-              <Top>2.64217cm</Top>
-              <Left>6.68535cm</Left>
+              <Top>3.45384cm</Top>
+              <Left>1.99905cm</Left>
               <Height>0.6cm</Height>
-              <Width>12.81654cm</Width>
+              <Width>17.43147cm</Width>
               <ZIndex>3</ZIndex>
               <Style>
                 <Border>
@@ -1623,8 +1623,8 @@ and id_cliente = ?</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox23</rd:DefaultName>
-              <Top>3.41856cm</Top>
-              <Left>5.30718cm</Left>
+              <Top>2.67745cm</Top>
+              <Left>5.23581cm</Left>
               <Height>0.6cm</Height>
               <Width>1.41344cm</Width>
               <ZIndex>5</ZIndex>
@@ -1657,8 +1657,8 @@ and id_cliente = ?</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>nro_presupuesto</rd:DefaultName>
-              <Top>3.41856cm</Top>
-              <Left>6.68535cm</Left>
+              <Top>2.67745cm</Top>
+              <Left>6.61398cm</Left>
               <Height>0.6cm</Height>
               <Width>12.81654cm</Width>
               <ZIndex>6</ZIndex>
@@ -1772,6 +1772,42 @@ and id_cliente = ?</CommandText>
               <Height>0.49417cm</Height>
               <Width>6.90681cm</Width>
               <ZIndex>10</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox37">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Estado de cuenta</Value>
+                      <Style>
+                        <FontSize>12pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox34</rd:DefaultName>
+              <Top>4.48592cm</Top>
+              <Left>5.32693cm</Left>
+              <Height>0.70701cm</Height>
+              <Width>9.08283cm</Width>
+              <ZIndex>11</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
