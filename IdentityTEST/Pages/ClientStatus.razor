@@ -38,12 +38,10 @@
                 <div class="col-md-5">
                     <SfDropDownList DataSource="@clients" ID="ClientDropDown"
                                     TItem="Client"
-                                    TValue="Int32"
-                                    @bind-Value="@ClientID"
-                                    Placeholder="Cliente"
-                                    FloatLabelType="FloatLabelType.Always"  FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                        <DropDownListFieldSettings Value="id_cliente" Text="razon_social"></DropDownListFieldSettings>
-                        <DropDownListEvents TItem="Client" TValue="Int32" ValueChange="@OnValueChange"></DropDownListEvents>
+                                    TValue="Int32?"
+                                    FloatLabelType="FloatLabelType.Never" AllowFiltering="true"  FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                        <DropDownListFieldSettings Value="id_cliente" Text="cliente"></DropDownListFieldSettings>
+                        <DropDownListEvents TItem="Client" TValue="Int32?" ValueChange="@OnValueChange"></DropDownListEvents>
                     </SfDropDownList>
                    
                 </div>
@@ -167,7 +165,7 @@
     {
         try
         {
-            ClientID = 9054;
+            ClientID = 0;
             clients = (await ClientService.GetAllClientNames()).ToList();
             GridData = await ClientInvoiceService.GetClientInvoiceDetails(ClientID);
         }
@@ -177,7 +175,7 @@
         }
     }
 
-    public async Task OnValueChange(ChangeEventArgs<Int32, Client> args)
+    public async Task OnValueChange(ChangeEventArgs<Int32?, Client> args)
     {
         try
         {
