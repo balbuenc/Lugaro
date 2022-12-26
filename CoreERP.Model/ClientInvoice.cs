@@ -13,7 +13,7 @@ namespace CoreERP.Model
 
         public decimal importe { get; set; }
 
-        public string faturacion { get; set; }
+        public string facturacion { get; set; }
         public string motivo_anulacion { get; set; }
         public int cuota { get; set; }
         public decimal monto_capital { get; set; }

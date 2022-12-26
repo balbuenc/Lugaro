@@ -21,6 +21,7 @@
         <CommandText>select * 
 from public.v_clientes_facturas
 where estado ='PENDIENTE'
+and facturacion != 'ANULADO'
 and id_cliente = ?</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
@@ -41,8 +42,8 @@ and id_cliente = ?</CommandText>
           <DataField>estado</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="faturacion">
-          <DataField>faturacion</DataField>
+        <Field Name="facturacion">
+          <DataField>facturacion</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="motivo_anulacion">
@@ -149,6 +150,7 @@ from empresas e</CommandText>
         <CommandText>select * 
 from public.v_clientes_facturas
 where estado ='CANCELADA'
+and facturacion != 'ANULADO'
 and id_cliente = ?</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
@@ -169,8 +171,8 @@ and id_cliente = ?</CommandText>
           <DataField>importe</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="faturacion">
-          <DataField>faturacion</DataField>
+        <Field Name="facturacion">
+          <DataField>facturacion</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="motivo_anulacion">
