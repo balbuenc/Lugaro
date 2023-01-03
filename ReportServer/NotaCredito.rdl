@@ -15,145 +15,81 @@
         <DataSourceName>VentasDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="?">
-            <Value>=Parameters!id_presupuesto.Value</Value>
+            <Value>=Parameters!id_nota_credito.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>select * from public.v_impresion_presupuestos
-where id_presupuesto = ?</CommandText>
+        <CommandText>select * from public.v_impresion_notas_credito
+where id_nota_credito = ?</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
-        <Field Name="id_presupuesto">
-          <DataField>id_presupuesto</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="nro_presupuesto">
-          <DataField>nro_presupuesto</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="id_nota_credito">
+          <DataField>id_nota_credito</DataField>
+          <rd:TypeName>System.Int16</rd:TypeName>
         </Field>
         <Field Name="fecha">
           <DataField>fecha</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
-        <Field Name="estado">
-          <DataField>estado</DataField>
+        <Field Name="nro_nota">
+          <DataField>nro_nota</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="forma_pago">
-          <DataField>forma_pago</DataField>
+        <Field Name="factura">
+          <DataField>factura</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="plazo_entrega">
-          <DataField>plazo_entrega</DataField>
+        <Field Name="usuario">
+          <DataField>usuario</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="observaciones">
-          <DataField>observaciones</DataField>
+        <Field Name="id_nota_credito_detalle">
+          <DataField>id_nota_credito_detalle</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="concepto">
+          <DataField>concepto</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="codigo">
-          <DataField>codigo</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="producto">
-          <DataField>producto</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="cantidad">
-          <DataField>cantidad</DataField>
+        <Field Name="monto">
+          <DataField>monto</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="precio">
-          <DataField>precio</DataField>
+        <Field Name="impuesto">
+          <DataField>impuesto</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="porcentaje_impuesto">
+          <DataField>porcentaje_impuesto</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="monto_impuesto">
+          <DataField>monto_impuesto</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
         <Field Name="total">
           <DataField>total</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="descuento">
-          <DataField>descuento</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="imagen">
-          <DataField>imagen</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="cliente">
-          <DataField>cliente</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="direccion">
-          <DataField>direccion</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="telefono">
-          <DataField>telefono</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="vendedor">
-          <DataField>vendedor</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="moneda">
-          <DataField>moneda</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="cotizacion">
-          <DataField>cotizacion</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="porcentaje">
-          <DataField>porcentaje</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="ruc">
-          <DataField>ruc</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="contacto">
-          <DataField>contacto</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="direccion_entrega">
-          <DataField>direccion_entrega</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="condicion">
-          <DataField>condicion</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="total_prespuesto">
-          <DataField>total_prespuesto</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
         <Field Name="monto_total">
           <DataField>monto_total</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="obra">
-          <DataField>obra</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="motivo">
           <DataField>motivo</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="precio_unitario">
-          <DataField>precio_unitario</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="cliente_exento">
-          <DataField>cliente_exento</DataField>
+        <Field Name="ruc">
+          <DataField>ruc</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="monto_total_dolares">
-          <DataField>monto_total_dolares</DataField>
+        <Field Name="razon_social">
+          <DataField>razon_social</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="fecha_facturacion">
-          <DataField>fecha_facturacion</DataField>
-          <rd:TypeName>System.DateTime</rd:TypeName>
+        <Field Name="direccion">
+          <DataField>direccion</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
       <rd:DataSetInfo>
@@ -207,7 +143,7 @@ where id_presupuesto = ?</CommandText>
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Fields!cantidad.Value</Value>
+                                      <Value />
                                       <Style>
                                         <FontFamily>Times New Roman</FontFamily>
                                         <FontSize>8pt</FontSize>
@@ -235,7 +171,7 @@ where id_presupuesto = ?</CommandText>
                         </TablixCell>
                         <TablixCell>
                           <CellContents>
-                            <Textbox Name="producto">
+                            <Textbox Name="concepto">
                               <CanGrow>true</CanGrow>
                               <CanShrink>true</CanShrink>
                               <KeepTogether>true</KeepTogether>
@@ -243,7 +179,7 @@ where id_presupuesto = ?</CommandText>
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Fields!producto.Value</Value>
+                                      <Value>=Fields!concepto.Value</Value>
                                       <Style>
                                         <FontFamily>Times New Roman</FontFamily>
                                         <FontSize>8pt</FontSize>
@@ -255,7 +191,7 @@ where id_presupuesto = ?</CommandText>
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <rd:DefaultName>producto</rd:DefaultName>
+                              <rd:DefaultName>concepto</rd:DefaultName>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -276,7 +212,7 @@ where id_presupuesto = ?</CommandText>
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=FormatNumber(Fields!precio_unitario.Value,0)</Value>
+                                      <Value>=FormatNumber(Fields!monto.Value,0)</Value>
                                       <Style>
                                         <FontSize>7pt</FontSize>
                                       </Style>
@@ -307,7 +243,7 @@ where id_presupuesto = ?</CommandText>
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=IIf(First(Fields!cliente_exento.Value, "VentasDS") = "SI",FormatNumber(Fields!total.Value,0),0)</Value>
+                                      <Value>=IIf(First(Fields!impuesto.Value, "VentasDS") = "EXENTO",FormatNumber(Fields!monto.Value,0),0)</Value>
                                       <Style>
                                         <FontSize>7pt</FontSize>
                                       </Style>
@@ -371,7 +307,7 @@ where id_presupuesto = ?</CommandText>
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=IIf(First(Fields!cliente_exento.Value, "VentasDS") = "NO",FormatNumber(Fields!total.Value,0),0)</Value>
+                                      <Value>=IIf(First(Fields!impuesto.Value, "VentasDS") = "IVA 10%",FormatNumber(Fields!monto.Value,0),0)</Value>
                                       <Style>
                                         <FontSize>7pt</FontSize>
                                       </Style>
@@ -509,7 +445,7 @@ where id_presupuesto = ?</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=IIf(First(Fields!cliente_exento.Value, "VentasDS") = "NO",Sum(Fields!total.Value, "VentasDS"),0)</Value>
+                    <Value>=IIf(First(Fields!impuesto.Value, "VentasDS") = "IVA 10%",Sum(Fields!monto.Value, "VentasDS"),0)</Value>
                     <Style>
                       <FontFamily>Times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
@@ -544,7 +480,7 @@ where id_presupuesto = ?</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=IIf(First(Fields!cliente_exento.Value, "VentasDS") = "NO",Sum(Fields!total.Value, "VentasDS")/11,0)</Value>
+                    <Value>=IIf(First(Fields!impuesto.Value, "VentasDS") = "IVA 10%",Sum(Fields!total.Value, "VentasDS")/11,0)</Value>
                     <Style>
                       <FontFamily>Times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
@@ -579,7 +515,7 @@ where id_presupuesto = ?</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=IIf(First(Fields!cliente_exento.Value, "VentasDS") = "NO", Sum(Fields!total.Value, "VentasDS") / 11, 0)</Value>
+                    <Value>=IIf(First(Fields!impuesto.Value, "VentasDS") = "IVA 10%", Sum(Fields!total.Value, "VentasDS") / 11, 0)</Value>
                     <Style>
                       <FontFamily>Times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
@@ -614,7 +550,7 @@ where id_presupuesto = ?</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=IIf(First(Fields!cliente_exento.Value, "VentasDS") = "SI", Sum(Fields!total.Value, "VentasDS"), 0)</Value>
+                    <Value>=IIf(First(Fields!impuesto.Value, "VentasDS") = "EXENTO", Sum(Fields!monto.Value, "VentasDS"), 0)</Value>
                     <Style>
                       <FontFamily>Times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
@@ -663,7 +599,7 @@ where id_presupuesto = ?</CommandText>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=DatePart("d",First(Fields!fecha_facturacion.Value, "VentasDS"),0,0)</Value>
+                      <Value>=DatePart("d",First(Fields!fecha.Value, "VentasDS"),0,0)</Value>
                       <Style>
                         <FontFamily>Times New Roman</FontFamily>
                         <FontSize>9pt</FontSize>
@@ -696,7 +632,7 @@ where id_presupuesto = ?</CommandText>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=First(Fields!cliente.Value, "VentasDS")</Value>
+                      <Value>=First(Fields!razon_social.Value, "VentasDS")</Value>
                       <Style>
                         <FontFamily>Times New Roman</FontFamily>
                         <FontSize>8pt</FontSize>
@@ -756,147 +692,13 @@ where id_presupuesto = ?</CommandText>
                 <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
-            <Textbox Name="DireccionTextbox">
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=First(Fields!direccion.Value, "VentasDS")</Value>
-                      <Style>
-                        <FontFamily>Times New Roman</FontFamily>
-                        <FontSize>9pt</FontSize>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style />
-                </Paragraph>
-              </Paragraphs>
-              <Top>5.8cm</Top>
-              <Left>2.72917cm</Left>
-              <Height>0.6cm</Height>
-              <Width>11.33722cm</Width>
-              <ZIndex>3</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="Textbox7">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=IIf(First(Fields!condicion.Value, "VentasDS") = "Contado","","XX")</Value>
-                      <Style>
-                        <FontFamily>Times New Roman</FontFamily>
-                        <FontSize>9pt</FontSize>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style>
-                    <TextAlign>Center</TextAlign>
-                  </Style>
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox7</rd:DefaultName>
-              <Top>3.7cm</Top>
-              <Left>19.5cm</Left>
-              <Height>0.52062cm</Height>
-              <Width>0.67438cm</Width>
-              <ZIndex>4</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="Textbox8">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=IIf(First(Fields!condicion.Value, "VentasDS") = "Contado","XX","")</Value>
-                      <Style>
-                        <FontFamily>Times New Roman</FontFamily>
-                        <FontSize>9pt</FontSize>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style>
-                    <TextAlign>Center</TextAlign>
-                  </Style>
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox7</rd:DefaultName>
-              <Top>3.7cm</Top>
-              <Left>15cm</Left>
-              <Height>0.52062cm</Height>
-              <Width>0.78021cm</Width>
-              <ZIndex>5</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="TelefonoTextBox">
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=First(Fields!telefono.Value, "VentasDS")</Value>
-                      <Style>
-                        <FontFamily>Times New Roman</FontFamily>
-                        <FontSize>9pt</FontSize>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style>
-                    <TextAlign>Right</TextAlign>
-                  </Style>
-                </Paragraph>
-              </Paragraphs>
-              <Top>5.8cm</Top>
-              <Left>14.83224cm</Left>
-              <Height>0.6cm</Height>
-              <Width>2.96776cm</Width>
-              <ZIndex>6</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
             <Textbox Name="FechaTextbox2">
               <KeepTogether>true</KeepTogether>
               <Paragraphs>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=DatePart("yyyy", First(Fields!fecha_facturacion.Value, "VentasDS"), 0, 0)</Value>
+                      <Value>=DatePart("yyyy", First(Fields!fecha.Value, "VentasDS"), 0, 0)</Value>
                       <Style>
                         <FontFamily>Times New Roman</FontFamily>
                         <FontSize>9pt</FontSize>
@@ -913,7 +715,7 @@ where id_presupuesto = ?</CommandText>
               <Left>14.5cm</Left>
               <Height>0.6cm</Height>
               <Width>1.85738cm</Width>
-              <ZIndex>7</ZIndex>
+              <ZIndex>3</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -930,7 +732,7 @@ where id_presupuesto = ?</CommandText>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=UCase(Monthname(DatePart("m", First(Fields!fecha_facturacion.Value, "VentasDS"), 0, 0)))</Value>
+                      <Value>=UCase(Monthname(DatePart("m", First(Fields!fecha.Value, "VentasDS"), 0, 0)))</Value>
                       <Style>
                         <FontFamily>Times New Roman</FontFamily>
                         <FontSize>9pt</FontSize>
@@ -947,7 +749,7 @@ where id_presupuesto = ?</CommandText>
               <Left>7cm</Left>
               <Height>0.6cm</Height>
               <Width>2.53471cm</Width>
-              <ZIndex>8</ZIndex>
+              <ZIndex>4</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -977,7 +779,7 @@ where id_presupuesto = ?</CommandText>
     </ReportSection>
   </ReportSections>
   <ReportParameters>
-    <ReportParameter Name="id_presupuesto">
+    <ReportParameter Name="id_nota_credito">
       <DataType>String</DataType>
       <Prompt>ID</Prompt>
     </ReportParameter>
@@ -990,7 +792,7 @@ where id_presupuesto = ?</CommandText>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>id_presupuesto</ParameterName>
+          <ParameterName>id_nota_credito</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
