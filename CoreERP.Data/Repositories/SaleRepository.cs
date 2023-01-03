@@ -42,6 +42,29 @@ namespace CoreERP.Data.Repositories
             }
         }
 
+        public async Task<IEnumerable<Sale>> GetInvoiceNumbers()
+        {
+            try
+            {
+                var db = dbConnection();
+                var sql = @"select v.factura,v.condicion, v.estado,   m.moneda 
+                            from ventas v
+                            inner join presupuestos p on p.id_presupuesto = v.id_presupuesto 
+                            inner join monedas m on m.id_moneda = p.id_moneda 
+                            where v.estado = 'FACTURADO'
+                            group by v.factura,v.condicion, v.estado,   m.moneda 
+                            order by length(v.factura) desc , v.factura desc ";
+
+                var result = await db.QueryAsync<Sale>(sql, new { });
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<IEnumerable<Sale>> GetAllSales()
         {
             try

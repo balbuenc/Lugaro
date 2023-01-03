@@ -9,6 +9,7 @@ namespace CoreERP.Data.Repositories
     public interface ISaleRepository
     {
         Task<IEnumerable<Sale>> GetAllSales();
+        Task<IEnumerable<Sale>> GetInvoiceNumbers();
 
         Task<Sale> GetSaleDetails(int id);
 

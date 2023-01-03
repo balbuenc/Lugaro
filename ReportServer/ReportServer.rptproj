@@ -59,6 +59,7 @@
     <Report Include="FacturaPorNumero_DS.rdl" />
     <Report Include="Factura_DS.rdl" />
     <Report Include="FinancialDashboard.rdl" />
+    <Report Include="NotaCredito.rdl" />
     <Report Include="OrdenCompra.rdl" />
     <Report Include="OrdenCompraGeneral.rdl" />
     <Report Include="OrdenPagoGeneral.rdl" />

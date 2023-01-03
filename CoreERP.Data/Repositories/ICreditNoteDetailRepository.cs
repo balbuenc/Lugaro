@@ -10,7 +10,7 @@ namespace CoreERP.Data.Repositories
     {
         Task<IEnumerable<CreditNoteDetails>> GetAllCreditNoteDetails(int CreditNoteID);
 
-        Task<CreditNoteDetails> GetCreditNoteDetailsDetails(int id);
+     
 
         Task<bool> InsertCreditNoteDetails(CreditNoteDetails creditNoteDetail);
 

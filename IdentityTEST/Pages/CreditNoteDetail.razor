@@ -54,53 +54,60 @@
                         <GridEditSettings AllowAdding="CanEdit" AllowEditing="true" AllowDeleting="CanEdit" Mode="EditMode.Dialog" Dialog="DialogParams">
                             <HeaderTemplate>
                                 @{
-                                var det = (context as CreditNoteDetails);
-                            }
-                            <span>Detalle de nota: @(det.id_nota_credito)</span>
-                            <span class="badge-info"> @(det.id_nota_credito)</span>
-                        </HeaderTemplate>
-                        <Template>
-                            @{
-                                var det = (context as CreditNoteDetails);
-                            }
-                            <div>
-                                <div class="form-row">
-                                    <div class="form-group col-md-3">
-                                        <SfNumericTextBox @bind-Value="@(det.id_nota_credito_detalle)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                    var det = (context as CreditNoteDetails);
+                                }
+                                <span>Detalle de nota: @(det.nro_nota) </span>
+                                <span class="badge-info"> @(det.id_nota_credito)</span>
+                            </HeaderTemplate>
+                            <Template>
+                                @{
+                                    var det = (context as CreditNoteDetails);
+                                }
+                                <div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(det.id_nota_credito_detalle)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <SfDropDownList TItem="Impuesto"
+                                                        TValue="String"
+                                                        @bind-Value="@(det.impuesto)"
+                                                        DataSource="@LocalImpuesto"
+                                                        Placeholder="Impuesto"
+                                                        FloatLabelType="FloatLabelType.Always">
+                                                <DropDownListFieldSettings Value="ID" Text="Text"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </div>
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        <SfTextBox @bind-Value="@(det.nro_factura)" Enabled="CanEdit" Placeholder="Nro. comprobante" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <SfTextBox @bind-Value="@(det.concepto)" Enabled="CanEdit" Placeholder="Concepto" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <SfNumericTextBox @bind-Value="@(det.monto)" Enabled="CanEdit" Placeholder="Monto" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <SfNumericTextBox @bind-Value="@(det.porcentaje_impuesto)" Enabled="false" Placeholder="% Impuesto" FloatLabelType="FloatLabelType.Always" ></SfNumericTextBox>
+                                        </div>
                                     </div>
 
                                 </div>
+                            </Template>
 
-                                <div class="form-row">
-                                    <div class="form-group col-md-12">
-                                        <SfTextBox @bind-Value="@(det.producto)" Enabled="CanEdit" Placeholder="Beneficiario" FloatLabelType="FloatLabelType.Always"></SfTextBox>
-                                    </div>
+                        </GridEditSettings>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(CreditNoteDetails.id_nota_credito_detalle) HeaderText="ID" TextAlign="TextAlign.Center" Width="15" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNoteDetails.concepto) HeaderText="Concepto" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNoteDetails.monto) HeaderText="Monto" Width="25" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNoteDetails.impuesto) HeaderText="Monto" Visible="true" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNoteDetails.porcentaje_impuesto) HeaderText="% imp." Visible="true" Width="20" Format="N2"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNoteDetails.monto_impuesto) HeaderText="Monto imp." Visible="true" Width="20" Format="N2"></GridColumn>
+                        </GridColumns>
 
-
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group col-md-12">
-                                        <SfNumericTextBox @bind-Value="@(det.monto)" Enabled="CanEdit" Placeholder="Monto" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </Template>
-
-                    </GridEditSettings>
-                    <GridColumns>
-                        <GridColumn Field=@nameof(CreditNoteDetails.id_nota_credito_detalle) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
-
-                        <GridColumn Field=@nameof(CreditNoteDetails.nro_factura) HeaderText="Concepto" Width="50"></GridColumn>
-                        <GridColumn Field=@nameof(CreditNoteDetails.producto) HeaderText="Beneficiario" Width="50"></GridColumn>
-
-                        <GridColumn Field=@nameof(CreditNoteDetails.monto) HeaderText="Monto" Visible="true" Width="20" Format="N0"></GridColumn>
-                    </GridColumns>
-
-                </SfGrid>
+                    </SfGrid>
                 }
 
             </div>
@@ -163,12 +170,22 @@
 
     public IEnumerable<CreditNoteDetails> GridData { get; set; }
     public IEnumerable<Employee> employees { get; set; }
-    public IEnumerable<BudgetDetails> detalles { get; set; }
+
 
     public CreditNote creditNote;
 
+    public class Impuesto
+    {
+        public string ID { get; set; }
+        public string Text { get; set; }
+        public decimal Value { get; set; }
+    }
 
-
+    List<Impuesto> LocalImpuesto = new List<Impuesto> {
+    new Impuesto() { ID= "IVA 10%", Text= "IVA 10%", Value=10 },
+    new Impuesto() { ID= "IVA 5%", Text= "IVA 5%", Value=5 },
+    new Impuesto() { ID= "EXENTO", Text= "EXENTO", Value=0 },
+  };
 
     public bool EditDialogVisibility { get; set; } = false;
     public bool DeleteRecordConfirmVisibility { get; set; } = false;
@@ -215,19 +232,17 @@
         try
         {
             int id = Int32.Parse(CreditNoteID);
+
             GridData = await CreditNoteDetailsService.GetAllCreditNoteDetail(id);
-
             creditNote = await CreditNoteService.GetCreditNoteDetails(id);
-            detalles = await BudgetDetailsService.GetBudgetDetails(creditNote.id_presupuesto); 
 
-            UpdateLittleBoxStatus();
+            await UpdateLittleBoxStatus();
 
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
             string[] subs = user.Identity.Name.Split("@");
             UserName = subs[0];
-
         }
         catch (Exception ex)
         {
@@ -235,15 +250,15 @@
         }
     }
 
-    protected void UpdateLittleBoxStatus()
+    protected async Task UpdateLittleBoxStatus()
     {
         try
         {
-            CreditNoteNumber = "Nota de crédito: " + CreditNoteID + " - Total: " + GridData.First<CreditNoteDetails>().total.ToString("N0");
+            CreditNoteNumber = "Nota de crédito: " + creditNote.nro_nota;
         }
         catch (Exception ex)
         {
-            CreditNoteNumber = "Nota de crédito: " + CreditNoteID;
+            Message = ex.Message;
         }
     }
 
@@ -274,6 +289,7 @@
             StateHasChanged();
         }
 
+
         return;
     }
 
@@ -292,7 +308,7 @@
             StateHasChanged();
         }
 
-        UpdateLittleBoxStatus();
+        await UpdateLittleBoxStatus();
 
         return;
     }
@@ -300,6 +316,11 @@
     protected async Task SaveCreditNoteDetails(CreditNoteDetails creditNoteDetail)
     {
         creditNoteDetail.id_nota_credito = Int32.Parse(CreditNoteID);
+        Impuesto imp = LocalImpuesto.Where( i => i.ID.Equals(creditNoteDetail.impuesto)).First();
+
+        creditNoteDetail.porcentaje_impuesto = imp.Value;
+        creditNoteDetail.monto_impuesto = creditNoteDetail.monto * (creditNoteDetail.porcentaje_impuesto / 100);
+
 
         await CreditNoteDetailsService.SaveCreditNoteDetail(creditNoteDetail);
         Grid.Refresh();

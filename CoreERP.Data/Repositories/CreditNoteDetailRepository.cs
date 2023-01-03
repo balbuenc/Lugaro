@@ -46,14 +46,10 @@ namespace CoreERP.Data.Repositories
             try
             {
                 var db = dbConnection();
-                var sql = @"select nc.id_nota_credito , nc.nro_nota, ncd.id_nota_credito_detalle, ncd.id_venta , v.factura, p.producto , ncd.monto 
-                            from notas_credito nc 
-                            inner join nota_credito_detalles ncd on ncd.id_nota_credito = nc.id_nota_credito 
-                            inner join ventas v on v.id_venta = ncd.id_venta 
-                            inner join presupuesto_detalles pd on pd.id_presupuesto_detalle  = ncd.id_presupuesto_detalle 
-                            inner join productos p on p.id_producto = pd.id_producto 
-                            where nc.id_nota_credito = @Id
-                            order by pd.id_presupuesto_detalle desc";
+                var sql = @"SELECT nc.id_nota_credito_detalle, nc.monto, nc.id_nota_credito, nc.concepto, nc.impuesto, nc.porcentaje_impuesto, nc2.nro_nota , nc.monto_impuesto
+                            FROM public.nota_credito_detalles nc
+                            inner join public.notas_credito nc2 on nc2.id_nota_credito = nc.id_nota_credito 
+                            where nc.id_nota_credito = @Id";
 
                 var result = await db.QueryAsync<CreditNoteDetails>(sql, new { Id = CreditNoteID });
 
@@ -65,23 +61,7 @@ namespace CoreERP.Data.Repositories
             }
         }
 
-        public async Task<CreditNoteDetails> GetCreditNoteDetailsDetails(int id)
-        {
-            try
-            {
-                var db = dbConnection();
-                var sql = @"SELECT id_caja_chica, nro_comprobante, fecha, beneficiario, concepto, id_nota_credito_detalle. monto
-                            FROM public.nota_credito_detalles ccd
-                            where cdd.id_nota_credito_detalle = @Id;";
-
-
-                return await db.QueryFirstOrDefaultAsync<CreditNoteDetails>(sql, new { Id = id });
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+      
 
         public async Task<bool> InsertCreditNoteDetails(CreditNoteDetails creditNoteDetail)
         {
@@ -90,16 +70,18 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"INSERT INTO public.nota_credito_detalles
-                            (id_venta, id_presupuesto_detalle, monto, id_nota_credito)
-                            VALUES(@id_venta, @id_presupuesto_detalle, @monto, @id_nota_credito);
+                            (monto, id_nota_credito, concepto, impuesto, porcentaje_impuesto, monto_impuesto)
+                            VALUES(@monto, @id_nota_credito, @concepto, @impuesto, @porcentaje_impuesto, @monto_impuesto);
                             ";
 
                 var result = await db.ExecuteAsync(sql, new
                 {
-                    creditNoteDetail.id_venta,
-                    creditNoteDetail.id_presupuesto_detalle,
+                    creditNoteDetail.id_nota_credito,
                     creditNoteDetail.monto,
-                    creditNoteDetail.id_nota_credito
+                    creditNoteDetail.concepto,
+                    creditNoteDetail.impuesto,
+                    creditNoteDetail.porcentaje_impuesto,
+                    creditNoteDetail.monto_impuesto
                 }
                 );
 
@@ -118,18 +100,20 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"UPDATE public.nota_credito_detalles
-                            SET id_venta=@id_venta, id_presupuesto_detalle=@id_presupuesto_detalle, monto=@monto, id_nota_credito=@id_nota_credito
-                            WHERE id_nota_credito_detalle=@id_nota_credito_detalle;
-                            ";
+                                    SET monto=@monto, id_nota_credito=@id_nota_credito, concepto=@concepto, impuesto=@impuesto, porcentaje_impuesto=@porcentaje_impuesto, monto_impuesto=@monto_impuesto
+                                    WHERE id_nota_credito_detalle=@id_nota_credito_detalle;
+                                    ";
 
                 var result = await db.ExecuteAsync(sql, new
                 {
-                    creditNoteDetail.id_venta,
-                    creditNoteDetail.id_presupuesto_detalle,
-                    creditNoteDetail.monto,
                     creditNoteDetail.id_nota_credito,
-                    creditNoteDetail.id_nota_credito_detalle
-                }
+                    creditNoteDetail.monto,
+                    creditNoteDetail.concepto,
+                    creditNoteDetail.impuesto,
+                    creditNoteDetail.porcentaje_impuesto,
+                    creditNoteDetail.id_nota_credito_detalle,
+                    creditNoteDetail.monto_impuesto
+                }             
                 );
 
                 return result > 0;
