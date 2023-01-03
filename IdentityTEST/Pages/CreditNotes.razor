@@ -4,6 +4,7 @@
 @inject ICreditNoteService CreditNoteService
 
 @inject IEmployeeService EmployeeService
+@inject ISaleService SaleService
 
 @using Microsoft.AspNetCore.Http
 
@@ -126,25 +127,39 @@
                                             <SfTextBox @bind-Value="@(credit.motivo)" Enabled="true" Placeholder="Motivo" FloatLabelType="FloatLabelType.Always"></SfTextBox>
                                         </div>
                                     </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfDropDownList DataSource="@sales"
+                                                        TItem="Sale"
+                                                        TValue="String"
+                                                        @bind-Value="@(credit.factura)"
+                                                        Placeholder="Factura venta"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                <DropDownListFieldSettings Value="factura" Text="factura"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </div>
+                                    </div>
                                   
                                 </div>
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn HeaderText="Cmd." Width="10">
+                            <GridColumn HeaderText="Cmd." Width="20">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-edit", CssClass="e-flat" })"></GridCommandColumn>
                                     <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
-                                   
                                 </GridCommandColumns>
                             </GridColumn>
-                            <GridColumn Field=@nameof(CreditNote.id_nota_credito) HeaderText="ID" TextAlign="TextAlign.Right" Width="10" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.id_nota_credito) HeaderText="ID" TextAlign="TextAlign.Right" Width="15" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(CreditNote.fecha) HeaderText="Fecha" Visible="true" Width="20" Format="dd/MM/yyyy"></GridColumn>
                             
                             <GridColumn Field=@nameof(CreditNote.nro_nota) HeaderText="#Comp." Width="20"></GridColumn>
                             <GridColumn Field=@nameof(CreditNote.motivo) HeaderText="Motivo." Width="35"  TextAlign="TextAlign.Left"></GridColumn>
-                            
-
+                            <GridColumn Field=@nameof(CreditNote.factura) HeaderText="Fact. venta" Width="20" ></GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.razon_social) HeaderText="Cliente" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.ruc) HeaderText="RUC" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.importe_factura) HeaderText="Imp. venta" Width="30" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.total) HeaderText="Imp. cred." Width="30" Format="N0"></GridColumn>
                         </GridColumns>
                     </SfGrid>
                 }
@@ -187,6 +202,7 @@
     public IEnumerable<CreditNote> GridData { get; set; }
 
     public IEnumerable<Employee> employees { get; set; }
+    public IEnumerable<Sale> sales { get; set; }
     public Employee employee { get; set; }
 
 
@@ -212,6 +228,7 @@
             GridData = await CreditNoteService.GetAllCreditNotes();
 
             employees = await EmployeeService.GetAllEmployees();
+            sales = await SaleService.GetInvoiceNumbers();
 
 
 
@@ -225,7 +242,7 @@
         }
         catch (Exception ex)
         {
-            Message = "Error al obtener caja chicas [OnInitializedAsync] : " + ex.Message;
+            Message = "Error al obtener notas de credito [OnInitializedAsync] : " + ex.Message;
         }
     }
 
@@ -277,7 +294,7 @@
 
         if (command.Title == "Imprimir")
         {
-            Print(item.id_nota_credito);
+            await Print(item.id_nota_credito);
         }
 
     }
@@ -341,12 +358,12 @@
         NavigationManager.NavigateTo($"/CreditNoteDetails/{creditNote.id_nota_credito}");
     }
 
-    protected void Print(int CreditNoteID)
+    protected async Task Print(int CreditNoteID)
     {
         String route;
         route = String.Concat("CreditNoteReport/", CreditNoteID);
 
-        Js.InvokeAsync<object>("open", route, "_blank");
+        await Js.InvokeAsync<object>("open", route, "_blank");
     }
 
 

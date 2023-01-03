@@ -25,10 +25,19 @@ namespace CoreERP.UI.Services
             await _httpClient.DeleteAsync($"api/sale/{id}");
         }
 
+
         public async Task<IEnumerable<Sale>> GetAllSales()
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<Sale>>(
                 await _httpClient.GetStreamAsync($"api/sale"),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                );
+        }
+
+        public async Task<IEnumerable<Sale>> GetInvoiceNumbers()
+        {
+            return await JsonSerializer.DeserializeAsync<IEnumerable<Sale>>(
+                await _httpClient.GetStreamAsync($"api/sale/GetInvoiceNumbers"),
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
                 );
         }

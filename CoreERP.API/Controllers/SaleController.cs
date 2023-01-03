@@ -22,6 +22,15 @@ namespace CoreERP.API.Controllers
             _SaleRepository = saleRepository;
         }
 
+
+        [HttpGet]
+        [Route("GetInvoiceNumbers")]
+        public async Task<IActionResult> GetInvoiceNumbers()
+        {
+            return Ok(await _SaleRepository.GetInvoiceNumbers());
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetAllSales()
         {
