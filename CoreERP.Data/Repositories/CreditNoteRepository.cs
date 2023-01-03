@@ -124,7 +124,7 @@ namespace CoreERP.Data.Repositories
                 var db = dbConnection();
 
                 var sql = @"INSERT INTO public.notas_credito
-                                    (fecha, nro_nota, motivo, id_funcionario, id_venta)
+                                    (fecha, nro_nota, motivo, id_funcionario, factura)
                                     VALUES(@fecha, @nro_nota, @motivo, @id_funcionario, @factura);";
 
                 var result = await db.ExecuteAsync(sql, new

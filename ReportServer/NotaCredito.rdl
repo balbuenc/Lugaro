@@ -550,7 +550,7 @@ where id_nota_credito = ?</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=IIf(First(Fields!impuesto.Value, "VentasDS") = "EXENTO", Sum(Fields!monto.Value, "VentasDS"), 0)</Value>
+                    <Value>=IIf(First(Fields!impuesto.Value, "VentasDS") = "EXENTO", Sum(Fields!total.Value, "VentasDS"), 0)</Value>
                     <Style>
                       <FontFamily>Times New Roman</FontFamily>
                       <FontSize>9pt</FontSize>
