@@ -9,6 +9,7 @@ namespace CoreERP.Data.Repositories
     public interface IVendorRepository
     {
         Task<IEnumerable<Vendor>> GetAllVendors();
+        Task<IEnumerable<Vendor>> GetVendorsDDL();
 
         Task<Vendor> GetVendorDetails(int id);
 

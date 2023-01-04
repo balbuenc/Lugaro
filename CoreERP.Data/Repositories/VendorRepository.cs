@@ -34,6 +34,19 @@ namespace CoreERP.Data.Repositories
             return result > 0;
         }
 
+
+
+        public async Task<IEnumerable<Vendor>> GetVendorsDDL()
+        {
+            var db = dbConnection();
+            var sql = @"select upper(proveedor) razon_social, concat(  upper(proveedor), ' (', COALESCE(ruc, 'SIN RUC'), ')') as proveedor
+                        from proveedores p
+                        order by 2 asc";
+
+
+            return await db.QueryAsync<Vendor>(sql, new { });
+        }
+
         public async Task<IEnumerable<Vendor>> GetAllVendors()
         {
             var db = dbConnection();
@@ -58,27 +71,34 @@ namespace CoreERP.Data.Repositories
 
         public async Task<bool> InsertVendor(Vendor vendor)
         {
-            var db = dbConnection();
+            try
+            {
+                var db = dbConnection();
 
-            var sql = @"INSERT INTO public.proveedores
+                var sql = @"INSERT INTO public.proveedores
                         (proveedor, descripcion, id_pais, ruc, direccion, id_plan_cuenta, telefono, email, contacto)
                         VALUES(@proveedor, @descripcion, @id_pais, @ruc, @direccion, @id_plan_cuenta, @telefono, @email, @contacto);";
 
-            var result = await db.ExecuteAsync(sql, new
-            {
-                vendor.proveedor,
-                vendor.descripcion,
-                vendor.id_pais,
-                vendor.ruc,
-                vendor.direccion,
-                vendor.id_plan_cuenta,
-                vendor.telefono,
-                vendor.email,
-                vendor.contacto
-            }
-            );
+                var result = await db.ExecuteAsync(sql, new
+                {
+                    vendor.proveedor,
+                    vendor.descripcion,
+                    vendor.id_pais,
+                    vendor.ruc,
+                    vendor.direccion,
+                    vendor.id_plan_cuenta,
+                    vendor.telefono,
+                    vendor.email,
+                    vendor.contacto
+                }
+                );
 
-            return result > 0;
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> UpdateVendor(Vendor vendor)

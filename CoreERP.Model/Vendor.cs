@@ -21,5 +21,7 @@ namespace CoreERP.Model
         public string telefono { get; set; }
         public string email { get; set; }
         public string contacto { get; set; }
+
+        public string razon_social { get; set; }
     }
 }

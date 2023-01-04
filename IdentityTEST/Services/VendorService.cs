@@ -32,6 +32,14 @@ namespace CoreERP.UI.Services
                 );
         }
 
+        public async Task<IEnumerable<Vendor>> GetVendorsDDL()
+        {
+            return await JsonSerializer.DeserializeAsync<IEnumerable<Vendor>>(
+                await _httpClient.GetStreamAsync($"api/vendor/GetVendorsDDL"),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                );
+        }
+
         public async Task<Vendor> GetVendorDetails(int id)
         {
             return await JsonSerializer.DeserializeAsync<Vendor>(

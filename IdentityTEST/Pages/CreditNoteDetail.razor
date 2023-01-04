@@ -51,6 +51,25 @@
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="CreditNoteDetails" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                         <GridAggregates>
+                            <GridAggregate>
+                                <GridAggregateColumns>
+                                    <GridAggregateColumn Field=@nameof(CreditNoteDetails.monto) Type="AggregateType.Sum" Format="N2">
+                                        <FooterTemplate Context="con">
+                                            @{
+                                                var aggregate = (con as AggregateTemplateContext);
+                                                <div class="row">
+                                                    <div class="col-3 text-right">
+                                                        Total: <b>@aggregate.Sum </b>
+                                                    </div>
+
+                                                </div>
+                                            }
+                                        </FooterTemplate>
+                                    </GridAggregateColumn>
+                                </GridAggregateColumns>
+                            </GridAggregate>
+                        </GridAggregates>
                         <GridEditSettings AllowAdding="CanEdit" AllowEditing="true" AllowDeleting="CanEdit" Mode="EditMode.Dialog" Dialog="DialogParams">
                             <HeaderTemplate>
                                 @{

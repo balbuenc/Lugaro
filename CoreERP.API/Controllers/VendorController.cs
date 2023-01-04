@@ -25,6 +25,13 @@ namespace CoreERP.API.Controllers
             return Ok(await _VendorRepository.GetAllVendors());
         }
 
+        [HttpGet]
+        [Route("GetVendorsDDL")]
+        public async Task<IActionResult> GetVendorsDDL()
+        {
+            return Ok(await _VendorRepository.GetVendorsDDL());
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVendorDetails(int id)
         {

@@ -4,6 +4,7 @@
 
 @inject ILittleBoxDetailsService LittleBoxDetailsService
 @inject ILittleBoxService LittleBoxService
+@inject IVendorService VendorService
 
 
 @inject NavigationManager NavigationManager
@@ -22,6 +23,42 @@
 @using Syncfusion.Blazor.Buttons
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
+
+<style>
+    .e-list-settings:before {
+        content: "\e679";
+    }
+
+    .e-list-print:before {
+        content: "\e743";
+    }
+
+    .e-list-save:before {
+        content: "\e74d";
+    }
+
+    .e-list-saveas:before {
+        content: "\e72b";
+    }
+
+    .e-list-delete:before {
+        content: "\e33e";
+    }
+
+    .e-list-undo:before {
+        content: "\e752";
+    }
+
+    .e-list-edit:before {
+        content: "\e7a3";
+    }
+
+
+    .e-plus-icon::before {
+        content: '\e823';
+    }
+
+</style>
 
 
 <div class="container-fluid">
@@ -44,70 +81,84 @@
                 }
                 else
                 {
-            <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES" ShowColumnChooser="true" AllowFiltering="true" AllowExcelExport="true">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES" ShowColumnChooser="true" AllowFiltering="true" AllowExcelExport="true">
 
-                <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="LittleBoxDetails" OnToolbarClick="ToolbarClickHandler"></GridEvents>
-                <GridPageSettings PageSize="20"></GridPageSettings>
-                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-                <GridEditSettings AllowAdding="CanEdit" AllowEditing="true" AllowDeleting="CanEdit" Mode="EditMode.Dialog" Dialog="DialogParams">
-                    <HeaderTemplate>
-                        @{
-                            var det = (context as LittleBoxDetails);
-                        }
-                        <span>Detalle de gasto: @(det.nro_comprobante)</span>
-                        <span class="badge-info"> @(det.nro_comprobante)</span>
-                    </HeaderTemplate>
-                    <Template>
-                        @{
-                            var det = (context as LittleBoxDetails);
-                            if (det.fecha == t)
-                                det.fecha = hoy;
-                        }
-                        <div>
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <SfNumericTextBox @bind-Value="@(det.id_caja_chica_detalle)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <SfTextBox @bind-Value="@(det.nro_comprobante)" Enabled="CanEdit" Placeholder="Nro. comprobante" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                </div>
+                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="LittleBoxDetails" OnToolbarClick="ToolbarClickHandler"></GridEvents>
+                        <GridPageSettings PageSize="20"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                        <GridEditSettings AllowAdding="CanEdit" AllowEditing="true" AllowDeleting="CanEdit" Mode="EditMode.Dialog" Dialog="DialogParams">
+                            <HeaderTemplate>
+                                @{
+                                    var det = (context as LittleBoxDetails);
+                                }
+                                <span>Detalle de gasto: @(det.nro_comprobante)</span>
+                                <span class="badge-info"> @(det.nro_comprobante)</span>
+                            </HeaderTemplate>
+                            <Template>
+                                @{
+                                    var det = (context as LittleBoxDetails);
+                                    if (det.fecha == t)
+                                        det.fecha = hoy;
+                                }
+                                <div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(det.id_caja_chica_detalle)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <SfTextBox @bind-Value="@(det.nro_comprobante)" Enabled="CanEdit" Placeholder="Nro. comprobante" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
 
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <SfDatePicker TValue="DateTime" @bind-Value="@(det.fecha)" Format="dd/MM/yyyy" Enabled="CanEdit" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
-                                </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <SfDatePicker TValue="DateTime" @bind-Value="@(det.fecha)" Format="dd/MM/yyyy" Enabled="CanEdit" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                        </div>
 
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <SfTextBox @bind-Value="@(det.beneficiario)" Enabled="CanEdit" Placeholder="Beneficiario" FloatLabelType="FloatLabelType.Always"></SfTextBox>
-                                </div>
-                                <div class="form-group col-md-9">
-                                    <SfTextBox @bind-Value="@(det.concepto)" Enabled="CanEdit" Placeholder="Concepto" FloatLabelType="FloatLabelType.Always"></SfTextBox>
-                                </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-10">
+                                            <SfDropDownList DataSource="@vendors"
+                                                        TItem="Vendor"
+                                                        TValue="String"
+                                                        @bind-Value="@(det.beneficiario)"
+                                                        Enabled="CanEdit"
+                                                        Placeholder="Beneficiario"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                <DropDownListFieldSettings Value="razon_social" Text="proveedor"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <SfButton CssClass="e-round" IconCss="e-icons e-plus-icon" IsPrimary="true" OnClick="ShowNewVendorDialog"></SfButton>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
 
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <SfNumericTextBox @bind-Value="@(det.monto)" Enabled="CanEdit" Placeholder="Monto" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        <div class="form-group col-md-12">
+                                            <SfTextBox @bind-Value="@(det.concepto)" Enabled="CanEdit" Placeholder="Concepto" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <SfNumericTextBox @bind-Value="@(det.monto)" Enabled="CanEdit" Placeholder="Monto" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                    </div>
+
                                 </div>
-                            </div>
+                            </Template>
 
-                        </div>
-                    </Template>
+                        </GridEditSettings>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(LittleBoxDetails.id_caja_chica_detalle) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBoxDetails.fecha) HeaderText="Fecha" Width="20" Format="dd/MM/yyyy"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBoxDetails.concepto) HeaderText="Concepto" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBoxDetails.beneficiario) HeaderText="Beneficiario" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBoxDetails.nro_comprobante) HeaderText="#Comprobante" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(LittleBoxDetails.monto) HeaderText="Monto" Visible="true" Width="20" Format="N0"></GridColumn>
+                        </GridColumns>
 
-                </GridEditSettings>
-                <GridColumns>
-                    <GridColumn Field=@nameof(LittleBoxDetails.id_caja_chica_detalle) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
-                    <GridColumn Field=@nameof(LittleBoxDetails.fecha) HeaderText="Fecha" Width="20" Format="dd/MM/yyyy"></GridColumn>
-                    <GridColumn Field=@nameof(LittleBoxDetails.concepto) HeaderText="Concepto" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(LittleBoxDetails.beneficiario) HeaderText="Beneficiario" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(LittleBoxDetails.nro_comprobante) HeaderText="#Comprobante" Width="30"></GridColumn>
-                    <GridColumn Field=@nameof(LittleBoxDetails.monto) HeaderText="Monto" Visible="true" Width="20" Format="N0"></GridColumn>
-                </GridColumns>
-                
-            </SfGrid>
+                    </SfGrid>
                 }
 
             </div>
@@ -135,6 +186,35 @@
                     </Content>
                 </DialogTemplates>
             </SfDialog>
+
+            <SfDialog Width="510px" IsModal="true" @bind-Visible="@IsNewVendorVisible">
+                <DialogEvents OnOverlayClick="@OnOverlayclick">
+                </DialogEvents>
+                <DialogTemplates>
+                    <Content>
+                        <div class="row">
+                            <div class="col-12">
+                                <h5>Nuevo proveedor.</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <SfTextBox Placeholder="Nombre del proveedor" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NewVendorName"></SfTextBox>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <SfTextBox Placeholder="RUC" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@NewVendorRUC"></SfTextBox>
+                            </div>
+                        </div>
+                    </Content>
+                </DialogTemplates>
+                <DialogButtons>
+                    <DialogButton Content="OK" IsPrimary="true" OnClick="@NewVendor" />
+                    <DialogButton Content="Cancel" IsPrimary="true" OnClick="@OnOverlayclick" />
+                </DialogButtons>
+            </SfDialog>
+
             <SfToast @ref="ToastObj" Title="@ToastTitle" Content="@ToastContent" CssClass="@ToastCssClass">
                 <ToastPosition X="Right" Y="Bottom"></ToastPosition>
             </SfToast>
@@ -170,9 +250,14 @@
 
     public IEnumerable<LittleBoxDetails> GridData { get; set; }
     public IEnumerable<Employee> employees { get; set; }
+    public IEnumerable<Vendor> vendors { get; set; }
     public LittleBox box;
 
-   
+    public bool IsNewVendorVisible { get; set; } = false;
+    public string NewVendorName = "";
+    public string NewVendorRUC = "";
+    private Int32 SelectedDetailID { get; set; } = 0;
+
 
     public bool EditDialogVisibility { get; set; } = false;
     public bool DeleteRecordConfirmVisibility { get; set; } = false;
@@ -210,7 +295,55 @@
 
     SfGrid<LittleBoxDetails> Grid { get; set; }
 
+    private void OnOverlayclick(MouseEventArgs arg)
+    {
+        this.IsNewVendorVisible = false;
+    }
 
+    public void ShowNewVendorDialog()
+    {
+        NewVendorName = "";
+        NewVendorRUC = "";
+        this.IsNewVendorVisible = true;
+    }
+
+
+
+    protected async Task NewVendor()
+    {
+        Vendor v = new Vendor();
+        v.proveedor = NewVendorName.ToUpper();
+        v.razon_social = NewVendorName.ToUpper();
+        v.ruc = NewVendorRUC;
+        v.id_pais = 1;
+
+        //Creo el nuevo Proveedor
+        await VendorService.SaveVendor(v);
+
+
+        int id = Int32.Parse(LittleBoxID);
+        GridData = await LittleBoxDetailsService.GetAllLittleBoxDetail(id);
+
+        vendors = await VendorService.GetVendorsDDL();
+        Grid.Refresh();
+
+        await Task.Delay(200);
+
+        var IX = await Grid.GetRowIndexByPrimaryKey(SelectedDetailID);
+        if (IX != -1)
+        {
+            await Grid.SelectRow(IX);
+            await Grid.StartEdit();
+        }
+        else
+        {
+            await Grid.AddRecord();
+        }
+
+        SelectedDetailID = 0;
+
+        this.IsNewVendorVisible = false;
+    }
 
 
 
@@ -221,8 +354,9 @@
             int id = Int32.Parse(LittleBoxID);
             GridData = await LittleBoxDetailsService.GetAllLittleBoxDetail(id);
             box = await LittleBoxService.GetLittleBoxDetails(id);
+            vendors = await VendorService.GetVendorsDDL();
 
-            if (box.estado== "CERRADO" || box.estado == "PENDIENTE")
+            if (box.estado == "CERRADO" || box.estado == "PENDIENTE")
             {
                 CanEdit = false;
             }
@@ -248,7 +382,7 @@
         {
             LittleBoxDenomination = "Caja" + LittleBoxID + " - Gastos: " + GridData.First<LittleBoxDetails>().total_gasto.ToString("N0") + " | Saldo: " + GridData.First<LittleBoxDetails>().saldo.ToString("N0");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LittleBoxDenomination = "Caja" + LittleBoxID;
         }
@@ -267,7 +401,18 @@
 
     private async Task OnBeginHandler(ActionEventArgs<LittleBoxDetails> Args)
     {
-        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+        if (Args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit || Args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+        {
+            try
+            {
+                SelectedDetailID = ((LittleBoxDetails)Args.Data).id_caja_chica_detalle;
+            }
+            catch (Exception ex)
+            {
+                SelectedDetailID = 0;
+            }
+        }
+        else if (Args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
         {
             await SaveLittleBoxDetails((LittleBoxDetails)Args.Data);
 
@@ -323,7 +468,7 @@
 
 
 
-    public async void ConfirmDeleteYes()
+    public async Task ConfirmDeleteYes()
     {
         // The user selected Yes to delete the
         // seleted Help Desk Ticket
@@ -338,7 +483,7 @@
         Grid.Refresh();
     }
 
-    public void ConfirmDeleteNo()
+    public async Task ConfirmDeleteNo()
     {
         // Open the dialog
         // to give the user a chance

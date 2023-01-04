@@ -9,6 +9,7 @@ namespace CoreERP.UI.Interfaces
     public interface IVendorService
     {
         Task<IEnumerable<Vendor>> GetAllVendors();
+        Task<IEnumerable<Vendor>> GetVendorsDDL();
 
         Task<Vendor> GetVendorDetails(int id);
 
