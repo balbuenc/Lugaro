@@ -14,6 +14,7 @@ namespace CoreERP.UI.Interfaces
         Task<IEnumerable<Product>> GetProductsDefinitions();
 
         Task<Product> GetProductDetails(int id);
+        Task<Product> GetProductDetailsByCode(string code);
 
         Task SaveProduct(Product area);
 

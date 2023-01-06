@@ -87,11 +87,11 @@
                 {
                     <SfGrid TValue="CreditNote" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
                         <GridEvents OnActionBegin="OnBeginHandler"
-                                    OnActionComplete="ActionCompletedHandler"
-                                    TValue="CreditNote"
-                                    OnToolbarClick="ToolbarClickHandler"
-                                    OnRecordDoubleClick="RecordDoubleClickHandler"
-                                    CommandClicked="OnCommandClicked">
+                                OnActionComplete="ActionCompletedHandler"
+                                TValue="CreditNote"
+                                OnToolbarClick="ToolbarClickHandler"
+                                OnRecordDoubleClick="RecordDoubleClickHandler"
+                                CommandClicked="OnCommandClicked">
 
                         </GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
@@ -138,7 +138,7 @@
                                             </SfDropDownList>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
                             </Template>
                         </GridEditSettings>
@@ -151,16 +151,39 @@
                             </GridColumn>
                             <GridColumn Field=@nameof(CreditNote.id_nota_credito) HeaderText="ID" TextAlign="TextAlign.Right" Width="15" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(CreditNote.fecha) HeaderText="Fecha" Visible="true" Width="20" Format="dd/MM/yyyy"></GridColumn>
-                            
+
                             <GridColumn Field=@nameof(CreditNote.nro_nota) HeaderText="#Comp." Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(CreditNote.motivo) HeaderText="Motivo." Width="35"  TextAlign="TextAlign.Left"></GridColumn>
-                            <GridColumn Field=@nameof(CreditNote.factura) HeaderText="Fact. venta" Width="20" ></GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.motivo) HeaderText="Motivo." Width="35" TextAlign="TextAlign.Left"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNote.factura) HeaderText="Fact. venta" Width="20"></GridColumn>
                             <GridColumn Field=@nameof(CreditNote.razon_social) HeaderText="Cliente" Width="50"></GridColumn>
                             <GridColumn Field=@nameof(CreditNote.ruc) HeaderText="RUC" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(CreditNote.importe_factura) HeaderText="Imp. venta" Width="30" Format="N0"></GridColumn>
                             <GridColumn Field=@nameof(CreditNote.total) HeaderText="Imp. cred." Width="30" Format="N0"></GridColumn>
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -314,7 +337,7 @@
         }
     }
 
-   
+
 
     protected async Task DeleteCreditNote(int id)
     {

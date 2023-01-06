@@ -15,6 +15,7 @@ namespace CoreERP.Data.Repositories
        
 
         Task<Product> GetProductDetails(int id);
+        Task<Product> GetProductDetailsByCode(string code);
 
         Task<bool> InsertProduct(Product product);
 

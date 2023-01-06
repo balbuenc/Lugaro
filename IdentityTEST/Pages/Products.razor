@@ -129,6 +129,7 @@
             <div class="alert alert-title" role="banner">
                 <b>Productos</b>
                 <SfButton IsPrimary="true" IconCss="e-btn-sb-icons e-open-icon" IconPosition=@IconPosition.Right OnClick=OpenImportDialog>Importar productos</SfButton>
+                <SfButton IsPrimary="true" IconCss="e-btn-sb-icons e-open-icon" IconPosition=@IconPosition.Right OnClick=OpenStockImportDialog>Importar Stock</SfButton>
             </div>
         </div>
     </div>
@@ -435,6 +436,25 @@
             </DialogTemplates>
 
         </SfDialog>
+
+         <SfDialog ID="StockImportDialog" Width="600px" Height="400px" ShowCloseIcon="true" @bind-Visible="@isVisibleStockImportDialog">
+           <DialogTemplates>
+                <Header><b>Importación de Stock de productos</b></Header>
+                <Content>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <SfUploader ID="StockUploader" @ref="StockUploader" AutoUpload="false" Multiple="false" AllowedExtensions=".csv">
+                                    <UploaderEvents ValueChange="OnStockImportChange"></UploaderEvents>
+                                </SfUploader>
+                            </div>
+                        </div>
+                    </div>
+                </Content>
+
+            </DialogTemplates>
+
+        </SfDialog>
     </div>
 
 </div>
@@ -479,6 +499,7 @@
     SfGrid<Stock> DestinationGrid { get; set; }
 
     SfUploader Uploader { get; set; }
+    SfUploader StockUploader { get; set; }
 
     protected Stock originStock { get; set; }
     protected Stock destinationStock { get; set; }
@@ -496,6 +517,7 @@
 
     protected bool isVisibleTransferDialog = false;
     protected bool isVisibleImportDialog = false;
+    protected bool isVisibleStockImportDialog = false;
 
     public decimal Coeficiente = 0;
     public decimal Descuento = 0;
@@ -544,7 +566,6 @@
                 file.Stream.Close();
             }
 
-
             //Proceso el archivo
             ImportCSV(path);
 
@@ -553,17 +574,99 @@
 
             //Close Dialog
             isVisibleImportDialog = false;
-
-
-
         }
         catch (Exception ex)
         {
             return;
         }
+    }
+
+    private async Task OnStockImportChange(UploadChangeEventArgs args)
+    {
+        try
+        {
+            string path = "./wwwroot/Images/";
+            foreach (var file in args.Files)
+            {
+                path = path + file.FileInfo.Name;
+
+                FileStream filestream = new FileStream(path, FileMode.Create, FileAccess.Write);
+                file.Stream.WriteTo(filestream);
+                filestream.Close();
+                file.Stream.Close();
+            }
+
+            //Proceso el archivo
+            await StockImportCSV(path);
+
+            //Reload Products
+            NavigationManager.NavigateTo($"/Product", true);
+
+            //Close Dialog
+            isVisibleStockImportDialog = false;
+        }
+        catch (Exception ex)
+        {
+            return;
+        }
+    }
+
+    protected async Task StockImportCSV(string csvPath)
+    {
+
+        Product p = new Product();
+        Stock s = new Stock();
+        string codigo = "";
+        Int32 cantidad = 0;
+        Int32 id_deposito = 0;
 
 
+        //Read the contents of CSV file.
+        string csvData = File.ReadAllText(csvPath);
+        int i = 0;
 
+        //Execute a loop over the rows.
+        foreach (string row in csvData.Split('\n'))
+        {
+            if (!string.IsNullOrEmpty(row))
+            {
+
+                int col = 0;
+
+                //Execute a loop over the columns.
+                if (i > 0)
+                {
+                    foreach (string cell in row.Split(';'))
+                    {
+                        if (col == 0)
+                        {
+                            codigo = cell;
+                        }
+                        else if (col == 1)
+                        {
+                            cantidad = Convert.ToInt32(cell);
+                        }
+                        else if (col == 2)
+                        {
+                            id_deposito = Convert.ToInt32(cell);
+                        }
+
+                        col++;
+                    }
+
+                    p = await ProductService.GetProductDetailsByCode(codigo);
+
+                    s.id_producto = p.id_producto;
+                    s.id_deposito = id_deposito;
+                    s.cantidad = cantidad;
+
+                    await StockService.SaveStock(s);
+
+                  
+                }
+                i++;
+            }
+        }
     }
 
     protected void ImportCSV(string csvPath)
@@ -635,6 +738,10 @@
         }
     }
 
+
+   
+
+
     public async Task uploadFile(MouseEventArgs args)
     {
         filepath = await ProductService.SaveImage(content);
@@ -666,6 +773,11 @@
     private void OpenImportDialog()
     {
         isVisibleImportDialog = true;
+    }
+
+    private void OpenStockImportDialog()
+    {
+        isVisibleStockImportDialog = true;
     }
 
     private void CloseImportDialog()

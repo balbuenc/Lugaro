@@ -3,7 +3,7 @@
 @using Interfaces
 
 @inject IBankService BankService
-@inject ICityService CityService 
+@inject ICityService CityService
 
 @inject NavigationManager NavigationManager
 
@@ -43,11 +43,11 @@
                 }
                 else
                 {
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES"  AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
 
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="Bank"></GridEvents>
-                        <GridPageSettings PageSize="20"></GridPageSettings>
-
+                        <GridPageSettings PageSize="30"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
                             <HeaderTemplate>
                                 @{
@@ -86,21 +86,21 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <SfDropDownList DataSource="@cities"
-                                                            TItem="City"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(banco.id_ciudad)"
-                                                            Placeholder="Ciudad"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="City"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(banco.id_ciudad)"
+                                                        Placeholder="Ciudad"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_ciudad" Text="ciudad"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                             </Template>
                         </GridEditSettings>
                         <GridColumns>
-                            <GridColumn Field=@nameof(Bank.id_banco) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Bank.id_banco) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Bank.banco) HeaderText="Banco" Width="50"></GridColumn>
                             <GridColumn Field=@nameof(Bank.ciudad) HeaderText="Ciudad" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(Bank.nro_telefono) HeaderText="Nro. tel." Width="20"></GridColumn>
@@ -109,6 +109,29 @@
 
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -157,7 +180,7 @@
 @code {
 
     public string Message { get; set; }
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search" };
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
     public string ErrorDetails = "";
 
     public IEnumerable<Bank> GridData { get; set; }

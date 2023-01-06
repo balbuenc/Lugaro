@@ -89,7 +89,7 @@ namespace CoreERP.Data.Repositories
         public async Task<Stock> GetStockDetailsByStore(int productId, int storeID)
         {
             Stock s;
-            
+
             var db = dbConnection();
             var sql = @"select s.id_stock, s.id_deposito, s.id_producto, p.codigo, p.producto, d.deposito, s.cantidad 
                         from public.productos p 
@@ -107,7 +107,7 @@ namespace CoreERP.Data.Repositories
                 createdStock.id_deposito = storeID;
                 createdStock.id_producto = productId;
 
-                InsertStock(createdStock);
+                await InsertStock(createdStock);
 
                 return await GetStockDetailsByStore(productId, storeID);
             }
@@ -121,20 +121,58 @@ namespace CoreERP.Data.Repositories
 
         public async Task<bool> InsertStock(Stock stock)
         {
-            var db = dbConnection();
-
-            var sql = @"INSERT INTO public.stock (id_deposito, id_producto, cantidad) VALUES(@id_deposito, @id_producto, @cantidad);";
-
-            var result = await db.ExecuteAsync(sql, new
+            try
             {
-                stock.id_deposito,
-                stock.id_producto,
-                stock.cantidad
+                Stock s;
+
+                var db = dbConnection();
+
+                var sql_exist = @"select *
+                                from stock s 
+                                where s.id_producto = @id_producto
+                                and s.id_deposito = @id_deposito";
+
+                s = await db.QueryFirstOrDefaultAsync<Stock>(sql_exist, new { id_producto = stock.id_producto, id_deposito = stock.id_deposito });
+
+                if (s == null)
+                {
+                    var sql = @"INSERT INTO public.stock (id_deposito, id_producto, cantidad) VALUES(@id_deposito, @id_producto, @cantidad);";
+
+                    var result = await db.ExecuteAsync(sql, new
+                    {
+                        stock.id_deposito,
+                        stock.id_producto,
+                        stock.cantidad
+                    }
+                    );
+
+                    return result > 0;
+                }
+                else
+                {
+                    
+                    var sql = @"UPDATE public.stock
+                                SET cantidad= cantidad + @cantidad
+                                WHERE id_deposito=@id_deposito AND id_producto=@id_producto;
+                                ";
+
+                    var result = await db.ExecuteAsync(sql, new
+                    {
+                        stock.id_deposito,
+                        stock.id_producto,
+                        stock.cantidad
+                    }
+                    );
+
+                    return result > 0;
+                }
+
+
             }
-            );
-
-            return result > 0;
-
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> UpdateStock(Stock stock)

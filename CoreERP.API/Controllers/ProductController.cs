@@ -60,6 +60,13 @@ namespace CoreERP.API.Controllers
             return Ok(await _ProductRepository.GetProductDetails(id));
         }
 
+        [HttpGet]
+        [Route("GetProductDetailsByCode/{code}")]
+        public async Task<IActionResult> GetProductDetailsByCode(string code)
+        {
+            return Ok(await _ProductRepository.GetProductDetailsByCode(code));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {

@@ -114,6 +114,17 @@ namespace CoreERP.Data.Repositories
             return await db.QueryFirstOrDefaultAsync<Product>(sql, new { Id = id });
         }
 
+        public async Task<Product> GetProductDetailsByCode(string code)
+        {
+            var db = dbConnection();
+            var sql = @"select p.*
+                        from productos p
+                        where codigo = @Code";
+
+
+            return await db.QueryFirstOrDefaultAsync<Product>(sql, new { Code = code });
+        }
+
         public async Task<bool> InsertProduct(Product product)
         {
             var db = dbConnection();
