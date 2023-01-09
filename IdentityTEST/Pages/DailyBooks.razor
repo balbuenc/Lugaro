@@ -86,18 +86,41 @@
 
                         <GridColumns>
 
-                             <GridColumn Field=@nameof(DailyBook.asiento_numero) HeaderText="#" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(DailyBook.asiento_numero) HeaderText="#" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(DailyBook.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(DailyBook.cuenta) HeaderText="Cuenta" Width="30" Visible="true"></GridColumn>
                             <GridColumn Field=@nameof(DailyBook.descripcion) HeaderText="Descripcion" Width="50"></GridColumn>
-                           
-                      
-                           
-                            <GridColumn Field=@nameof(DailyBook.debe) HeaderText="Debe" Format="N2" Visible="true" Width="30" TextAlign="TextAlign.Right" ></GridColumn>
+
+
+
+                            <GridColumn Field=@nameof(DailyBook.debe) HeaderText="Debe" Format="N2" Visible="true" Width="30" TextAlign="TextAlign.Right"></GridColumn>
                             <GridColumn Field=@nameof(DailyBook.haber) HeaderText="Haber" Format="N2" Visible="true" Width="30" TextAlign="TextAlign.Right"></GridColumn>
-                          
+
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -237,7 +260,7 @@
             Theme.Record = ThemeStyle;
             Theme.Caption = ThemeStyle;
             ExcelProperties.Theme = Theme;
-            ExcelProperties.FileName = "Ventas.xlsx";
+            ExcelProperties.FileName = "LibroDiario.xlsx";
             await this.Grid.ExcelExport(ExcelProperties);
         }
 

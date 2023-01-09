@@ -11,11 +11,11 @@
 
 <div class="container-fluid">
     <p>@Message</p>
-    
+
 
     <div class="col-lg-12" style="padding:1px; height:50px">
         <div class="content-wrapper">
-            <div class="alert alert-primary" role="banner"><b>Posiciones</b></div>
+            <div class="alert alert-primary" role="banner"><b>Cargos</b></div>
         </div>
     </div>
 
@@ -28,11 +28,11 @@
                 }
                 else
                 {
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems"  DataSource="@GridData">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
 
-                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Position"></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Position" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
-
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
                         <GridColumns>
                             <GridColumn Field=@nameof(Position.id_cargo) HeaderText="ID" TextAlign="TextAlign.Center" Width="20" IsPrimaryKey="true"></GridColumn>
@@ -47,6 +47,29 @@
 
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
             </div>
         </div>
@@ -60,7 +83,7 @@
 @code {
 
     public string Message { get; set; }
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search" };
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
 
     public IEnumerable<Position> GridData { get; set; }
     public IEnumerable<Area> areas { get; set; }
@@ -111,5 +134,15 @@
     protected void ReloadPage()
     {
         NavigationManager.NavigateTo("/Position", true);
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.FileName = "Cargos.xlsx";
+            await this.Grid.ExcelExport(ExcelProperties);
+        }
     }
 }

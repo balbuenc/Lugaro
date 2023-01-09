@@ -1,9 +1,8 @@
-﻿
-@using Model
+﻿@using Model
 @using Interfaces
 @inject IProductService ProductService
 @inject IBudgetDetailsService BudgetDetailsService
-@inject IBudgetService BudgetService 
+@inject IBudgetService BudgetService
 
 @attribute [Authorize]
 @using Syncfusion.Blazor
@@ -51,10 +50,33 @@
                                     <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="100" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
                                     <GridColumn Field=@nameof(Product.precio) HeaderText="Precio" Width="20" Format="N2" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
                                     <GridColumn Field=@nameof(Product.deposito) HeaderText="Depósito" Width="20" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
-                                    <GridColumn Field=@nameof(Product.cantidad) HeaderText="Cant." Width="15" Format="N0"   AllowFiltering="false"></GridColumn>
-                                   
+                                    <GridColumn Field=@nameof(Product.cantidad) HeaderText="Cant." Width="15" Format="N0" AllowFiltering="false"></GridColumn>
+
                                 </GridColumns>
                             </SfGrid>
+                            <style>
+                                h6,
+                                .h6 {
+                                    font-size: 140%;
+                                    color: white;
+                                }
+
+                                .e-grid th.e-headercell {
+                                    background-color: lightgray;
+                                }
+
+
+
+                                .e-grid tr.e-row.e-row {
+                                    background-color: whitesmoke;
+                                }
+
+                                .e-headercell {
+                                    font-family: "Segoe UI";
+                                    font-weight: bold;
+                                    color: black
+                                }
+                            </style>
                         }
                     </div>
                 </div>

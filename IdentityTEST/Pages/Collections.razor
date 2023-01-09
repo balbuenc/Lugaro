@@ -11,39 +11,39 @@
 
 @inject IJSRuntime Js
 
-    <style>
-        .e-list-settings:before {
-            content: "\e679";
-        }
+<style>
+    .e-list-settings:before {
+        content: "\e679";
+    }
 
-        .e-list-print:before {
-            content: "\e743";
-        }
+    .e-list-print:before {
+        content: "\e743";
+    }
 
-        .e-list-save:before {
-            content: "\e74d";
-        }
+    .e-list-save:before {
+        content: "\e74d";
+    }
 
-        .e-list-saveas:before {
-            content: "\e72b";
-        }
+    .e-list-saveas:before {
+        content: "\e72b";
+    }
 
-        .e-list-delete:before {
-            content: "\e773";
-        }
+    .e-list-delete:before {
+        content: "\e773";
+    }
 
-        .e-list-undo:before {
-            content: "\e197";
-        }
+    .e-list-undo:before {
+        content: "\e197";
+    }
 
-        .e-list-edit:before {
-            content: "\e7a3";
-        }
+    .e-list-edit:before {
+        content: "\e7a3";
+    }
 
-        .e-list-printpdf:before {
-            content: "\e240"
-        }
-    </style>
+    .e-list-printpdf:before {
+        content: "\e240"
+    }
+</style>
 
 
 <div class="container-fluid">
@@ -64,12 +64,12 @@
                 }
                 else
                 {
-                    <SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowFiltering="true" >
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowFiltering="true">
 
                         <GridEvents OnActionBegin="OnBeginHandler"
-                                    TValue="Collection"
-                                    CommandClicked="OnCommandClicked"></GridEvents>
+                                TValue="Collection"
+                                CommandClicked="OnCommandClicked"
+                                OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
@@ -163,6 +163,29 @@
                             <GridColumn Field=@nameof(Collection.nro_transaccion) HeaderText="#Transaccion" Width="20"></GridColumn>
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
             </div>
         </div>
@@ -177,7 +200,7 @@
 
     public string Message { get; set; }
     //public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search" };
-    public string[] ToolbarItems = new string[] { "Edit", "Update", "Cancel", "Search" };
+    public string[] ToolbarItems = new string[] { "Edit", "Update", "Cancel", "ExcelExport", "Search" };
 
     public IEnumerable<Collection> GridData { get; set; }
 
@@ -221,19 +244,42 @@
         Grid.Refresh();
     }
 
+   
+
+
+    public async Task OnCommandClicked(CommandClickEventArgs<Collection> args)
+    {
+        var item = args.RowData;
+        var command = args.CommandColumn;
+
+        if (command.Title == "Imprimir")
+        {
+            await Print(item.id_cobranza);
+        }
+    }
+
+    protected async Task Print(int collectionID)
+    {
+        String route = "";
+
+        route = String.Concat("ReceiptReport/", collectionID);
+
+        await Js.InvokeAsync<object>("open", route, "_blank");
+    }
+
     public async Task ExcelExport()
     {
         ExcelExportProperties ExportProperties = new ExcelExportProperties();
         ExportProperties.IncludeHiddenColumn = true;
-
+        ExportProperties.FileName = "Cobranzas.xlsx";
 
         ExcelTheme Theme = new ExcelTheme();
         ExcelStyle ThemeStyle = new ExcelStyle()
-        {
-            FontName = "Segoe UI",
-            FontColor = "#666666",
-            FontSize = 9
-        };
+            {
+                FontName = "Segoe UI",
+                FontColor = "#666666",
+                FontSize = 9
+            };
         Theme.Header = ThemeStyle;
         Theme.Record = ThemeStyle;
         Theme.Caption = ThemeStyle;
@@ -245,29 +291,14 @@
         await this.Grid.ExcelExport(ExportProperties);
     }
 
-
-    public async void OnCommandClicked(CommandClickEventArgs<Collection> args)
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
     {
-        var item = args.RowData;
-        var command = args.CommandColumn;
-
-        if (command.Title == "Imprimir")
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
         {
-            Print(item.id_cobranza);
+            await ExcelExport();
         }
     }
 
-    protected void Print(int collectionID)
-    {
-        String route = "";
-
-
-        route = String.Concat("ReceiptReport/", collectionID);
-
-
-
-        Js.InvokeAsync<object>("open", route, "_blank");
-    }
 
 
 }

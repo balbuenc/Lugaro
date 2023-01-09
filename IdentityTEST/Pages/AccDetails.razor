@@ -44,86 +44,109 @@
                 }
                 else
                 {
-            <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES" ShowColumnChooser="true" AllowFiltering="true" AllowExcelExport="true">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES" ShowColumnChooser="true" AllowFiltering="true" AllowExcelExport="true" AllowTextWrap="true">
 
-                <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="AccountDetails" OnToolbarClick="ToolbarClickHandler" ></GridEvents>
-                <GridPageSettings PageSize="20"></GridPageSettings>
-                <GridFilterSettings Type ="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
-                    <HeaderTemplate>
-                        @{
-                            var detal = (context as AccountDetails);
+                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="AccountDetails" OnToolbarClick="ToolbarClickHandler"></GridEvents>
+                        <GridPageSettings PageSize="20"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
+                            <HeaderTemplate>
+                                @{
+                                    var detal = (context as AccountDetails);
+                                }
+                                <span>Detalle cuenta Nro.: @(detal.nro_cuenta)</span>
+                            </HeaderTemplate>
+                            <Template>
+                                @{
+                                    var detal = (context as AccountDetails);
+                                }
+                                <div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(detal.id_cuenta_detalle)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <SfDatePicker @bind-Value="@(detal.fecha)" Enabled="true" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-5">
+                                            <SfDropDownList DataSource="@LocalTipo"
+                                                        TItem="Tipo"
+                                                        TValue="string"
+                                                        @bind-Value="@(detal.tipo)"
+                                                        Placeholder="Tipo"
+                                                        FloatLabelType="FloatLabelType.Always">
+                                                <DropDownListFieldSettings Value="ID" Text="Text"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <SfTextBox @bind-Value="@(detal.nro_cuenta)" Enabled="false" Placeholder="#Cuenta" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <SfTextBox @bind-Value="@(detal.concepto)" Enabled="true" Placeholder="Concepto" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <SfTextBox @bind-Value="@(detal.beneficiario)" Enabled="true" Placeholder="Beneficiario" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-5">
+                                            <SfTextBox @bind-Value="@(detal.nro_comprobante)" Enabled="true" Placeholder="#Comprobante" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-5">
+                                            <SfNumericTextBox @bind-Value="@(detal.monto)" Enabled="true" Placeholder="Monto" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <SfTextBox @bind-Value="@(detal.detalle)" Enabled="true" Placeholder="Detalle" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </Template>
+                        </GridEditSettings>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(AccountDetails.id_cuenta_detalle) HeaderText="ID" TextAlign="TextAlign.Center" Width="15" IsPrimaryKey="true"></GridColumn>
+
+                            <GridColumn Field=@nameof(AccountDetails.fecha) HeaderText="Fecha" Width="20" Format="dd/MM/yyyy"></GridColumn>
+                            <GridColumn Field=@nameof(AccountDetails.concepto) HeaderText="Concepto" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(AccountDetails.beneficiario) HeaderText="Beneficiario" Visible="false" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(AccountDetails.nro_comprobante) HeaderText="#Comprobante" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(AccountDetails.nro_cuenta) HeaderText="#Cuenta" Visible="false" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(AccountDetails.detalle) HeaderText="Detalle" Width="100" Visible="false"></GridColumn>
+                            <GridColumn Field=@nameof(AccountDetails.tipo) HeaderText="Tipo" Width="40"></GridColumn>
+                            <GridColumn Field=@nameof(AccountDetails.monto) HeaderText="Monto" Width="40" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(AccountDetails.usuario) HeaderText="Usuario" Visible="false" Width="30"></GridColumn>
+
+                        </GridColumns>
+                    </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
                         }
-                        <span>Detalle cuenta Nro.: @(detal.nro_cuenta)</span>
-                    </HeaderTemplate>
-                    <Template>
-                        @{
-                            var detal = (context as AccountDetails);
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
                         }
-                        <div>
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <SfNumericTextBox @bind-Value="@(detal.id_cuenta_detalle)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <SfDatePicker @bind-Value="@(detal.fecha)" Enabled="true" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-5">
-                                    <SfDropDownList DataSource="@LocalTipo"
-                                                    TItem="Tipo"
-                                                    TValue="string"
-                                                    @bind-Value="@(detal.tipo)"
-                                                    Placeholder="Tipo"
-                                                    FloatLabelType="FloatLabelType.Always">
-                                        <DropDownListFieldSettings Value="ID" Text="Text"></DropDownListFieldSettings>
-                                    </SfDropDownList>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <SfTextBox @bind-Value="@(detal.nro_cuenta)" Enabled="false" Placeholder="#Cuenta" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <SfTextBox @bind-Value="@(detal.concepto)" Enabled="true" Placeholder="Concepto" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <SfTextBox @bind-Value="@(detal.beneficiario)" Enabled="true" Placeholder="Beneficiario" FloatLabelType="FloatLabelType.Always"></SfTextBox>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-5">
-                                    <SfTextBox @bind-Value="@(detal.nro_comprobante)" Enabled="true" Placeholder="#Comprobante" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                </div>
-                                <div class="form-group col-md-5">
-                                    <SfNumericTextBox @bind-Value="@(detal.monto)" Enabled="true" Placeholder="Monto" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <SfTextBox @bind-Value="@(detal.detalle)" Enabled="true" Placeholder="Detalle" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                </div>
 
-                            </div>
-                        </div>
-                    </Template>
-                </GridEditSettings>
-                <GridColumns>
-                    <GridColumn Field=@nameof(AccountDetails.id_cuenta_detalle) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
 
-                    <GridColumn Field=@nameof(AccountDetails.fecha) HeaderText="Fecha" Width="20" Format="dd/MM/yyyy"></GridColumn>
-                    <GridColumn Field=@nameof(AccountDetails.concepto) HeaderText="Concepto" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(AccountDetails.beneficiario) HeaderText="Beneficiario" Visible="false" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(AccountDetails.nro_comprobante) HeaderText="#Comprobante" Width="30"></GridColumn>
-                    <GridColumn Field=@nameof(AccountDetails.nro_cuenta) HeaderText="#Cuenta" Visible="false" Width="30"></GridColumn>
-                    <GridColumn Field=@nameof(AccountDetails.detalle) HeaderText="Detalle" Width="100" Visible="false"></GridColumn>
-                    <GridColumn Field=@nameof(AccountDetails.tipo) HeaderText="Tipo" Width="40"></GridColumn>
-                    <GridColumn Field=@nameof(AccountDetails.monto) HeaderText="Monto" Width="40" Format="N0"></GridColumn>
-                    <GridColumn Field=@nameof(AccountDetails.usuario) HeaderText="Usuario" Visible="false" Width="30"></GridColumn>
 
-                </GridColumns>
-            </SfGrid>
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -372,14 +395,10 @@
         await Task.Delay(200);
 
         await this.ToastObj.Show();
-
     }
-
-
 
     private async Task HideToast()
     {
-
         await this.ToastObj.Hide("All");
     }
 }

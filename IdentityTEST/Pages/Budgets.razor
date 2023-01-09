@@ -105,6 +105,29 @@
                             <GridColumn Field=@nameof(Budget.cantidad) HeaderText="Cant. presupuestos" Visible="true" Width="30"></GridColumn>
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -316,7 +339,7 @@
                                         {
                                             <b>@budg.Total.ToString("N2")</b>
                                         }
-                                    
+
                                     }
                                 </Template>
                             </GridColumn>

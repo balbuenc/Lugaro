@@ -27,11 +27,11 @@
                 }
                 else
                 {
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@GridData">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" AllowSorting="true" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
 
-                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Currency"></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Currency" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
-
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
                         <GridColumns>
                             <GridColumn Field=@nameof(Currency.id_moneda) HeaderText="ID" TextAlign="TextAlign.Center" Width="30" IsPrimaryKey="true"></GridColumn>
@@ -40,6 +40,29 @@
                             <GridColumn Field=@nameof(Currency.cotizacion) HeaderText="Cotización" Width="50"></GridColumn>
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
             </div>
         </div>
@@ -53,7 +76,7 @@
 @code {
 
     public string Message { get; set; }
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search" };
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
 
     public IEnumerable<Currency> GridData { get; set; }
 
@@ -95,6 +118,38 @@
     {
         await CurrencyService.DeleteCurrency(id);
         Grid.Refresh();
+    }
+
+    public async Task ExcelExport()
+    {
+        ExcelExportProperties ExportProperties = new ExcelExportProperties();
+        ExportProperties.IncludeHiddenColumn = true;
+        ExportProperties.FileName = "Monedas.xlsx";
+
+        ExcelTheme Theme = new ExcelTheme();
+        ExcelStyle ThemeStyle = new ExcelStyle()
+            {
+                FontName = "Segoe UI",
+                FontColor = "#666666",
+                FontSize = 9
+            };
+        Theme.Header = ThemeStyle;
+        Theme.Record = ThemeStyle;
+        Theme.Caption = ThemeStyle;
+
+        ExportProperties.Theme = Theme;
+
+
+
+        await this.Grid.ExcelExport(ExportProperties);
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            await ExcelExport();
+        }
     }
 
 

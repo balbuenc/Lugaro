@@ -80,11 +80,11 @@
                 {
                     <SfGrid TValue="PurchaseOrder" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
                         <GridEvents OnActionBegin="OnBeginHandler"
-                                    OnActionComplete="ActionCompletedHandler"
-                                    TValue="PurchaseOrder"
-                                    OnToolbarClick="ToolbarClickHandler"
-                                    OnRecordDoubleClick="RecordDoubleClickHandler"
-                                    CommandClicked="OnCommandClicked">
+                                OnActionComplete="ActionCompletedHandler"
+                                TValue="PurchaseOrder"
+                                OnToolbarClick="ToolbarClickHandler"
+                                OnRecordDoubleClick="RecordDoubleClickHandler"
+                                CommandClicked="OnCommandClicked">
                         </GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
@@ -136,14 +136,37 @@
                             <GridColumn Field=@nameof(PurchaseOrder.id_orden_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.fecha) HeaderText="Fecha" Visible="true" Width="10" Format="dd/MM/yyyy"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.fecha_aprobacion) HeaderText="Aprobación" Width="15" Visible="true" Format="dd/MM/yyyy"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.id_compra) HeaderText="#Pedido" Width="15" Visible="false" ></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.id_compra_general) HeaderText="#Compra" Width="20" Visible="false" ></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.id_compra) HeaderText="#Pedido" Width="15" Visible="false"></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.id_compra_general) HeaderText="#Compra" Width="20" Visible="false"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.tipo_compra) HeaderText="Tipo" Width="15"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.propietario) HeaderText="Propietario" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(PurchaseOrder.aprobador) HeaderText="Aprobador" Width="15" Visible="false" ></GridColumn>
+                            <GridColumn Field=@nameof(PurchaseOrder.aprobador) HeaderText="Aprobador" Width="15" Visible="false"></GridColumn>
                             <GridColumn Field=@nameof(PurchaseOrder.estado) HeaderText="Estado" Width="10"></GridColumn>
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>

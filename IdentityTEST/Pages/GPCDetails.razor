@@ -34,7 +34,7 @@
 @using Syncfusion.Blazor.Buttons
 
 
-@using  System.IO;
+@using System.IO;
 @using System.Text;
 
 @inject IJSRuntime Js
@@ -128,9 +128,9 @@
                         <SfButton CssClass="e-custom" IconPosition="IconPosition.Right" OnClick="GeneratePurchaseOrder">Generar OC</SfButton>
                     }
                     @*@if (Estado == "Pendiente")
-                        {
-                            <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
-                        }*@
+                    {
+                    <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="RequireAutorization">Solicitar autorización</SfButton>
+                    }*@
                     @if (Estado.ToUpper() == "PENDIENTE" && employee.can_approve)
                     {
                         <SfButton CssClass="e-require" IconPosition="IconPosition.Right" OnClick="AuthorizeOC">Aprobar OC</SfButton>
@@ -209,6 +209,29 @@
                         </GridColumn>
                     </GridColumns>
                 </SfGrid>
+                <style>
+                    h6,
+                    .h6 {
+                        font-size: 140%;
+                        color: white;
+                    }
+
+                    .e-grid th.e-headercell {
+                        background-color: lightgray;
+                    }
+
+
+
+                    .e-grid tr.e-row.e-row {
+                        background-color: whitesmoke;
+                    }
+
+                    .e-headercell {
+                        font-family: "Segoe UI";
+                        font-weight: bold;
+                        color: black
+                    }
+                </style>
             </div>
         </div>
     </div>

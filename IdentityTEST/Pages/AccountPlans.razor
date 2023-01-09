@@ -43,11 +43,11 @@
                 }
                 else
                 {
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
 
-                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="AccountPlan"></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="AccountPlan" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
-
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
                             <HeaderTemplate>
                                 @{
@@ -78,16 +78,16 @@
 
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <SfCheckBox   @bind-Checked="@(cuenta.imputable)" Enabled="true" Label="Imputable" > </SfCheckBox>
+                                            <SfCheckBox @bind-Checked="@(cuenta.imputable)" Enabled="true" Label="Imputable"> </SfCheckBox>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <SfCheckBox  @bind-Checked="@(cuenta.impositivo)" Enabled="true" Label="Impositivo" > </SfCheckBox>
+                                            <SfCheckBox @bind-Checked="@(cuenta.impositivo)" Enabled="true" Label="Impositivo"> </SfCheckBox>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <SfCheckBox  @bind-Checked="@(cuenta.con_costo)" Enabled="true" Label="Con costo" > </SfCheckBox>
+                                            <SfCheckBox @bind-Checked="@(cuenta.con_costo)" Enabled="true" Label="Con costo"> </SfCheckBox>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <SfNumericTextBox @bind-Value="@(cuenta.nivel)" Enabled="true" Placeholder="Nivel" FloatLabelType="FloatLabelType.Always" > </SfNumericTextBox>
+                                            <SfNumericTextBox @bind-Value="@(cuenta.nivel)" Enabled="true" Placeholder="Nivel" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
                                         </div>
                                     </div>
 
@@ -99,16 +99,39 @@
                         </GridEditSettings>
                         <GridColumns>
 
-                            <GridColumn Field=@nameof(AccountPlan.id_plan_cuenta) HeaderText="ID" TextAlign="TextAlign.Center" Width="5" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(AccountPlan.cuenta) HeaderText="Nro. cuenta" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(AccountPlan.descripcion) HeaderText="Descripcion" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(AccountPlan.imputable) HeaderText="Imputable" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(AccountPlan.impositivo) HeaderText="Impositivo" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(AccountPlan.con_costo) HeaderText="Con costo" Width="20"></GridColumn>
-                            <GridColumn Field=@nameof(AccountPlan.nivel) HeaderText="Nivel" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(AccountPlan.id_plan_cuenta) HeaderText="ID" TextAlign="TextAlign.Center" Width="15" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(AccountPlan.cuenta) HeaderText="Nro. cuenta" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(AccountPlan.descripcion) HeaderText="Descripcion" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(AccountPlan.imputable) HeaderText="Imputable" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(AccountPlan.impositivo) HeaderText="Impositivo" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(AccountPlan.con_costo) HeaderText="Con costo" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(AccountPlan.nivel) HeaderText="Nivel" Width="30"></GridColumn>
 
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -157,11 +180,11 @@
 @code {
 
     public string Message { get; set; }
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search" };
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
     public string ErrorDetails = "";
 
     public IEnumerable<AccountPlan> GridData { get; set; }
-  
+
 
     public bool EditDialogVisibility { get; set; } = false;
     public bool DeleteRecordConfirmVisibility { get; set; } = false;
@@ -204,7 +227,7 @@
         try
         {
             GridData = await AccountPlanService.GetAllAccountPlans();
-         
+
         }
         catch (Exception ex)
         {
@@ -302,18 +325,45 @@
         await Task.Delay(200);
 
         await this.ToastObj.Show();
-
     }
-
-
 
     private async Task HideToast()
     {
-
         await this.ToastObj.Hide("All");
     }
 
-   
+    public async Task ExcelExport()
+    {
+        ExcelExportProperties ExportProperties = new ExcelExportProperties();
+        ExportProperties.IncludeHiddenColumn = true;
+        ExportProperties.FileName = "PlanCuentas.xlsx";
+
+        ExcelTheme Theme = new ExcelTheme();
+        ExcelStyle ThemeStyle = new ExcelStyle()
+            {
+                FontName = "Segoe UI",
+                FontColor = "#666666",
+                FontSize = 9
+            };
+        Theme.Header = ThemeStyle;
+        Theme.Record = ThemeStyle;
+        Theme.Caption = ThemeStyle;
+
+        ExportProperties.Theme = Theme;
+
+
+
+        await this.Grid.ExcelExport(ExportProperties);
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            await ExcelExport();
+        }
+    }
+
 }
 
 

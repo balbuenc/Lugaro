@@ -96,7 +96,7 @@
                     <SfGrid TValue="Budget" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Budget" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
-                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
                         <GridColumns>
                             <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="15" IsPrimaryKey="true"></GridColumn>
@@ -116,6 +116,29 @@
                             <GridColumn Field=@nameof(Budget.Total) HeaderText="Total" Format="N2" Visible="true" Width="20"></GridColumn>
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -268,25 +291,36 @@
 
 
 
+    public async Task ExcelExport()
+    {
+        ExcelExportProperties ExportProperties = new ExcelExportProperties();
+        ExportProperties.IncludeHiddenColumn = true;
+        ExportProperties.FileName = "Presupuestos.xlsx";
+
+        ExcelTheme Theme = new ExcelTheme();
+        ExcelStyle ThemeStyle = new ExcelStyle()
+            {
+                FontName = "Segoe UI",
+                FontColor = "#666666",
+                FontSize = 9
+            };
+        Theme.Header = ThemeStyle;
+        Theme.Record = ThemeStyle;
+        Theme.Caption = ThemeStyle;
+
+        ExportProperties.Theme = Theme;
+
+
+
+        await this.Grid.ExcelExport(ExportProperties);
+    }
+
     public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
     {
         if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
         {
-            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
-            ExcelTheme Theme = new ExcelTheme();
-            ExcelStyle ThemeStyle = new ExcelStyle()
-            {
-                FontName = "Segoe UI",
-                FontSize = 12
-            };
-            Theme.Header = ThemeStyle;
-            Theme.Record = ThemeStyle;
-            Theme.Caption = ThemeStyle;
-            ExcelProperties.Theme = Theme;
-            ExcelProperties.FileName = "Presupuestos.xlsx";
-            await this.Grid.ExcelExport(ExcelProperties);
+            await ExcelExport();
         }
-
     }
 
     public Int32 GetEmployeeID(string username)

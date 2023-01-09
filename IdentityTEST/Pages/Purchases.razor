@@ -119,12 +119,11 @@
                 {
                     @*<SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>*@
                     <SfGrid TValue="Purchase" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
-                        <GridEvents OnActionBegin="OnBeginHandler" 
-                                    OnActionComplete="ActionCompletedHandler" 
-                                    TValue="Purchase" 
-                                    OnToolbarClick="ToolbarClickHandler"
-                                    OnRecordDoubleClick="RecordDoubleClickHandler"
-                                    ></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler"
+                                OnActionComplete="ActionCompletedHandler"
+                                TValue="Purchase"
+                                OnToolbarClick="ToolbarClickHandler"
+                                OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
@@ -150,11 +149,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@currencies"
-                                                            TItem="Currency"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(purch.id_moneda)"
-                                                            Placeholder="Moneda"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="Currency"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(purch.id_moneda)"
+                                                        Placeholder="Moneda"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -165,11 +164,11 @@
                                         </div>
                                         <div class="form-group col-md-9">
                                             <SfDropDownList DataSource="@vendors"
-                                                            TItem="Vendor"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(purch.id_proveedor)"
-                                                            Placeholder="Proveedor"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="Vendor"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(purch.id_proveedor)"
+                                                        Placeholder="Proveedor"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_proveedor" Text="proveedor"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -183,11 +182,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@invoiceTypes"
-                                                            TItem="InvoiceType"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(purch.id_condicion_venta)"
-                                                            Placeholder="Tipo factura"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="InvoiceType"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(purch.id_condicion_venta)"
+                                                        Placeholder="Tipo factura"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_condicion_venta" Text="condicion"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -197,11 +196,11 @@
 
                                         <div class="form-group col-md-6">
                                             <SfDropDownList DataSource="@stores"
-                                                            TItem="Store"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(purch.id_deposito)"
-                                                            Placeholder="Depósito"
-                                                            FloatLabelType="FloatLabelType.Always">
+                                                        TItem="Store"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(purch.id_deposito)"
+                                                        Placeholder="Depósito"
+                                                        FloatLabelType="FloatLabelType.Always">
                                                 <DropDownListFieldSettings Value="id_deposito" Text="deposito"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -217,13 +216,13 @@
                             </GridColumn>
                             @*<GridColumn HeaderText="Det." TextAlign="TextAlign.Center" Width="10">
 
-                                <Template>
-                                    @{
-                                        var Bud = (context as Purchase);
-                                        <div><a href="#" @onclick="@(() => Navigate(Bud))">Ver</a></div>
-                                    }
-                                </Template>
-                            </GridColumn>*@
+                        <Template>
+                        @{
+                        var Bud = (context as Purchase);
+                        <div><a href="#" @onclick="@(() => Navigate(Bud))">Ver</a></div>
+                        }
+                        </Template>
+                        </GridColumn>*@
                             <GridColumn Field=@nameof(Purchase.id_compra) HeaderText="ID" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Purchase.nro_orden_compra) HeaderText="Nro. OC" Visible="false" Width="10"></GridColumn>
                             <GridColumn Field=@nameof(Purchase.proveedor) HeaderText="Proveedor" Width="20"></GridColumn>
@@ -237,6 +236,29 @@
 
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>

@@ -78,147 +78,170 @@
                 else
                 {
                     @*<SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>*@
-            <SfGrid TValue="Quota" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
-                <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Quota"></GridEvents>
-                <GridPageSettings PageSize="30"></GridPageSettings>
-                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
-                    <HeaderTemplate>
-                        @{
-                            var quo = (context as Quota);
-                        }
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-10">
-                                    <h1 class="display-4">@(quo.cliente.ToUpper())</h1>
-                                </div>
-                            </div>
+                    <SfGrid TValue="Quota" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
+                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Quota" OnToolbarClick="ToolbarClickHandler"></GridEvents>
+                        <GridPageSettings PageSize="30"></GridPageSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
+                            <HeaderTemplate>
+                                @{
+                                    var quo = (context as Quota);
+                                }
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <h1 class="display-4">@(quo.cliente.ToUpper())</h1>
+                                        </div>
+                                    </div>
 
-                            <div class="row">
-                                <div class="col-10">
-                                    <b>Cuota N° @(quo.cuota_str)</b>
-                                </div>
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <b>Cuota N° @(quo.cuota_str)</b>
+                                        </div>
 
-                            </div>
-                        </div>
-
-                    </HeaderTemplate>
-                    <Template>
-                        @{
-                            var quo = (context as Quota);
-                            if (quo.fecha_pago == t)
-                                quo.fecha_pago = hoy;
-
-                            actQuote = quo;
-
-
-
-                        }
-                        <div>
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <SfNumericTextBox @bind-Value="@(quo.id_cuota)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <SfTextBox @bind-Value="@(quo.cuota_str)" Enabled="false" Placeholder="Nro. Cuota" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <SfTextBox @bind-Value="@(quo.moneda)" Enabled="false" Placeholder="Moneda" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <SfTextBox @bind-Value="@(quo.factura)" Enabled="false" Placeholder="Factura" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <SfDatePicker TValue="DateTime" @bind-Value="@(quo.vencimiento)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Vencimiento" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <SfDatePicker TValue="DateTime?" @bind-Value="@(quo.fecha_pago)" Format="dd/MM/yyyy" Enabled="false" Placeholder="Fecha pago" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
-                                </div>
-
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <SfNumericTextBox @bind-Value="@(quo.monto_capital)" Enabled="false" Placeholder="Capital" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <SfNumericTextBox @bind-Value="@(quo.monto_interes)" Enabled="false" Placeholder="Interes" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <SfNumericTextBox @bind-Value="@(quo.mora)" Enabled="false" Placeholder="Mora" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <SfNumericTextBox @bind-Value="@(quo.multa)" Enabled="false" Placeholder="Multa" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-                            </div>
-
-
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <SfNumericTextBox @bind-Value="@(quo.total)" Enabled="false" Placeholder="TOTAL" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <SfTextBox @bind-Value="@(quo.estado)" Enabled="false" Placeholder="Estado" FloatLabelType="FloatLabelType.Always"></SfTextBox>
-                                </div>
-
-                                <div class="form-group col-md-3">
-                                    <SfNumericTextBox @bind-Value="@(quo.saldo)" Enabled="false" Placeholder="SALDO" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
-                                </div>
-
-                            </div>
-                            @if (quo.estado == "PENDIENTE")
-                            {
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <SfNumericTextBox @bind-value="@MontoPagado" Placeholder="Monto a pagar" Min="0" Max="@(quo.saldo)" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                     </div>
                                 </div>
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <SfDropDownList DataSource="@paymentMethods"
+
+                            </HeaderTemplate>
+                            <Template>
+                                @{
+                                    var quo = (context as Quota);
+                                    if (quo.fecha_pago == t)
+                                        quo.fecha_pago = hoy;
+
+                                    actQuote = quo;
+
+
+
+                                }
+                                <div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(quo.id_cuota)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(quo.cuota_str)" Enabled="false" Placeholder="Nro. Cuota" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(quo.moneda)" Enabled="false" Placeholder="Moneda" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(quo.factura)" Enabled="false" Placeholder="Factura" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfDatePicker TValue="DateTime" @bind-Value="@(quo.vencimiento)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Vencimiento" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfDatePicker TValue="DateTime?" @bind-Value="@(quo.fecha_pago)" Format="dd/MM/yyyy" Enabled="false" Placeholder="Fecha pago" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(quo.monto_capital)" Enabled="false" Placeholder="Capital" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(quo.monto_interes)" Enabled="false" Placeholder="Interes" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(quo.mora)" Enabled="false" Placeholder="Mora" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(quo.multa)" Enabled="false" Placeholder="Multa" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(quo.total)" Enabled="false" Placeholder="TOTAL" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <SfTextBox @bind-Value="@(quo.estado)" Enabled="false" Placeholder="Estado" FloatLabelType="FloatLabelType.Always"></SfTextBox>
+                                        </div>
+
+                                        <div class="form-group col-md-3">
+                                            <SfNumericTextBox @bind-Value="@(quo.saldo)" Enabled="false" Placeholder="SALDO" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                        </div>
+
+                                    </div>
+                                    @if (quo.estado == "PENDIENTE")
+                                    {
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <SfNumericTextBox @bind-value="@MontoPagado" Placeholder="Monto a pagar" Min="0" Max="@(quo.saldo)" Format="N0" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <SfDropDownList DataSource="@paymentMethods"
                                                         TItem="PaymentMethod"
                                                         TValue="Int32?"
                                                         @bind-Value="@(quo.id_metodo_pago)"
                                                         Placeholder="Medio de pago"
                                                         FloatLabelType="FloatLabelType.Always" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
-                                            <DropDownListFieldSettings Value="id_medio_pago" Text="medio"></DropDownListFieldSettings>
-                                        </SfDropDownList>
-                                    </div>
+                                                    <DropDownListFieldSettings Value="id_medio_pago" Text="medio"></DropDownListFieldSettings>
+                                                </SfDropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+
+                                                <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PayQuote">Cobrar</SfButton>
+
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
+                            </Template>
+                        </GridEditSettings>
+                        <GridColumns>
+                            <GridColumn Field=@nameof(Quota.id_cuota) HeaderText="ID" TextAlign="TextAlign.Center" Width="20" IsPrimaryKey="true"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.cliente) HeaderText="Cliente" Visible="true" Width="40"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.ruc) HeaderText="RUC" Visible="true" Width="25"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.cuota_str) HeaderText="#" Visible="false" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.factura) HeaderText="Factura" Visible="true" Width="27"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.vencimiento) HeaderText="Venc." Format="dd/MM/yyyy" Width="25"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.fecha_pago) HeaderText="Pago" Format="dd/MM/yyyy" Width="25"></GridColumn>
 
-                                        <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PayQuote">Cobrar</SfButton>
-
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </Template>
-                </GridEditSettings>
-                <GridColumns>
-                    <GridColumn Field=@nameof(Quota.id_cuota) HeaderText="ID" TextAlign="TextAlign.Center" Width="20" IsPrimaryKey="true"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.cliente) HeaderText="Cliente" Visible="true" Width="40"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.ruc) HeaderText="RUC" Visible="true" Width="25"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.cuota_str) HeaderText="#" Visible="false" Width="10"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.factura) HeaderText="Factura" Visible="true" Width="27"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.vencimiento) HeaderText="Venc." Format="dd/MM/yyyy" Width="25"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.fecha_pago) HeaderText="Pago" Format="dd/MM/yyyy" Width="25"></GridColumn>
-
-                    <GridColumn Field=@nameof(Quota.moneda) HeaderText="Mon." Width="25"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.monto_capital) HeaderText="Capital" Width="25" Format="N0"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.monto_interes) HeaderText="Int." Visible="false" Width="15" Format="N0"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.mora) HeaderText="Mora" Visible="false" Width="10"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.multa) HeaderText="Multa" Visible="false" Width="15" Format="N0"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.total) HeaderText="Total" Visible="true" Width="25" Format="N0"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.saldo) HeaderText="Saldo" Visible="true" Width="25" Format="N0"></GridColumn>
-                    <GridColumn Field=@nameof(Quota.estado) HeaderText="Estado" Visible="true" Width="25"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.moneda) HeaderText="Mon." Width="25"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.monto_capital) HeaderText="Capital" Width="25" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.monto_interes) HeaderText="Int." Visible="false" Width="15" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.mora) HeaderText="Mora" Visible="false" Width="10"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.multa) HeaderText="Multa" Visible="false" Width="15" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.total) HeaderText="Total" Visible="true" Width="25" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.saldo) HeaderText="Saldo" Visible="true" Width="25" Format="N0"></GridColumn>
+                            <GridColumn Field=@nameof(Quota.estado) HeaderText="Estado" Visible="true" Width="25"></GridColumn>
 
 
 
-                </GridColumns>
-            </SfGrid>
+                        </GridColumns>
+                    </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -232,7 +255,7 @@
 @code {
     //public IEnumerable<Quota> clients { get; set; }
     public string Message { get; set; }
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search", "ColumnChooser" };
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
     public string ErrorDetails = "";
 
     public IEnumerable<Quota> GridData { get; set; }
@@ -413,6 +436,16 @@
     private void Navigate()
     {
         NavigationManager.NavigateTo($"/Collection");
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.FileName = "Cuotas.xlsx";
+            await this.Grid.ExcelExport(ExcelProperties);
+        }
     }
 
 }

@@ -8,7 +8,7 @@
 @inject ICurrencyService CurrencyService
 @inject IPaymentMethodService PaymentMethodService
 @inject IGeneralPurchaseService GeneralPurchaseService
-@inject IPurchaseService  PurchaseService
+@inject IPurchaseService PurchaseService
 
 
 @using Microsoft.AspNetCore.Http
@@ -84,7 +84,7 @@
                 else
                 {
                     @*<SfButton OnClick="ExcelExport" Content="Excel Export"></SfButton>*@
-                    <SfGrid TValue="Payment" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
+                    <SfGrid TValue="Payment" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true"  AllowFiltering="true" AllowTextWrap="true">
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Payment" CommandClicked="OnCommandClicked" OnToolbarClick="ToolbarClickHandler" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
                         <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
@@ -112,11 +112,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@currencies"
-                                                            TItem="Currency"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(pay.id_moneda)"
-                                                            Placeholder="Moneda"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="Currency"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(pay.id_moneda)"
+                                                        Placeholder="Moneda"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -148,11 +148,11 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@paymentmethods"
-                                                            TItem="PaymentMethod"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(pay.id_medio_pago)"
-                                                            Placeholder="Medio pago"
-                                                            FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
+                                                        TItem="PaymentMethod"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(pay.id_medio_pago)"
+                                                        Placeholder="Medio pago"
+                                                        FloatLabelType="FloatLabelType.Always" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                                 <DropDownListFieldSettings Value="id_medio_pago" Text="medio"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
@@ -181,7 +181,7 @@
                             <GridColumn HeaderText="Acciones" Width="15">
                                 <GridCommandColumns>
                                     <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-list-edit", CssClass = "e-flat" })"></GridCommandColumn>
-                                
+
                                     <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-list-printpdf", CssClass="e-flat" })" Title="Imprimir"></GridCommandColumn>
                                 </GridCommandColumns>
                             </GridColumn>
@@ -201,6 +201,29 @@
 
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>

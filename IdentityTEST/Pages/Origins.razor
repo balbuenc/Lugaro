@@ -2,7 +2,7 @@
 @using Model
 @using Interfaces
 @inject ICountryService CountryService
-@inject IOriginService  OriginService
+@inject IOriginService OriginService
 @attribute [Authorize]
 @using System.Collections.ObjectModel
 @using Syncfusion.Blazor.DropDowns
@@ -12,7 +12,7 @@
 
 <div class="container-fluid">
     <p>@Message</p>
-    
+
 
     <div class="col-lg-12" style="padding:1px; height:50px">
         <div class="content-wrapper">
@@ -29,16 +29,16 @@
                 }
                 else
                 {
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems"  DataSource="@GridData">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
 
-                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Origin"></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler" TValue="Origin" OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
-
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
                         <GridColumns>
                             <GridColumn Field=@nameof(Origin.id_origen) HeaderText="ID" TextAlign="TextAlign.Center" Width="20" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Origin.origen) HeaderText="Origen" Width="50"></GridColumn>
-                            <GridColumn Field=@nameof(Origin.id_pais) HeaderText="Pais" Width="30" EditType="EditType.DropDownEdit">
+                            <GridColumn Field=@nameof(Origin.pais) HeaderText="Pais" Width="50" EditType="EditType.DropDownEdit">
                                 <EditTemplate>
                                     <SfDropDownList TValue="Int32" TItem="Country" @bind-Value="@((context as Origin).id_pais)" Placeholder="Pais" FloatLabelType="FloatLabelType.Always" DataSource="@countries" AllowFiltering="true" FilterType="Syncfusion.Blazor.DropDowns.FilterType.Contains">
                                         <DropDownListFieldSettings Text="pais" Value="id_pais"></DropDownListFieldSettings>
@@ -49,6 +49,29 @@
 
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
             </div>
         </div>
@@ -62,7 +85,7 @@
 @code {
 
     public string Message { get; set; }
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search" };
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
 
     public IEnumerable<Origin> GridData { get; set; }
     public IEnumerable<Country> countries { get; set; }
@@ -107,7 +130,38 @@
     {
         await OriginService.DeleteOrigin(id);
         Grid.Refresh();
+    }
 
+    public async Task ExcelExport()
+    {
+        ExcelExportProperties ExportProperties = new ExcelExportProperties();
+        ExportProperties.IncludeHiddenColumn = true;
+        ExportProperties.FileName = "Origenes.xlsx";
+
+        ExcelTheme Theme = new ExcelTheme();
+        ExcelStyle ThemeStyle = new ExcelStyle()
+            {
+                FontName = "Segoe UI",
+                FontColor = "#666666",
+                FontSize = 9
+            };
+        Theme.Header = ThemeStyle;
+        Theme.Record = ThemeStyle;
+        Theme.Caption = ThemeStyle;
+
+        ExportProperties.Theme = Theme;
+
+
+
+        await this.Grid.ExcelExport(ExportProperties);
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            await ExcelExport();
+        }
     }
 
 

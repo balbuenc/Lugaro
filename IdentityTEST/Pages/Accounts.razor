@@ -4,7 +4,7 @@
 
 @inject IAccountService AccountService
 @inject IBankService BankService
-@inject IAccountTypeService AccountTypeService  
+@inject IAccountTypeService AccountTypeService
 @inject ICurrencyService CurrencyService
 
 @inject NavigationManager NavigationManager
@@ -45,11 +45,14 @@
                 }
                 else
                 {
-                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES">
+                    <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" Toolbar="@ToolbarItems" DataSource="@GridData" Locale="es-ES" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true">
 
-                        <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="OnCompleteHandler" TValue="Account"></GridEvents>
+                        <GridEvents OnActionBegin="OnBeginHandler" 
+                                    OnActionComplete="OnCompleteHandler" 
+                                    TValue="Account"
+                                    OnToolbarClick="ToolbarClickHandler"></GridEvents>
                         <GridPageSettings PageSize="20"></GridPageSettings>
-
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogParams">
                             <HeaderTemplate>
                                 @{
@@ -64,7 +67,6 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-
                                             <SfNumericTextBox @bind-Value="@(cuenta.id_cuenta)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
 
@@ -81,38 +83,35 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@banks"
-                                                            TItem="Bank"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(cuenta.id_banco)"
-                                                            Placeholder="Banco"
-                                                            FloatLabelType="FloatLabelType.Always">
+                                                        TItem="Bank"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(cuenta.id_banco)"
+                                                        Placeholder="Banco"
+                                                        FloatLabelType="FloatLabelType.Always">
                                                 <DropDownListFieldSettings Value="id_banco" Text="banco"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@accountTypes"
-                                                            TItem="AccountType"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(cuenta.id_tipo_cuenta)"
-                                                            Placeholder="Tipo cuenta"
-                                                            FloatLabelType="FloatLabelType.Always">
+                                                        TItem="AccountType"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(cuenta.id_tipo_cuenta)"
+                                                        Placeholder="Tipo cuenta"
+                                                        FloatLabelType="FloatLabelType.Always">
                                                 <DropDownListFieldSettings Value="id_tipo_cuenta" Text="tipo_cuenta"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfDropDownList DataSource="@currencies"
-                                                            TItem="Currency"
-                                                            TValue="Int32"
-                                                            @bind-Value="@(cuenta.id_moneda)"
-                                                            Placeholder="Moneda"
-                                                            FloatLabelType="FloatLabelType.Always">
+                                                        TItem="Currency"
+                                                        TValue="Int32"
+                                                        @bind-Value="@(cuenta.id_moneda)"
+                                                        Placeholder="Moneda"
+                                                        FloatLabelType="FloatLabelType.Always">
                                                 <DropDownListFieldSettings Value="id_moneda" Text="moneda"></DropDownListFieldSettings>
                                             </SfDropDownList>
                                         </div>
                                     </div>
-
-
-
                                 </div>
                             </Template>
                         </GridEditSettings>
@@ -133,12 +132,35 @@
                             <GridColumn Field=@nameof(Account.nro_cuenta) HeaderText="Nro. cuenta" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(Account.moneda) HeaderText="Moneda" Width="20"></GridColumn>
                             @*<GridColumn HeaderText="Acciones" Width="120">
-                                <GridCommandColumns>
-                                    <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-add", CssClass="e-flat" })"></GridCommandColumn>
-                                </GridCommandColumns>
-                            </GridColumn>*@
+                        <GridCommandColumns>
+                        <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-add", CssClass="e-flat" })"></GridCommandColumn>
+                        </GridCommandColumns>
+                        </GridColumn>*@
                         </GridColumns>
                     </SfGrid>
+                    <style>
+                        h6,
+                        .h6 {
+                            font-size: 140%;
+                            color: white;
+                        }
+
+                        .e-grid th.e-headercell {
+                            background-color: lightgray;
+                        }
+
+
+
+                        .e-grid tr.e-row.e-row {
+                            background-color: whitesmoke;
+                        }
+
+                        .e-headercell {
+                            font-family: "Segoe UI";
+                            font-weight: bold;
+                            color: black
+                        }
+                    </style>
                 }
 
             </div>
@@ -187,7 +209,7 @@
 @code {
 
     public string Message { get; set; }
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "Search" };
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "Search", "ColumnChooser" };
     public string ErrorDetails = "";
 
     public IEnumerable<Account> GridData { get; set; }
@@ -340,17 +362,24 @@
 
     }
 
-
-
     private async Task HideToast()
     {
-
         await this.ToastObj.Hide("All");
     }
 
     private void Navigate(Account acc)
     {
         NavigationManager.NavigateTo($"/AccDetails/{acc.id_cuenta}");
+    }
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
+        {
+            ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.FileName = "Cuentas.xlsx";
+            await this.Grid.ExcelExport(ExcelProperties);
+        }
     }
 }
 
