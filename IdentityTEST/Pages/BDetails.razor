@@ -754,7 +754,7 @@
             {
                 facturarSinStock = Convert.ToBoolean(await erpTools.GetSystemParam("facturarSinStock"));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 facturarSinStock = true;
             }
@@ -765,27 +765,23 @@
 
 
             //Set Details Grid default state
-            if (EstadoFacturacion == "FACTURADO")
+            if (EstadoFacturacion == "FACTURADO" )
             {
-                gridEditSettings.AllowAdding = false;
-                gridEditSettings.AllowDeleting = false;
-                gridEditSettings.AllowEditing = false;
-                gridEditSettings.AllowEditOnDblClick = false;
-
-
-
-
-                addProductBtnDisabled = true;
+                await DisableEdit();
             }
             else
             {
-                gridEditSettings.AllowAdding = true;
-                gridEditSettings.AllowDeleting = true;
-                gridEditSettings.AllowEditing = true;
-                gridEditSettings.AllowEditOnDblClick = true;
+                await EnableEdit();
+            }
 
-
-                addProductBtnDisabled = false;
+            //Bloqueo la edicion en el caso de que el presupuesto ya este aprobado
+            if(Estado == "GENERADO" || Estado == "PENDIENTE")
+            {
+                await EnableEdit();
+            }
+            else
+            {
+                await DisableEdit();
             }
 
         }
@@ -793,6 +789,27 @@
         {
             Message = "Error al obtener detalles del presupuesto: " + ex.Message;
         }
+    }
+
+    private async Task EnableEdit()
+    {
+        gridEditSettings.AllowAdding = true;
+        gridEditSettings.AllowDeleting = true;
+        gridEditSettings.AllowEditing = true;
+        gridEditSettings.AllowEditOnDblClick = true;
+
+
+        addProductBtnDisabled = false;
+    }
+
+    private async Task DisableEdit()
+    {
+        gridEditSettings.AllowAdding = false;
+        gridEditSettings.AllowDeleting = false;
+        gridEditSettings.AllowEditing = false;
+        gridEditSettings.AllowEditOnDblClick = false;
+
+        addProductBtnDisabled = true;
     }
 
 
@@ -1074,7 +1091,7 @@
         bool BudgetStockExists = false;
         BudgetStockExists = await CheckBudgetStocks();
 
-        if ( BudgetStockExists || facturarSinStock)
+        if (BudgetStockExists || facturarSinStock)
         {
             await OpenDialog();
         }

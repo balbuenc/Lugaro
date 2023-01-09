@@ -131,6 +131,9 @@
         if (p.estado_venta == "FACTURADO")
             return;
 
+        if (p.estado == "APROBADO" || p.estado == "REMITIDO" || p.estado == "PRESTAMO")
+            return;
+
         //Obtengo el detalle del producto a ser insertado
         product = await ProductService.GetProductDetails(ProductID);
 
