@@ -38,8 +38,8 @@ namespace CoreERP.Data.Repositories
             var db = dbConnection();
             var sql = @"select s.id_stock, s.id_deposito, s.id_producto, p.codigo, p.producto, d.deposito, s.cantidad 
                         from public.productos p 
-                        left outer join public.stock s on p.id_producto = s.id_producto 
-                        left outer join public.depositos d on d.id_deposito = s.id_deposito";
+                        inner join public.stock s on p.id_producto = s.id_producto 
+                        inner join public.depositos d on d.id_deposito = s.id_deposito";
 
 
             return await db.QueryAsync<Stock>(sql, new { });

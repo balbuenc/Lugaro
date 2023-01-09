@@ -60,7 +60,6 @@
                                             <SfNumericTextBox @bind-Value="@(stoc.id_stock)" Enabled="false" Placeholder="ID" FloatLabelType="FloatLabelType.Always"></SfNumericTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            @*<SfTextBox @bind-Value="@(stoc.codigo)" Enabled="false" Placeholder="Código" FloatLabelType="FloatLabelType.Always"> </SfTextBox>*@
                                             <SfDropDownList DataSource="@products"
                                                         TItem="Product"
                                                         TValue="Int32"

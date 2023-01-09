@@ -35,6 +35,7 @@
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Notifications;
 @using Syncfusion.Blazor.Popups
 
 
@@ -562,6 +563,11 @@
         </DialogTemplates>
 
     </SfDialog>
+
+
+    <SfToast @ref="ToastObjError" Title="Error!" Content="El presupuesto posee items sin Stock!. No es posible facturarlo." CssClass="@ToastCssClass">
+        <ToastPosition X="Right" Y="Bottom"></ToastPosition>
+    </SfToast>
 </div>
 
 
@@ -578,7 +584,9 @@
     public bool IsRepositionVisible { get; set; } = false;
     public bool IsCancelInvoiceVisible { get; set; } = false;
 
+    SfToast ToastObjError;
 
+    private string ToastCssClass = "";
 
     public bool isChecked = true;
 
@@ -591,6 +599,7 @@
     private String mainURL;
     private String mainLogo;
     private string imagePath;
+    private bool facturarSinStock = true;
 
     public string ErrorDetails = "";
     public string Titulo = "";
@@ -741,6 +750,15 @@
 
             imagePath = mainURL + mainLogo;
 
+            try
+            {
+                facturarSinStock = Convert.ToBoolean(await erpTools.GetSystemParam("facturarSinStock"));
+            }
+            catch(Exception ex)
+            {
+                facturarSinStock = true;
+            }
+
             //Configure Compact Product Search
             compactItemSearch.BudgetID = id;
 
@@ -778,7 +796,7 @@
     }
 
 
-    private void OpenDialog()
+    private async Task OpenDialog()
     {
         this.IsVisible = true;
     }
@@ -854,7 +872,7 @@
         header.fecha_factura = FechaFactura;
 
         await BudgetService.SaveBudget(header);
-        // CheckInvoiceNumber();
+
         await Invoice();
 
         //Genero el asiento en el libro diario para la factura generada
@@ -1051,11 +1069,55 @@
         Navigate();
     }
 
-    protected async void CheckInvoiceNumber()
+    protected async Task CheckInvoiceNumber()
     {
-        OpenDialog();
+        bool BudgetStockExists = false;
+        BudgetStockExists = await CheckBudgetStocks();
+
+        if ( BudgetStockExists || facturarSinStock)
+        {
+            await OpenDialog();
+        }
+        else
+        {
+            await ShowToast();
+        }
     }
 
+    protected async Task<bool> CheckBudgetStocks()
+    {
+        Stock s;
+        bool StockExists = false;
+
+        for (int i = 0; i < GridData.Count(); i++)
+        {
+            try
+            {
+                BudgetDetails item = GridData.ElementAt(i);
+                s = await StockService.GetStockDetails(item.id_producto);
+
+                if (s.cantidad <= 0)
+                {
+                    StockExists = false;
+                    return StockExists;
+                }
+                else
+
+                {
+                    StockExists = true;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        return StockExists;
+    }
 
 
     protected async Task Invoice()
@@ -1076,12 +1138,6 @@
                 //Discount Stock of products
                 await ModifyStock();
             }
-
-
-
-            //Save Budget header
-            //header.estado = "FACTURADO";
-            //await BudgetService.SaveBudget(header);
 
 
             Navigate();
@@ -1308,6 +1364,12 @@
     private void Navigate()
     {
         NavigationManager.NavigateTo($"/Budgets");
+    }
+
+
+    private async Task ShowToast()
+    {
+        await this.ToastObjError.Show();
     }
 
 }

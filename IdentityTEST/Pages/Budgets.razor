@@ -273,13 +273,13 @@
                                 </Template>
                             </GridColumn>
                             <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="20" IsPrimaryKey="true"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#" Visible="true" Width="20"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="35"></GridColumn>
                             <GridColumn Field=@nameof(Budget.estado_venta) HeaderText="Facturación" Visible="true" Width="35"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="30" Visible="true"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="40"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.moneda) HeaderText="Mon." Width="15" Visible="false"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="40" Visible="true"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.moneda) HeaderText="Mon." Width="20" Visible="false"></GridColumn>
                             <GridColumn Field=@nameof(Budget.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="25"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.estado) Width="30" HeaderText="Est. venta">
+                            <GridColumn Field=@nameof(Budget.estado) Width="40" HeaderText="Est. venta">
                                 <Template>
                                     @{
                                         var budg = (context as Budget);
