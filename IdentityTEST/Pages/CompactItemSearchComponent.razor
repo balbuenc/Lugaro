@@ -22,71 +22,43 @@
     }
 </style>
 
+
+
 <div class="container-fluid">
-
-    <div class="col-lg-12 control-section">
-        <div class="content-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <h6><b>Buscador de productos</b></h6>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        @if (GridData == null)
-                        {
-                            <div class="alert alert-warning" role="alert"><p><em>Cargando datos...</em></p></div>
-                        }
-                        else
-                        {
-                            <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" DataSource="@GridData" AllowFiltering="true">
-                                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.FilterBar" Mode="FilterBarMode.OnEnter"></GridFilterSettings>
-                                <GridEvents TValue="Product" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
-                                <GridPageSettings PageSize="5"></GridPageSettings>
-                                <GridColumns>
-                                    <GridColumn Field=@nameof(Product.id_producto) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
-                                    <GridColumn Field=@nameof(Product.codigo) HeaderText="Código" Width="30" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
-                                    <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="100" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
-                                    <GridColumn Field=@nameof(Product.precio) HeaderText="Precio" Width="20" Format="N2" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
-                                    <GridColumn Field=@nameof(Product.deposito) HeaderText="Depósito" Width="20" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
-                                    <GridColumn Field=@nameof(Product.cantidad) HeaderText="Cant." Width="15" Format="N0" AllowFiltering="false"></GridColumn>
-
-                                </GridColumns>
-                            </SfGrid>
-                            <style>
-                                h6,
-                                .h6 {
-                                    font-size: 140%;
-                                    color: white;
-                                }
-
-                                .e-grid th.e-headercell {
-                                    background-color: lightgray;
-                                }
-
-
-
-                                .e-grid tr.e-row.e-row {
-                                    background-color: whitesmoke;
-                                }
-
-                                .e-headercell {
-                                    font-family: "Segoe UI";
-                                    font-weight: bold;
-                                    color: black
-                                }
-                            </style>
-                        }
-                    </div>
-                </div>
-            </div>
-
+    <div class="row">
+        <div class="col-12" >
+            <b>Buscador de productos</b>
         </div>
-
     </div>
-
+    <div class="row">
+        <div class="col-12">
+            @if (GridData == null)
+            {
+                <div class="alert alert-warning" role="alert"><p><em>Cargando datos...</em></p></div>
+            }
+            else
+            {
+                <SfGrid ID="Grid" @ref="Grid" AllowPaging="true" AllowSorting="true" DataSource="@GridData" AllowFiltering="true">
+                    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.FilterBar" Mode="FilterBarMode.OnEnter"></GridFilterSettings>
+                    <GridEvents TValue="Product" OnRecordDoubleClick="RecordDoubleClickHandler"></GridEvents>
+                    <GridPageSettings PageSize="3"></GridPageSettings>
+                    <GridColumns>
+                        <GridColumn Field=@nameof(Product.id_producto) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true"></GridColumn>
+                        <GridColumn Field=@nameof(Product.codigo) HeaderText="Código" Width="30" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
+                        <GridColumn Field=@nameof(Product.producto) HeaderText="Producto" Width="100" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
+                        <GridColumn Field=@nameof(Product.precio) HeaderText="Precio" Width="20" Format="N2" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
+                        <GridColumn Field=@nameof(Product.deposito) HeaderText="Depósito" Width="20" FilterSettings="@(new FilterSettings { Operator = Operator.Contains })"></GridColumn>
+                        <GridColumn Field=@nameof(Product.cantidad) HeaderText="Cant." Width="15" Format="N0" AllowFiltering="false"></GridColumn>
+                    </GridColumns>
+                </SfGrid>
+            }
+        </div>
+    </div>
 </div>
+
+
+
+
 
 
 @code {

@@ -144,7 +144,7 @@
     <div class="col-md-12 control-section">
         <div class="content-wrapper">
             <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-12">
                     <div class="jumbotron py-1" style="font-size:small">
                         <div class="d-flex align-items-stretch flex-column flex-md-row">
                             <img src="@imagePath" style="object-fit: contain;" width="154">
@@ -173,44 +173,80 @@
                                     <td>
                                         <p class="m-0"><b>Fecha:</b> @Fecha</p>
                                     </td>
-                                </tr>
-                                <tr>
                                     <td>
                                         <p class="m-0"><b>Moneda:</b> @Moneda</p>
                                     </td>
                                     <td>
                                         <p class="m-0"><b>Cotizacion:</b>@Cotizacion</p>
                                     </td>
+                                </tr>
+                                <tr>
                                     <td>
                                         <p class="m-0"><b>Condición:</b>@Condicion</p>
                                     </td>
-                                </tr>
-                                <tr>
                                     <td>
                                         <p class="m-0"><b>Exento:</b>@Exento</p>
                                     </td>
                                     <td>
                                         <p class="m-0"><b>Motivo:</b>@Motivo</p>
                                     </td>
-                                    <td>
+                                     <td>
                                         <p class="m-0"><b>Est. fact.:</b>@EstadoFacturacion</p>
                                     </td>
+                                    <td>
+                                        <p class="m-0"><b style="color:blue">@Titulo</b></p>
+                                    </td>
                                 </tr>
+                              
                             </tbody>
-
                         </table>
-
-                        <small class="mb-0">@Titulo</small>
-
                     </div>
-                </div>
-                <div class="col-md-7">
-                    <div class="row">
-                        <CompactItemSearchComponent @ref="@compactItemSearch" RefreshBudgetDetails="RefreshBudgetDetails"></CompactItemSearchComponent>
-                    </div>
-
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <CompactItemSearchComponent @ref="@compactItemSearch" RefreshBudgetDetails="RefreshBudgetDetails"></CompactItemSearchComponent>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <b>Descuentos por marca</b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <SfGrid ID="discountLimits" @ref="GridDiscounts" AllowSorting="true" DataSource="@discountLimits">
+                                <GridEditSettings AllowAdding="true" AllowEditing="true" Mode="EditMode.Normal"></GridEditSettings>
+                                <GridEvents OnActionBegin="OnDiscountLimitsBeginHandler" TValue="DiscountLimit"></GridEvents>
+                                <GridColumns>
+                                    <GridColumn Field=@nameof(DiscountLimit.id_limite_descuento) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true">
+                                        <EditTemplate>
+                                            <SfNumericTextBox @bind-Value="@((context as DiscountLimit).id_limite_descuento)" Enabled="false" Placeholder="Límite actual" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                        </EditTemplate>
+                                    </GridColumn>
+                                    <GridColumn Field=@nameof(DiscountLimit.marca) HeaderText="Marca" Width="10">
+                                        <EditTemplate>
+                                            <SfTextBox @bind-Value="@((context as DiscountLimit).marca)" Enabled="false" Placeholder="Marca" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
+                                        </EditTemplate>
+                                    </GridColumn>
+                                    <GridColumn Field=@nameof(DiscountLimit.limite) HeaderText="Límite" Width="10">
+                                        <EditTemplate>
+                                            <SfNumericTextBox @bind-Value="@((context as DiscountLimit).limite)" Enabled="false" Placeholder="Límite" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
+                                        </EditTemplate>
+                                    </GridColumn>
+                                    <GridColumn Field=@nameof(DiscountLimit.limite_actual) HeaderText="%Desc." Width="10">
+                                        <EditTemplate>
+                                            <SfNumericTextBox @bind-Value="@((context as DiscountLimit).limite_actual)" Enabled="true" Placeholder="Límite actual" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
+                                        </EditTemplate>
+                                    </GridColumn>
+
+                                </GridColumns>
+                            </SfGrid>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row" style="padding:2px 2px 2px 2px">
                 <div class="col-md-12" style="vertical-align:middle;">
                     @if (!this.IsPrintable)
@@ -274,7 +310,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-9">
+                <div class="col-md-12">
                     <SfGrid ID="Grid" @ref="Grid" Width="100%" DataSource="@GridData" Toolbar="@ToolbarItems" AllowTextWrap="true" EditSettings="@gridEditSettings">
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="BudgetDetails"></GridEvents>
                         <GridPageSettings PageSize="@PageSize"></GridPageSettings>
@@ -387,37 +423,8 @@
                             </GridColumn>
                         </GridColumns>
                     </SfGrid>
-                </div>
-                <div class="col-md-3">
-                    <SfGrid ID="discountLimits" @ref="GridDiscounts" AllowSorting="true" DataSource="@discountLimits">
-                        <GridEditSettings AllowAdding="true" AllowEditing="true" Mode="EditMode.Normal"></GridEditSettings>
-                        <GridEvents OnActionBegin="OnDiscountLimitsBeginHandler" TValue="DiscountLimit"></GridEvents>
-                        <GridColumns>
-                            <GridColumn Field=@nameof(DiscountLimit.id_limite_descuento) HeaderText="ID" Visible="false" TextAlign="TextAlign.Center" Width="10" IsPrimaryKey="true">
-                                <EditTemplate>
-                                    <SfNumericTextBox @bind-Value="@((context as DiscountLimit).id_limite_descuento)" Enabled="false" Placeholder="Límite actual" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
-                                </EditTemplate>
-                            </GridColumn>
-                            <GridColumn Field=@nameof(DiscountLimit.marca) HeaderText="Marca" Width="10">
-                                <EditTemplate>
-                                    <SfTextBox @bind-Value="@((context as DiscountLimit).marca)" Enabled="false" Placeholder="Marca" FloatLabelType="FloatLabelType.Always"> </SfTextBox>
-                                </EditTemplate>
-                            </GridColumn>
-                            <GridColumn Field=@nameof(DiscountLimit.limite) HeaderText="Límite" Width="10">
-                                <EditTemplate>
-                                    <SfNumericTextBox @bind-Value="@((context as DiscountLimit).limite)" Enabled="false" Placeholder="Límite" FloatLabelType="FloatLabelType.Always" ShowSpinButton="false"> </SfNumericTextBox>
-                                </EditTemplate>
-                            </GridColumn>
-                            <GridColumn Field=@nameof(DiscountLimit.limite_actual) HeaderText="%Desc." Width="10">
-                                <EditTemplate>
-                                    <SfNumericTextBox @bind-Value="@((context as DiscountLimit).limite_actual)" Enabled="true" Placeholder="Límite actual" FloatLabelType="FloatLabelType.Always"> </SfNumericTextBox>
-                                </EditTemplate>
-                            </GridColumn>
-
-                        </GridColumns>
-                    </SfGrid>
-                    <style>
-                        h6,
+                     <style>
+                       h6,
                         .h6 {
                             font-size: 140%;
                             color: white;
@@ -440,6 +447,7 @@
                         }
                     </style>
                 </div>
+
             </div>
         </div>
     </div>
@@ -708,7 +716,7 @@
             discountLimits = (await DiscountLimitService.GetDiscountLimitsByBudgetID(id)).ToList();
 
             //Load header data
-            Titulo = "Detalle de prespuesto ID. " + BudgetID;
+            Titulo = "Detalle de presupuesto ID. " + BudgetID;
             Cliente = header.cliente;
             Fecha = header.fecha.ToShortDateString();
             FechaFactura = DateTime.Now;
@@ -765,7 +773,7 @@
 
 
             //Set Details Grid default state
-            if (EstadoFacturacion == "FACTURADO" )
+            if (EstadoFacturacion == "FACTURADO")
             {
                 await DisableEdit();
             }
@@ -775,7 +783,7 @@
             }
 
             //Bloqueo la edicion en el caso de que el presupuesto ya este aprobado
-            if(Estado == "GENERADO" || Estado == "PENDIENTE")
+            if (Estado == "GENERADO" || Estado == "PENDIENTE")
             {
                 await EnableEdit();
             }
