@@ -145,7 +145,7 @@
         <div class="content-wrapper">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="jumbotron py-1" style="font-size:small">
+                    <div class="jumbotron py-1" style="font-size:small; background-color: cornflowerblue">
                         <div class="d-flex align-items-stretch flex-column flex-md-row">
                             <img src="@imagePath" style="object-fit: contain;" width="154">
                             <div class="ml-4 d-sm-none d-md-block"></div>
@@ -194,7 +194,7 @@
                                         <p class="m-0"><b>Est. fact.:</b>@EstadoFacturacion</p>
                                     </td>
                                     <td>
-                                        <p class="m-0"><b style="color:blue">@Titulo</b></p>
+                                        <p class="m-0"><h6>@Titulo</h6></p>
                                     </td>
                                 </tr>
                               
@@ -276,6 +276,7 @@
                     {
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintRemission">Imprimir remisión</SfButton>
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
+                        <SfButton CssClass="e-reverse" IconPosition="IconPosition.Right" OnClick="ModifyBudget">Modificar</SfButton>
                     }
 
                     @if (Estado.ToUpper() == "PRESTAMO")
@@ -325,7 +326,7 @@
                                                 var aggregate = (con as AggregateTemplateContext);
                                                 <div class="row">
                                                     <div class="col-12 text-right">
-                                                        <b>@aggregate.Sum </b>
+                                                        <h5><b>@aggregate.Sum </b></h5>
                                                     </div>
 
                                                 </div>
@@ -987,7 +988,7 @@
         }
     }
 
-    protected void PrintRemission()
+    protected async Task PrintRemission()
     {
         try
         {
@@ -996,7 +997,7 @@
             String route;
             route = String.Concat("RemissionReport/", BudgetID);
 
-            Js.InvokeAsync<object>("open", route, "_blank");
+            await Js.InvokeAsync<object>("open", route, "_blank");
 
         }
         catch (Exception ex)
@@ -1005,8 +1006,31 @@
         }
     }
 
+    protected async Task ModifyBudget()
+    {
+        try
+        {
+            if (header.motivo == "VENTA" || header.motivo == "MUESTRA")
+            {
+                await ReverseStock();
+            }
+        }
+        catch (Exception e)
+        {
+            IsCancelInvoiceVisible = false;
+            Message = "Error al revertir Stock por MODIFICACION.: Se generaron errores en la reversión de los productos.  " + NroPresupuesto + ", \n" + e.Message;
+            IsMessageVisible = true;
+            return;
+        }
 
-    protected void PrintSpecialRemission()
+        //Actualizo el estado del Presupuesto a Aprobado
+        header.estado = "APROBADO";
+        await BudgetService.SaveBudget(header);
+        await Navigate();
+    }
+
+
+    protected async Task PrintSpecialRemission()
     {
         try
         {
@@ -1014,7 +1038,7 @@
             String route;
             route = String.Concat("SpecialRemissionReport/", BudgetID);
 
-            Js.InvokeAsync<object>("open", route, "_blank");
+            await Js.InvokeAsync<object>("open", route, "_blank");
 
         }
         catch (Exception ex)
@@ -1027,7 +1051,7 @@
     {
         header.estado = "PENDIENTE";
         await BudgetService.SaveBudget(header);
-        Navigate();
+        await Navigate();
 
     }
 
@@ -1035,7 +1059,7 @@
     {
         header.estado = "APROBADO";
         await BudgetService.SaveBudget(header);
-        Navigate();
+        await Navigate();
     }
 
 
@@ -1063,7 +1087,7 @@
             return;
         }
 
-        //Modifico el estado del prespuesto
+        //Modifico el estado del presupuesto
         try
         {
             //registro el estado del presupuesto como Aprobado y Quito el Nro de Factura
@@ -1091,7 +1115,7 @@
             return;
         }
 
-        Navigate();
+        await Navigate();
     }
 
     protected async Task CheckInvoiceNumber()
@@ -1165,7 +1189,7 @@
             }
 
 
-            Navigate();
+            await Navigate();
         }
         catch (Exception ex)
         {
@@ -1195,7 +1219,7 @@
         }
 
 
-        Navigate();
+        await Navigate();
     }
 
 
@@ -1265,6 +1289,8 @@
 
 
         IsRepositionVisible = true;
+
+        await Navigate();
     }
 
 
@@ -1273,7 +1299,7 @@
         header.estado = "REMITIDO";
         await BudgetService.SaveBudget(header);
 
-        Navigate();
+        await Navigate();
     }
 
 
@@ -1386,7 +1412,7 @@
         await this.Grid.ExcelExport(ExportProperties);
     }
 
-    private void Navigate()
+    private async Task Navigate()
     {
         NavigationManager.NavigateTo($"/Budgets");
     }
