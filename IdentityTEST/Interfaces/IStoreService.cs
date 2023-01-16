@@ -11,6 +11,8 @@ namespace CoreERP.UI.Interfaces
         Task<IEnumerable<Store>> GetAllStores();
 
         Task<Store> GetStoreDetails(int id);
+        Task<Store> GetStoreDetailsByName(string name);
+
 
         Task SaveStore(Store store);
 

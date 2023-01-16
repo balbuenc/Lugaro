@@ -52,6 +52,15 @@ namespace CoreERP.Data.Repositories
             return await db.QueryFirstOrDefaultAsync<Store>(sql, new { Id = id });
         }
 
+        public async Task<Store> GetStoreDetailsByName(string name)
+        {
+            var db = dbConnection();
+            var sql = "select * from depositos  where deposito = @deposito";
+
+
+            return await db.QueryFirstOrDefaultAsync<Store>(sql, new { deposito = name });
+        }
+
         public async Task<bool> InsertStore(Store store)
         {
             var db = dbConnection();

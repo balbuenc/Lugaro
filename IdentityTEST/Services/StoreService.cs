@@ -41,6 +41,14 @@ namespace CoreERP.UI.Services
              );
         }
 
+        public async Task<Store> GetStoreDetailsByName(string name)
+        {
+            return await JsonSerializer.DeserializeAsync<Store>(
+             await _httpClient.GetStreamAsync($"api/store/GetStoreDetailsByName/{name}"),
+             new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+             );
+        }
+
         public async Task SaveStore(Store store)
         {
             var clientJson = new StringContent(JsonSerializer.Serialize(store),

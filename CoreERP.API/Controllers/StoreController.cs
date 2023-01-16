@@ -31,6 +31,13 @@ namespace CoreERP.API.Controllers
             return Ok(await _StoreRepository.GetStoreDetails(id));
         }
 
+        [HttpGet]
+        [Route("GetStoreDetailsByName/{name}")]
+        public async Task<IActionResult> GetStoreDetailsByName(string name)
+        {
+            return Ok(await _StoreRepository.GetStoreDetailsByName(name));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateStore([FromBody] Store store)
         {

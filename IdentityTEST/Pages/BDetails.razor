@@ -555,7 +555,7 @@
 
     </SfDialog>
 
-    <SfDialog Width="400px" Height="200px" IsModal="true" @bind-Visible="@IsMessageVisible" ShowCloseIcon="true">
+    <SfDialog Width="600px" Height="400px" IsModal="true" @bind-Visible="@IsMessageVisible" ShowCloseIcon="true">
         <DialogEvents OnOverlayClick="@OnOverlayclick">
         </DialogEvents>
 
@@ -1024,7 +1024,7 @@
         }
 
         //Actualizo el estado del Presupuesto a Aprobado
-        header.estado = "APROBADO";
+        header.estado = "PENDIENTE";
         await BudgetService.SaveBudget(header);
         await Navigate();
     }
@@ -1268,7 +1268,7 @@
         }
         catch (Exception ex)
         {
-            throw ex;
+            
         }
 
         try

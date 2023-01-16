@@ -11,6 +11,7 @@ namespace CoreERP.Data.Repositories
         Task<IEnumerable<Store>> GetAllStores();
 
         Task<Store> GetStoreDetails(int id);
+        Task<Store> GetStoreDetailsByName(string name);
 
         Task<bool> InsertStore(Store store);
 

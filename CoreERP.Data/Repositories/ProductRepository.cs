@@ -116,13 +116,20 @@ namespace CoreERP.Data.Repositories
 
         public async Task<Product> GetProductDetailsByCode(string code)
         {
-            var db = dbConnection();
-            var sql = @"select p.*
+            try
+            {
+                var db = dbConnection();
+                var sql = @"select p.*
                         from productos p
                         where codigo = @Code";
 
 
-            return await db.QueryFirstOrDefaultAsync<Product>(sql, new { Code = code });
+                return await db.QueryFirstOrDefaultAsync<Product>(sql, new { Code = code });
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
 
         public async Task<bool> InsertProduct(Product product)

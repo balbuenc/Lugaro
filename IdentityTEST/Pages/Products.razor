@@ -128,7 +128,7 @@
         <div class="content-wrapper">
             <div class="alert alert-title" role="banner">
                 <b>Productos</b>
-                <SfButton IsPrimary="true" IconCss="e-btn-sb-icons e-open-icon" IconPosition=@IconPosition.Right OnClick=OpenImportDialog>Importar productos</SfButton>
+               @* <SfButton IsPrimary="true" IconCss="e-btn-sb-icons e-open-icon" IconPosition=@IconPosition.Right OnClick=OpenImportDialog>Importar productos</SfButton>*@
                 <SfButton IsPrimary="true" IconCss="e-btn-sb-icons e-open-icon" IconPosition=@IconPosition.Right OnClick=OpenStockImportDialog>Importar Stock</SfButton>
             </div>
         </div>
@@ -604,7 +604,7 @@
         }
     }
 
-    private async Task OnStockImportChange(UploadChangeEventArgs args)
+    private void OnStockImportChange(UploadChangeEventArgs args)
     {
         try
         {
@@ -620,7 +620,7 @@
             }
 
             //Proceso el archivo
-            await StockImportCSV(path);
+            Task.Run(async () => await StockImportCSV(path));
 
             //Reload Products
             NavigationManager.NavigateTo($"/Product", true);
@@ -637,10 +637,16 @@
     protected async Task StockImportCSV(string csvPath)
     {
 
-        Product p = new Product();
-        Stock s = new Stock();
+        Product p;
+        Stock s;
+        Store store;
+
+        Int32 id = 0;
         string codigo = "";
+        string producto = "";
+        string deposito = "";
         Int32 cantidad = 0;
+
         Int32 id_deposito = 0;
 
 
@@ -653,7 +659,6 @@
         {
             if (!string.IsNullOrEmpty(row))
             {
-
                 int col = 0;
 
                 //Execute a loop over the columns.
@@ -663,24 +668,83 @@
                     {
                         if (col == 0)
                         {
-                            codigo = cell;
+                            try
+                            {
+                                id = Convert.ToInt32(cell);
+                            }
+                            catch (Exception ex)
+                            {
+                                id = 0;
+                            }
                         }
                         else if (col == 1)
                         {
-                            cantidad = Convert.ToInt32(cell);
+                            codigo = cell;
                         }
                         else if (col == 2)
                         {
-                            id_deposito = Convert.ToInt32(cell);
+                            producto = cell;
+                        }
+                        else if (col == 3)
+                        {
+                            deposito = cell;
+                        }
+                        else if (col == 4)
+                        {
+                            try
+                            {
+                                cantidad = Convert.ToInt32(cell);
+                            }
+                            catch (Exception ex)
+                            {
+                                cantidad = 0;
+                            }
                         }
 
                         col++;
                     }
 
-                    p = await ProductService.GetProductDetailsByCode(codigo);
+                    //Obtengo el item o servicio por su codigo
+                    try
+                    {
+                        p = await ProductService.GetProductDetailsByCode(codigo);
+                    }
+                    catch (Exception ex)
+                    {
+                        p = new Product();
+                        p.codigo = codigo;
+                        p.producto = producto;
+
+                        p.id_origen = 1;
+                        p.costo = 0;
+                        p.precio = 0;
+
+                        await ProductService.SaveProduct(p);
+
+                        p = await ProductService.GetProductDetailsByCode(codigo);
+                    }
+
+
+                    try
+                    {
+                        store = await StoreService.GetStoreDetailsByName(deposito);
+                    }
+                    catch (Exception ex)
+                    {
+                        store = new Store();
+                        store.deposito = deposito;
+                        store.descripcion = deposito;
+
+                        await StoreService.SaveStore(store);
+
+                        store = await StoreService.GetStoreDetailsByName(deposito);
+
+                    }
+
+                    s = new Stock();
 
                     s.id_producto = p.id_producto;
-                    s.id_deposito = id_deposito;
+                    s.id_deposito = store.id_deposito;
                     s.cantidad = cantidad;
 
                     await StockService.SaveStock(s);

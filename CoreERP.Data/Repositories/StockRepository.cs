@@ -152,7 +152,7 @@ namespace CoreERP.Data.Repositories
                 {
                     
                     var sql = @"UPDATE public.stock
-                                SET cantidad= cantidad + @cantidad
+                                SET cantidad= @cantidad
                                 WHERE id_deposito=@id_deposito AND id_producto=@id_producto;
                                 ";
 
