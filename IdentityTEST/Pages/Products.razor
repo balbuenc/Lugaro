@@ -642,12 +642,10 @@
         Store store;
 
         Int32 id = 0;
-        string codigo = "";
-        string producto = "";
-        string deposito = "";
+        String codigo = "";
+        String producto = "";
+        String deposito = "";
         Int32 cantidad = 0;
-
-        Int32 id_deposito = 0;
 
 
         //Read the contents of CSV file.
@@ -718,6 +716,8 @@
                         p.id_origen = 1;
                         p.costo = 0;
                         p.precio = 0;
+                        p.id_marca = 1;
+                        p.id_moneda = 1;
 
                         await ProductService.SaveProduct(p);
 

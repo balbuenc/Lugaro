@@ -64,6 +64,8 @@ namespace CoreERP.UI.Services
 
         public async Task<Product> GetProductDetailsByCode(string code)
         {
+            code = code.Replace("/", "");
+
             return await JsonSerializer.DeserializeAsync<Product>(
               await _httpClient.GetStreamAsync($"api/product/GetProductDetailsByCode/{code}"),
               new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }

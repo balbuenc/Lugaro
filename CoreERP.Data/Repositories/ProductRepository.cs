@@ -97,7 +97,7 @@ namespace CoreERP.Data.Repositories
             }
         }
 
-     
+
 
         public async Task<Product> GetProductDetails(int id)
         {
@@ -120,13 +120,13 @@ namespace CoreERP.Data.Repositories
             {
                 var db = dbConnection();
                 var sql = @"select p.*
-                        from productos p
-                        where codigo = @Code";
+                            from productos p
+                            where trim(both from replace(codigo,'/','')) = @Code";
 
 
                 return await db.QueryFirstOrDefaultAsync<Product>(sql, new { Code = code });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
@@ -134,31 +134,39 @@ namespace CoreERP.Data.Repositories
 
         public async Task<bool> InsertProduct(Product product)
         {
-            var db = dbConnection();
+            try
+            {
+                var db = dbConnection();
 
-            var sql = @"INSERT INTO public.productos
+                var sql = @"INSERT INTO public.productos
                         (id_origen, producto, codigo, id_marca, descripcion, id_proveedor, costo, precio, dias_garantia, id_moneda, imagen, id_plan_cuenta)
                         values(@id_origen, @producto, @codigo, @id_marca, @descripcion, @id_proveedor, @costo, @precio, @dias_garantia, @id_moneda, @imagen, @id_plan_cuenta)";
 
-            var result = await db.ExecuteAsync(sql, new
-            {
-                product.id_origen,
-                product.producto,
-                product.codigo,
-                product.id_marca,
-                product.descripcion,
-                product.id_proveedor,
-                product.costo,
-                product.precio,
-                product.dias_garantia,
-                product.id_moneda,
-                product.imagen,
-                product.id_plan_cuenta
-            }
-            );
+                var result = await db.ExecuteAsync(sql, new
+                {
+                    product.id_origen,
+                    product.producto,
+                    product.codigo,
+                    product.id_marca,
+                    product.descripcion,
+                    product.id_proveedor,
+                    product.costo,
+                    product.precio,
+                    product.dias_garantia,
+                    product.id_moneda,
+                    product.imagen,
+                    product.id_plan_cuenta
+                }
+                );
 
-            return result > 0;
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
+
 
         public async Task<bool> UpdateProduct(Product product)
         {
