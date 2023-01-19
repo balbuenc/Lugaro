@@ -189,7 +189,7 @@
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <SfDatePicker TValue="DateTime" @bind-Value="@(budg.fecha)" Format="dd/MM/yyyy"  Placeholder="Fecha" FloatLabelType="FloatLabelType.Always" Enabled="@(CanDeleteBudget(budg))"> </SfDatePicker>
+                                            <SfDatePicker TValue="DateTime" @bind-Value="@(budg.fecha)" Format="dd/MM/yyyy" Placeholder="Fecha" FloatLabelType="FloatLabelType.Always" Enabled="@(CanDeleteBudget(budg))"> </SfDatePicker>
                                         </div>
                                         <div class="form-group col-md-8">
                                             <SfDropDownList DataSource="@clients" ID="ClientDropDown"
@@ -203,12 +203,12 @@
                                             </SfDropDownList>
                                         </div>
                                         <div class="form-group col-md-1">
-                                            <SfButton CssClass="e-round" IconCss="e-icons e-plus-icon" IsPrimary="true" OnClick="ShowNewClientDialog"  Disabled="@(!CanDeleteBudget(budg))"></SfButton>
+                                            <SfButton CssClass="e-round" IconCss="e-icons e-plus-icon" IsPrimary="true" OnClick="ShowNewClientDialog" Disabled="@(!CanDeleteBudget(budg))"></SfButton>
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <SfTextBox @bind-Value="@(budg.plazo_entrega)"  Placeholder="Plazo de entrega" FloatLabelType="FloatLabelType.Always" Enabled="@(CanDeleteBudget(budg))"></SfTextBox>
+                                            <SfTextBox @bind-Value="@(budg.plazo_entrega)" Placeholder="Plazo de entrega" FloatLabelType="FloatLabelType.Always" Enabled="@(CanDeleteBudget(budg))"></SfTextBox>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <SfTextBox @bind-Value="@(budg.forma_pago)" Placeholder="Forma de pago" FloatLabelType="FloatLabelType.Always" Enabled="@(CanDeleteBudget(budg))"></SfTextBox>
@@ -278,8 +278,8 @@
                             <GridColumn Field=@nameof(Budget.id_presupuesto) HeaderText="ID" Width="20" IsPrimaryKey="true"></GridColumn>
                             <GridColumn Field=@nameof(Budget.nro_presupuesto) HeaderText="#Fact." Visible="true" Width="35"></GridColumn>
                             <GridColumn Field=@nameof(Budget.estado_venta) HeaderText="Facturación" Visible="true" Width="35"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="40" Visible="true"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.vendedor) HeaderText="Usuario" Width="30" Visible="true"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.cliente) HeaderText="Cliente" Width="150"></GridColumn>
                             <GridColumn Field=@nameof(Budget.moneda) HeaderText="Mon." Width="20" Visible="false"></GridColumn>
                             <GridColumn Field=@nameof(Budget.fecha) HeaderText="Fecha" Format="dd/MM/yyyy" Width="25"></GridColumn>
                             <GridColumn Field=@nameof(Budget.estado) Width="40" HeaderText="Est. venta">
@@ -325,11 +325,12 @@
                                     }
                                 </Template>
                             </GridColumn>
-                            <GridColumn Field=@nameof(Budget.direccion_entrega) HeaderText="Entregar en" Visible="false" Width="25"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.contacto) HeaderText="Contacto" Visible="false" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Visible="false" Width="15"></GridColumn>
-                            <GridColumn Field=@nameof(Budget.obra) HeaderText="Obra" Visible="false" Width="15"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.direccion_entrega) HeaderText="Entregar en" Visible="false" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.contacto) HeaderText="Contacto" Visible="false" Width="50"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.condicion) HeaderText="T. fact." Visible="false" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.obra) HeaderText="Obra" Visible="false" Width="100"></GridColumn>
                             <GridColumn Field=@nameof(Budget.motivo) HeaderText="Motivo" Visible="true" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Budget.observaciones) HeaderText="Obs." Visible="true" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(Budget.Total) HeaderText="Total" Visible="true" Width="25" TextAlign="TextAlign.Right">
                                 <Template>
                                     @{
