@@ -353,15 +353,22 @@
                                         var budg = (context as Budget);
                                         if (budg.estado != null)
                                         {
-                                            if (budg.motivo.ToUpper() == "MUESTRA")
+                                            if (budg.motivo != null)
                                             {
-                                                if (budg.fecha.AddDays(budg.dias_devolucion) >= DateTime.Now)
+                                                if (budg.motivo.ToUpper() == "MUESTRA")
                                                 {
-                                                    <h6><span class="badge bg-warning">@budg.fecha_devolucion.ToShortDateString()</span></h6>
+                                                    if (budg.fecha.AddDays(budg.dias_devolucion) >= DateTime.Now)
+                                                    {
+                                                        <h6><span class="badge bg-warning">@budg.fecha_devolucion.ToShortDateString()</span></h6>
+                                                    }
+                                                    else
+                                                    {
+                                                        <h6><span class="badge bg-danger">@budg.fecha_devolucion.ToShortDateString()</span></h6>
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    <h6><span class="badge bg-danger">@budg.fecha_devolucion.ToShortDateString()</span></h6>
+                                                    <p></p>
                                                 }
                                             }
                                             else

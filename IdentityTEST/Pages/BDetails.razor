@@ -190,14 +190,14 @@
                                     <td>
                                         <p class="m-0"><b>Motivo:</b>@Motivo</p>
                                     </td>
-                                     <td>
+                                    <td>
                                         <p class="m-0"><b>Est. fact.:</b>@EstadoFacturacion</p>
                                     </td>
                                     <td>
                                         <p class="m-0"><h6>@Titulo</h6></p>
                                     </td>
                                 </tr>
-                              
+
                             </tbody>
                         </table>
                     </div>
@@ -283,6 +283,7 @@
                     {
                         <SfButton CssClass="e-approve" IconPosition="IconPosition.Right" OnClick="PrintSpecialRemission">Imprimir remisión esp.</SfButton>
                         <SfButton CssClass="e-reverse" IconPosition="IconPosition.Right" OnClick="ReverseStock">Devolución</SfButton>
+                        <SfButton CssClass="e-reverse" IconPosition="IconPosition.Right" OnClick="ModifyBudget">Modificar</SfButton>
                     }
 
 
@@ -424,8 +425,8 @@
                             </GridColumn>
                         </GridColumns>
                     </SfGrid>
-                     <style>
-                       h6,
+                    <style>
+                        h6,
                         .h6 {
                             font-size: 140%;
                             color: white;
@@ -1026,7 +1027,7 @@
         //Actualizo el estado del Presupuesto a Aprobado
         header.estado = "PENDIENTE";
         await BudgetService.SaveBudget(header);
-        await Navigate();
+        await RealoadBudget();
     }
 
 
@@ -1051,7 +1052,7 @@
     {
         header.estado = "PENDIENTE";
         await BudgetService.SaveBudget(header);
-        await Navigate();
+        await RealoadBudget();
 
     }
 
@@ -1059,7 +1060,7 @@
     {
         header.estado = "APROBADO";
         await BudgetService.SaveBudget(header);
-        await Navigate();
+        await RealoadBudget();
     }
 
 
@@ -1268,7 +1269,7 @@
         }
         catch (Exception ex)
         {
-            
+
         }
 
         try
@@ -1290,7 +1291,7 @@
 
         IsRepositionVisible = true;
 
-        await Navigate();
+      
     }
 
 
@@ -1416,6 +1417,13 @@
     {
         NavigationManager.NavigateTo($"/Budgets");
     }
+
+    private async Task RealoadBudget()
+    {
+        StateHasChanged();
+        await OnInitializedAsync();
+    }
+
 
 
     private async Task ShowToast()
