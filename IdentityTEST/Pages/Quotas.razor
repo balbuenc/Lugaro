@@ -134,7 +134,7 @@
                                             <SfDatePicker TValue="DateTime" @bind-Value="@(quo.vencimiento)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Vencimiento" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <SfDatePicker TValue="DateTime?" @bind-Value="@(quo.fecha_pago)" Format="dd/MM/yyyy" Enabled="false" Placeholder="Fecha pago" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
+                                            <SfDatePicker TValue="DateTime?" @bind-Value="@(quo.fecha_pago)" Format="dd/MM/yyyy" Enabled="true" Placeholder="Fecha pago" FloatLabelType="FloatLabelType.Always"> </SfDatePicker>
                                         </div>
 
                                     </div>
@@ -305,7 +305,7 @@
 
         coll.id_cuota = actQuote.id_cuota;
         coll.id_medio_pago = actQuote.id_metodo_pago;
-        coll.fecha = DateTime.Now;
+        coll.fecha = actQuote.fecha_pago;
         //coll.monto_cobrado = actQuote.total;
         coll.monto_cobrado = MontoPagado;
         coll.id_funcionario = GetEmployeeID(UserName);

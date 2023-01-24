@@ -10,7 +10,7 @@ namespace CoreERP.Model
         public int id_cobranza  { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "El campo fecha debe tener un valor.")]
-        public DateTime fecha { get; set; }
+        public DateTime? fecha { get; set; }
         public int id_cuota { get; set; }
         public int id_funcionario { get; set; }
 
