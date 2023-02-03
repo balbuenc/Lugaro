@@ -671,7 +671,7 @@ where nro_presupuesto = ?</CommandText>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=DatePart("d",First(Fields!fecha.Value, "VentasDS"),0,0)</Value>
+                      <Value>=DatePart("d",First(Fields!fecha_facturacion.Value, "VentasDS"),0,0)</Value>
                       <Style>
                         <FontFamily>Times New Roman</FontFamily>
                         <FontSize>9pt</FontSize>
@@ -904,7 +904,7 @@ where nro_presupuesto = ?</CommandText>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=DatePart("yyyy", First(Fields!fecha.Value, "VentasDS"), 0, 0)</Value>
+                      <Value>=DatePart("yyyy", First(Fields!fecha_facturacion.Value, "VentasDS"), 0, 0)</Value>
                       <Style>
                         <FontFamily>Times New Roman</FontFamily>
                         <FontSize>9pt</FontSize>
@@ -938,7 +938,7 @@ where nro_presupuesto = ?</CommandText>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=UCase(Monthname(DatePart("m", First(Fields!fecha.Value, "VentasDS"), 0, 0)))</Value>
+                      <Value>=UCase(Monthname(DatePart("m", First(Fields!fecha_facturacion.Value, "VentasDS"), 0, 0)))</Value>
                       <Style>
                         <FontFamily>Times New Roman</FontFamily>
                         <FontSize>9pt</FontSize>
