@@ -261,6 +261,7 @@
             Theme.Caption = ThemeStyle;
             ExcelProperties.Theme = Theme;
             ExcelProperties.FileName = "LibroDiario.xlsx";
+            ExcelProperties.IncludeTemplateColumn = true;
             await this.Grid.ExcelExport(ExcelProperties);
         }
 

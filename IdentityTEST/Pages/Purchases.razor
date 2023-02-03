@@ -364,6 +364,7 @@
         if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
         {
             ExcelExportProperties ExcelProperties = new ExcelExportProperties();
+            ExcelProperties.IncludeTemplateColumn = true;
             ExcelProperties.FileName = "Pedidos.xlsx";
             await this.Grid.ExcelExport(ExcelProperties);
         }

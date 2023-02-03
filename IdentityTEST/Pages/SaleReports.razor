@@ -270,16 +270,7 @@
         if (args.Item.Id == "Grid_excelexport") //Id is combination of Grid's ID and itemname
         {
             ExcelExportProperties ExcelProperties = new ExcelExportProperties();
-            ExcelTheme Theme = new ExcelTheme();
-            ExcelStyle ThemeStyle = new ExcelStyle()
-                {
-                    FontName = "Segoe UI",
-                    FontSize = 12
-                };
-            Theme.Header = ThemeStyle;
-            Theme.Record = ThemeStyle;
-            Theme.Caption = ThemeStyle;
-            ExcelProperties.Theme = Theme;
+            ExcelProperties.IncludeTemplateColumn = true;
             ExcelProperties.FileName = "Ventas.xlsx";
             await this.Grid.ExcelExport(ExcelProperties);
         }
