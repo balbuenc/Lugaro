@@ -5,6 +5,9 @@
 @inject ISaleService SaleService
 @inject IEmployeeService EmployeeService
 
+@using System.Globalization
+
+
 
 @using Microsoft.AspNetCore.Http
 
@@ -88,7 +91,7 @@
                     <SfGrid TValue="Sale" ID="Grid" @ref="Grid" AllowPaging="true" Toolbar="@ToolbarItems" DataSource="@GridData" AllowExcelExport="true" ShowColumnChooser="true" AllowTextWrap="true" AllowFiltering="true" AllowSorting="true">
                         <GridEvents OnActionBegin="OnBeginHandler" OnActionComplete="ActionCompletedHandler" TValue="Sale" OnToolbarClick="ToolbarClickHandler" CommandClicked="OnCommandClicked"></GridEvents>
                         <GridPageSettings PageSize="30"></GridPageSettings>
-                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                        <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel" ></GridFilterSettings>
 
                         <GridColumns>
                             <GridColumn HeaderText="*" Width="15">
@@ -223,7 +226,8 @@
 
             await AuthorizeUser(UserPermissions);
 
-            GridData = await SaleService.GetAllSales();
+            //GridData = await SaleService.GetAllSales();
+            GridData = await SaleService.GetSalesByUserName(UserName, UserPermissions.CanViewOnlyOwned);
 
             employees = await EmployeeService.GetAllEmployees();
 

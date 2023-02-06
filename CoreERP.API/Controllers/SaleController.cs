@@ -32,6 +32,14 @@ namespace CoreERP.API.Controllers
 
 
         [HttpGet]
+        [Route("GetSalesByUserName/{userName}/{canViewOnlyOwned}")]
+        public async Task<IActionResult> GetSalesByUserName(string userName, bool canViewOnlyOwned )
+        {
+            return Ok(await _SaleRepository.GetSalesByUserName(userName, canViewOnlyOwned));
+        }
+        
+
+        [HttpGet]
         public async Task<IActionResult> GetAllSales()
         {
             return Ok(await _SaleRepository.GetAllSales());

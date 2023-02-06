@@ -34,6 +34,14 @@ namespace CoreERP.UI.Services
                 );
         }
 
+        public async Task<IEnumerable<Sale>> GetSalesByUserName(string userName, bool canViewOnlyOwned)
+        {
+            return await JsonSerializer.DeserializeAsync<IEnumerable<Sale>>(
+                 await _httpClient.GetStreamAsync($"api/sale/GetSalesByUserName/{userName}/{canViewOnlyOwned}"),
+                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+                 );
+        }
+
         public async Task<IEnumerable<Sale>> GetInvoiceNumbers()
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<Sale>>(

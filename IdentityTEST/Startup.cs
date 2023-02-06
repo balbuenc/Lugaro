@@ -23,7 +23,8 @@ using CoreERP.UI.Services;
 using Microsoft.Extensions.Options;
 using Syncfusion.Blazor;
 using Microsoft.AspNetCore.Http;
-
+using Microsoft.Extensions.Configuration;
+using CoreERP.UI.Shared;
 
 namespace CoreERP.UI
 {
@@ -65,6 +66,14 @@ namespace CoreERP.UI
             services.AddServerSideBlazor().AddCircuitOptions(options => options.DetailedErrors = true);
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSyncfusionBlazor();
+
+            services.AddSyncfusionBlazor();
+
+
+            //Register the Syncfusion locale service to localize Syncfusion Blazor components.
+            services.AddSingleton(typeof(ISyncfusionStringLocalizer), typeof(SyncfusionLocalizer));
+
+
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -235,11 +244,16 @@ namespace CoreERP.UI
             clientInvoiceService => { clientInvoiceService.BaseAddress = new Uri(apiurl); }
        );
 
+            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseRequestLocalization("es");
+
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzQ3MDkwQDMxMzgyZTMzMmUzMEdDejEyQ1Z6Z0FUYk1JSG9WSk1GNFp5MWQ2bVNveUh6SWVwb0lCR01aMkU9"); // Synfusion (v18.3.0.*)
             //Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NDg4NzE3QDMxMzkyZTMyMmUzMFA1VHpFanZxK2ZGR1AzOTJlSjNlM2lQOGxNMlNvSGI3Q2hVTlowSHpHL009");
             if (env.IsDevelopment())
@@ -272,6 +286,9 @@ namespace CoreERP.UI
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+           
+
         }
     }
 }

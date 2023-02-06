@@ -65,18 +65,62 @@ namespace CoreERP.Data.Repositories
             }
         }
 
-        public async Task<IEnumerable<Sale>> GetAllSales()
+
+
+        public async Task<IEnumerable<Sale>> GetSalesByUserName(string userName, bool canViewOnlyOwned)
         {
             try
             {
                 var db = dbConnection();
-                var sql = @"select v.factura,v.fecha,  v.condicion, v.estado,  sum(v.importe) as importe , c2.razon_social as cliente, m.moneda , v.motivo_anulacion
+                string sql;
+
+                if (!canViewOnlyOwned)
+                {
+
+                    sql = @"select v.factura,v.fecha,  v.condicion, v.estado,  sum(v.importe) as importe , c2.razon_social as cliente, m.moneda , v.motivo_anulacion, f.usuario as vendedor
                             from ventas v
                             inner join presupuestos p on p.id_presupuesto = v.id_presupuesto 
                             inner join funcionarios f on f.id_funcionario = p.id_funcionario 
                             inner join clientes c2 on c2.id_cliente = p.id_cliente 
                             inner join monedas m on m.id_moneda = p.id_moneda 
-                            group by v.factura,v.fecha,  v.condicion, v.estado,   c2.razon_social ,m.moneda , v.motivo_anulacion
+                            group by v.factura,v.fecha,  v.condicion, v.estado,   c2.razon_social ,m.moneda , v.motivo_anulacion, f.usuario 
+                            order by v.fecha desc ";
+                }
+                else
+                {
+                    sql = @"select v.factura,v.fecha,  v.condicion, v.estado,  sum(v.importe) as importe , c2.razon_social as cliente, m.moneda , v.motivo_anulacion, f.usuario as vendedor
+                            from ventas v
+                            inner join presupuestos p on p.id_presupuesto = v.id_presupuesto 
+                            inner join funcionarios f on f.id_funcionario = p.id_funcionario 
+                            inner join clientes c2 on c2.id_cliente = p.id_cliente 
+                            inner join monedas m on m.id_moneda = p.id_moneda 
+                            where f.usuario = @user 
+                            group by v.factura,v.fecha,  v.condicion, v.estado,   c2.razon_social ,m.moneda , v.motivo_anulacion, f.usuario 
+                            order by v.fecha desc ";
+                }
+
+                var result = await db.QueryAsync<Sale>(sql, new { user = userName });
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IEnumerable<Sale>> GetAllSales()
+        {
+            try
+            {
+                var db = dbConnection();
+                var sql = @"select v.factura,v.fecha,  v.condicion, v.estado,  sum(v.importe) as importe , c2.razon_social as cliente, m.moneda , v.motivo_anulacion, f.usuario as vendedor
+                            from ventas v
+                            inner join presupuestos p on p.id_presupuesto = v.id_presupuesto 
+                            inner join funcionarios f on f.id_funcionario = p.id_funcionario 
+                            inner join clientes c2 on c2.id_cliente = p.id_cliente 
+                            inner join monedas m on m.id_moneda = p.id_moneda 
+                            group by v.factura,v.fecha,  v.condicion, v.estado,   c2.razon_social ,m.moneda , v.motivo_anulacion, f.usuario 
                             order by v.fecha desc ";
 
                 var result = await db.QueryAsync<Sale>(sql, new { });
